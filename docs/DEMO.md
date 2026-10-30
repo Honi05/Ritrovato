@@ -1,9 +1,9 @@
-# Демо и питч
+# Demo and pitch
 
-Пишет `judge-pitch`. Формат: 3 минуты вживую без слайдов, один ноутбук, потом 2 минуты
-вопросов. Язык итальянский или английский.
+Written by `judge-pitch`. Format: 3 minutes live, no slides, one laptop, then 2 minutes
+of questions. Italian or English.
 
-## Текст питча
+## Pitch text
 
 ```
 <0:00> ...
@@ -11,34 +11,34 @@
 <2:30> ...
 ```
 
-## Сценарий кликов
+## Click script
 
-1. Вкладка 1: <URL> — <что нажать>
+1. Tab 1: <URL> — <what to click>
 2. ...
 
-## Перед выходом на сцену
+## Before going on stage
 
-- [ ] Все вкладки открыты, залогинено, масштаб страницы крупный.
-- [ ] Звук проверен (голос агента слышно в зале).
-- [ ] `DEMO_MODE` включён / выключен — <что нужно>.
-- [ ] Резервное видео открыто в соседней вкладке.
-- [ ] Ноутбук на зарядке, уведомления выключены.
+- [ ] All tabs open, logged in, page zoom large.
+- [ ] Sound checked (the agent's voice is audible in the room).
+- [ ] `DEMO_MODE` on / off — <which one>.
+- [ ] Backup video open in the next tab.
+- [ ] Laptop charging, notifications off.
 
-## Вопросы жюри и ответы
+## Judge questions and answers
 
-| Вопрос | Ответ |
+| Question | Answer |
 |---|---|
-| Чем это лучше ChatGPT? | |
-| Откуда данные, не галлюцинирует ли? | |
-| Что дальше, кто заплатит? | |
-| Как используете Exa / ElevenLabs? | |
+| How is this better than ChatGPT? | |
+| Where does the data come from — does it hallucinate? | |
+| What's next, who pays? | |
+| How do you use Exa / ElevenLabs? | |
 
-## Резервное видео (1–2 мин)
+## Backup video (1–2 min)
 
-<Сценарий записи. Ссылка на файл после записи.>
+<Recording script. Link to the file once recorded.>
 
-## Сдача (до 14:00)
+## Submission (by 14:00)
 
-- [ ] Ссылка на живой проект
-- [ ] Репозиторий (публичный?)
-- [ ] Видео
+- [ ] Link to the live project
+- [ ] Repository (public?)
+- [ ] Video

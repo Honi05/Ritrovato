@@ -1,30 +1,30 @@
-# Block NN — <название>
+# Block NN — <name>
 
-Зависит: <NN>. Исполнитель: <агент>/<модель>. Ветка: <feat/...>. Папка: <server/ | web/>.
+Depends on: <NN>. Executor: <agent>/<model>. Branch: <feat/...>. Folder: <server/ | web/>.
 
-## Цель
+## Goal
 
-<Одно предложение: что работает после блока.>
+<One sentence: what works after this block.>
 
-## Контекст
+## Context
 
-- Контракт: `docs/ARCHITECTURE.md` → <раздел>.
-- Рецепт: `docs/RESEARCH.md` → <раздел>.
+- Contract: `docs/ARCHITECTURE.md` → <section>.
+- Recipe: `docs/RESEARCH.md` → <section>.
 
-## Сделать
+## Do
 
 1. <...>
 2. <...>
 
-## Приёмка
+## Acceptance
 
-- <команда проверки> — зелёная.
-- <curl / сценарий, который должен пройти>.
+- <check command> — green.
+- <curl / script step that must pass>.
 
-## Нельзя
+## Don't
 
-Трогать файлы вне своей папки, `docs/STATUS.md`, контракт API, `git push`.
+Touch files outside your folder, `docs/STATUS.md`, the API contract; `git push`.
 
-## Таймбокс
+## Timebox
 
-<N> минут. Если не успеваешь, остановись и отчитайся `BLOCKED` с причиной.
+<N> minutes. If you can't make it, stop and report `BLOCKED` with the reason.

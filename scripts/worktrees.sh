@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Создаёт worktree для двух билдеров рядом с репозиторием: ../Hackaton-wt/{back,front}.
+# Creates worktrees for the two builders next to the repo: ../Hackaton-wt/{back,front}.
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 wt="../$(basename "$PWD")-wt"

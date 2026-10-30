@@ -1,45 +1,45 @@
-# Agentic Hack Rome 2nd Edition — факты о событии
+# Agentic Hack Rome 2nd Edition — event facts
 
-Источники: https://luma.com/e1df8qa0, https://agentic.urbe.build/. Telegram: https://t.me/+gMynwTJFRz8wODQ0
+Sources: https://luma.com/e1df8qa0, https://agentic.urbe.build/. Telegram: https://t.me/+gMynwTJFRz8wODQ0
 
-## Когда и где
+## When and where
 
-- Пт 13.11.2026 17:00 → сб 14.11.2026 19:00. Urbe Hub, Città dell'Altra Economia,
-  Largo Dino Frisullo, Testaccio, Рим.
-- 40 участников по отбору, бесплатно, еда включена, хаб открыт всю ночь.
+- Fri 13 Nov 2026 17:00 → Sat 14 Nov 2026 19:00. Urbe Hub, Città dell'Altra Economia,
+  Largo Dino Frisullo, Testaccio, Rome.
+- 40 selected participants, free, meals included, the hub stays open all night.
 
-| Пт | | Сб | |
+| Fri | | Sat | |
 |---|---|---|---|
-| 17:00 | вход, команды | 08:00 | завтрак |
-| 18:00 | старт | 12:00 | обед |
-| 19:00 | открытие, воркшопы | **14:00** | **сдача** |
-| 20:30 | ужин | 14:30 | демо и жюри |
-| 00:00 | перекус | 17:00 | награждение |
+| 17:00 | doors open, team formation | 08:00 | breakfast |
+| 18:00 | hacking starts | 12:00 | lunch |
+| 19:00 | opening, workshops | **14:00** | **submission** |
+| 20:30 | dinner | 14:30 | demos and judging |
+| 00:00 | midnight snack | 17:00 | awards |
 
-## Правила
+## Rules
 
-- Команда — 1–3 человека.
-- **Сдать до 14:00 сб:** ссылку на живой проект онлайн, репозиторий и видео на 1–2 минуты
-  (резерв на случай, если демо сломается).
-- **Демо:** 3 минуты вживую, **без слайдов**, с одного ноутбука, ссылки открыты
-  заранее. Потом 2 минуты вопросов.
-- Язык итальянский, демо можно на английском. Vibe coding разрешён.
-- С собой: ноутбук, зарядка, документ.
+- Teams of 1–3 people.
+- **Submit by 14:00 Sat:** link to the live project, the repository, and a 1–2 minute
+  video (backup in case the live demo fails).
+- **Demo:** 3 minutes live, **no slides**, from a single laptop, links pre-opened.
+  Then 2 minutes of questions.
+- Language Italian; demos may be in English. Vibe coding allowed.
+- Bring: laptop, charger, ID.
 
-## Призы
+## Prizes
 
-- Победитель: год членства в Urbe Hub и 3 месяца ElevenLabs Pro каждому.
-- Best use of Exa: $1000 кредитов.
-- Best with ElevenLabs: 3 месяца Scale каждому.
-- team1 / Avalanche: до $500 за проект в блокчейне Avalanche.
-- Каждому участнику: $50 Exa и месяц ElevenLabs Creator.
+- Winner: one year of Urbe Hub membership + 3 months ElevenLabs Pro per person.
+- Best use of Exa: $1,000 in credits.
+- Best with ElevenLabs: 3 months Scale per person.
+- team1 / Avalanche: up to $500 for bringing the project onchain on Avalanche.
+- Every builder: $50 Exa credits + 1 month ElevenLabs Creator.
 
-## Неизвестно (спросить hello@urbe.build или в Telegram)
+## Unknown (ask hello@urbe.build or Telegram)
 
-Критерии оценки, состав жюри, треки (на сайте «Coming soon»), датасеты, можно ли
-приносить код, написанный до хакатона.
+Judging criteria, judges, tracks (site says "Coming soon"), datasets, whether code
+written before the event is allowed.
 
-## Прошлая edition (11.04.2026)
+## Previous edition (11 Apr 2026)
 
-5 часов, 14 проектов. Победил **Permesso Digitale** — AI-ассистент по бумагам для
-открытия ресторана в Риме.
+5 hours, 14 projects. Winner: **Permesso Digitale** — an AI assistant that walks you
+through the paperwork for opening a restaurant in Rome.

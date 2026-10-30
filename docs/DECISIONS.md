@@ -1,25 +1,30 @@
-# Журнал решений
+# Decision log
 
-Формат: id, дата, решение, почему, когда пересмотреть.
+Format: id, date, decision, why, when to revisit.
 
-## D-001 · 2026-10-30 · Шесть агентов, две пишущие ветки
+## D-001 · 2026-10-30 · Six agents, two writing branches
 
-Оркестратор (главный чат), `researcher`, `back-builder`, `front-builder`, `qa-deploy`,
-`judge-pitch`. Код пишут только билдеры, каждый в своей папке (`server/` и `web/`) и
-своём worktree, поэтому конфликтов почти нет. Код уходит в Codex, чтение — в DeepSeek:
-это другие пулы, они не тратят 5-часовое окно Claude.
+Orchestrator (main chat), `researcher`, `back-builder`, `front-builder`, `qa-deploy`,
+`judge-pitch`. Only builders write code, each in its own folder (`server/`, `web/`) and
+worktree, so conflicts are rare. Code goes to Codex and reading to DeepSeek: separate
+pools that don't spend the Claude 5-hour window.
 
-## D-002 · <дата> · Стек — TBD
+## D-002 · <date> · Stack — TBD
 
-<Выбрать до хакатона. Кандидаты: Python 3.12 + FastAPI (как в GattoRoma) для `server/`,
-статический фронтенд или Vite для `web/`. Критерий — что быстрее всего деплоится на
-наш сервер и что лучше знают билдеры.>
+<Decide with the team. Candidates: Python 3.12 + FastAPI for `server/`, a static
+frontend or Vite for `web/`; or Next.js. Criterion: what deploys fastest to our server
+and what the builders know best.>
 
-## D-003 · 2026-10-30 · Деплой на собственный сервер
+## D-003 · 2026-10-30 · Deploy to our own server
 
-Docker Compose на нашем сервере вместо Vercel и прочих: место есть, процесс знаком
-по другим проектам. Детали — `docs/OPERATIONS.md`.
+Docker Compose on `rilya-server` instead of Vercel etc.: there is capacity and the
+process is proven on other projects. Details: `docs/OPERATIONS.md`.
 
-## D-004 · 2026-10-30 · Веб, а не iOS
+## D-004 · 2026-10-30 · Web, not iOS
 
-Жюри открывает ссылку, TestFlight открывать не будет. По правилам нужна живая ссылка.
+Judges open a link; they won't install TestFlight. The rules require a live link.
+
+## D-005 · 2026-10-30 · All project files in English
+
+The team may include other participants. Docs, code and commits are in English;
+product UI in Italian and English.

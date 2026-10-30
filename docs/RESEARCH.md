@@ -1,34 +1,34 @@
-# Исследование
+# Research
 
-Пишет `researcher`. Каждый раздел — готовый рецепт для билдера: что, как, пример кода,
-ограничения, источник.
+Written by `researcher`. Each section is a ready recipe for a builder: what, how,
+code example, limits, source.
 
 ## Exa
 
-- Что: поиск для агентов, возвращает текст страниц.
-- SDK: <python / js, версия>
-- Рецепт:
+- What: search for agents; returns page text.
+- SDK: <python / js, version>
+- Recipe:
 ```
-<минимальный рабочий пример>
+<minimal working example>
 ```
-- Лимиты и цены: <...>
-- Источник: <ссылка на docs>
+- Limits and pricing: <...>
+- Source: <docs link>
 
 ## ElevenLabs
 
-- Conversational AI (голосовой агент): <как создать, как встроить в веб>
-- Исходящие звонки на итальянские номера: <работает? через что? источник>
-- TTS для коротких ответов: <...>
+- Conversational AI (voice agent): <how to create it, how to embed it on the web>
+- Outbound calls to Italian numbers: <does it work? via what? source>
+- TTS for short replies: <...>
 
-## Avalanche (только если в продукте)
+## Avalanche (only if the product uses it)
 
 <...>
 
-## Данные Рима
+## Rome data
 
-| Источник | Что есть | Формат | Ссылка | Годится? |
+| Source | What it has | Format | Link | Usable? |
 |---|---|---|---|---|
 
-## Открытые вопросы
+## Open questions
 
-- <вопрос> — <кто ответит>
+- <question> — <who answers>

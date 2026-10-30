@@ -1,19 +1,19 @@
-# План
+# Plan
 
-> Шаблон. Оркестратор заполняет его в первый час под выбранную идею. Подробное задание
-> каждого блока — `docs/plans/blocks/NN-*.md` по шаблону `_TEMPLATE.md`.
+> Template. The orchestrator fills it in during the first hour for the chosen idea.
+> Each block's detailed task: `docs/plans/blocks/NN-*.md` from `_TEMPLATE.md`.
 
-| # | Блок | Ветка | Исполнитель | Зависит |
+| # | Block | Branch | Executor | Depends on |
 |---|---|---|---|---|
-| 00 | Скелет: структура `server/` и `web/`, `/api/health`, контракт, Compose | main | оркестратор | — |
-| 01 | Первый деплой «hello world» по HTTPS | main | qa-deploy | 00 |
-| 02 | Агент: LLM + тул поиска (Exa), один эндпоинт сценария | feat/back | back-builder | 00 |
-| 03 | Экран сценария на заглушке контракта | feat/front | front-builder | 00 |
-| 04 | Голос: ElevenLabs в сценарии | feat/back | back-builder | 02 |
-| 05 | Склейка: фронт на реальном API, сценарий целиком на проде | main | оркестратор + qa-deploy | 02, 03 |
-| 06 | Демо-данные и демо-режим | feat/back | back-builder | 05 |
-| 07 | Полировка UI | feat/front | front-builder | 05 |
-| 08 | Питч, видео, сдача | — | judge-pitch + владелец | 05 |
+| 00 | Skeleton: `server/` and `web/` layout, `/api/health`, contract, Compose | main | orchestrator | — |
+| 01 | First "hello world" deploy over HTTPS | main | qa-deploy | 00 |
+| 02 | Agent: LLM + search tool (Exa), one script endpoint | feat/back | back-builder | 00 |
+| 03 | Script screen on a contract stub | feat/front | front-builder | 00 |
+| 04 | Voice: ElevenLabs in the script | feat/back | back-builder | 02 |
+| 05 | Integration: frontend on the real API, full script in production | main | orchestrator + qa-deploy | 02, 03 |
+| 06 | Demo data and demo mode | feat/back | back-builder | 05 |
+| 07 | UI polish | feat/front | front-builder | 05 |
+| 08 | Pitch, video, submission | — | judge-pitch + owner | 05 |
 
-Параллельно: 02 ∥ 03, потом 04 ∥ 07.
-Главная цепочка: 00 → 01 → 02 → 05 → 08.
+In parallel: 02 ∥ 03, then 04 ∥ 07.
+Critical path: 00 → 01 → 02 → 05 → 08.

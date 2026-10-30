@@ -1,48 +1,48 @@
-# <Название проекта> — продукт
+# <Project name> — product
 
-> Шаблон. Оркестратор заполняет его в первый час хакатона. Варианты идей — в `docs/ideas/`.
+> Template. The orchestrator fills it in during the first hour. Candidate ideas: `docs/ideas/`.
 
-## Одной фразой
+## One sentence
 
-<Кто> в Риме <какая боль>. <Название> — агент, который <что делает> за <сколько времени>.
+<Who> in Rome <what pain>. <Name> is an agent that <does what> in <how long>.
 
-## Проблема
+## Problem
 
-- Кто страдает: <аудитория>.
-- Насколько это больно: <цифра или факт с источником — жюри любит цифры>.
-- Почему сейчас не решается: <...>.
+- Who suffers: <audience>.
+- How bad it is: <a number or fact with a source — judges love numbers>.
+- Why it isn't solved today: <...>.
 
-## Сценарий демо (3 минуты, без слайдов)
+## Demo script (3 minutes, no slides)
 
-Главный документ проекта. Всё, что не входит в этот сценарий, — вне MVP.
+The most important document in the project. Anything not in this script is out of MVP.
 
-| Секунды | На экране | Что говорим |
+| Seconds | On screen | What we say |
 |---|---|---|
-| 0–20 | <открытая ссылка> | <проблема одной фразой> |
-| 20–150 | <шаги пользователя> | <что делает агент> |
-| 150–180 | <результат> | <итог и что дальше> |
+| 0–20 | <opened link> | <the problem in one sentence> |
+| 20–150 | <user steps> | <what the agent does> |
+| 150–180 | <result> | <outcome and what's next> |
 
-## MVP — обязательный минимум
+## MVP — must-have
 
-Хронометрист (оркестратор) отмечает пункты по мере готовности.
+The orchestrator (timekeeper) ticks items as they are done.
 
-- [ ] <шаг 1 сценария работает на проде>
-- [ ] <шаг 2>
-- [ ] <шаг 3>
-- [ ] Резервное видео записано.
+- [ ] <script step 1 works in production>
+- [ ] <step 2>
+- [ ] <step 3>
+- [ ] Backup video recorded.
 
-## Желательно, если останется время
+## Nice to have, if time allows
 
 - <...>
 
-## Вне MVP — не делаем
+## Out of MVP — not doing
 
-- Регистрация и аккаунты.
+- Sign-up and accounts.
 - <...>
 
-## Спонсорские призы, на которые претендуем
+## Sponsor prizes we are going for
 
-- [ ] Главный приз
-- [ ] Exa — как именно используем: <...>
-- [ ] ElevenLabs — как именно используем: <...>
-- [ ] Avalanche — только если это честно нужно продукту
+- [ ] Main prize
+- [ ] Exa — how exactly we use it: <...>
+- [ ] ElevenLabs — how exactly we use it: <...>
+- [ ] Avalanche — only if the product genuinely needs it

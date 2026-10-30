@@ -1,52 +1,52 @@
-# Архитектура
+# Architecture
 
-> Шаблон. Оркестратор заполняет его в первый час. Раздел «Контракт API» — единственная
-> точка связи между `server/` и `web/`, поэтому меняет его только оркестратор в `main`.
+> Template. The orchestrator fills it in during the first hour. "API contract" is the only
+> link between `server/` and `web/`, so only the orchestrator changes it, in `main`.
 
-## Состав
+## Components
 
-| Часть | Папка | Ветка | Что делает |
+| Part | Folder | Branch | What it does |
 |---|---|---|---|
-| Бэкенд и агент | `server/` | `feat/back` | <API, логика агента, тулы, Exa, ElevenLabs> |
-| Фронтенд | `web/` | `feat/front` | <экраны демо> |
-| Деплой | `deploy/`, `docker-compose.yml` | `main` | Сборка и запуск на сервере |
+| Backend and agent | `server/` | `feat/back` | <API, agent logic, tools, Exa, ElevenLabs> |
+| Frontend | `web/` | `feat/front` | <demo screens> |
+| Deploy | `deploy/`, `docker-compose.yml` | `main` | Build and run on the server |
 
-## Поток
+## Flow
 
 ```
-пользователь → web → POST /api/... → агент (LLM + тулы) → Exa / ElevenLabs / ...
-                                                        → ответ → web
+user → web → POST /api/... → agent (LLM + tools) → Exa / ElevenLabs / ...
+                                                → response → web
 ```
 
-## Контракт API
+## API contract
 
-Все ответы — JSON, ошибки — `{"error": "<код>", "message": "<текст>"}`.
+All responses are JSON; errors are `{"error": "<code>", "message": "<text>"}`.
 
 ### `GET /api/health`
 → `{"ok": true}`
 
 ### `<METHOD> /api/<...>`
-Запрос:
+Request:
 ```json
 {}
 ```
-Ответ:
+Response:
 ```json
 {}
 ```
 
-## Тулы агента
+## Agent tools
 
-| Тул | Что делает | Внешний API |
+| Tool | What it does | External API |
 |---|---|---|
-| `search_official` | Поиск по официальным сайтам | Exa |
+| `search_official` | Search official websites | Exa |
 | `<...>` | | |
 
-## Данные
+## Data
 
-<Где храним состояние: в памяти / SQLite / файл. Для хакатона — самое простое.>
+<Where state lives: memory / SQLite / file. For a hackathon — the simplest option.>
 
-## Демо-режим
+## Demo mode
 
-<Что подменяется на сцене: подставной номер, заготовленные данные, фиксированный
-сценарий. Как включить: `DEMO_MODE=1`.>
+<What gets stubbed on stage: stand-in number, prepared data, fixed script.
+How to enable: `DEMO_MODE=1`.>

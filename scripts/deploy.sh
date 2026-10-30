@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Деплой main на сервер: rsync → docker compose up → проверка /api/health.
-# Значения берутся из .env.deploy (не в Git): DEPLOY_HOST, DEPLOY_DIR, PUBLIC_URL.
+# Deploys main to the server: rsync → docker compose up → check /api/health.
+# Values come from .env.deploy (not in Git): DEPLOY_HOST, DEPLOY_DIR, PUBLIC_URL.
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 source .env.deploy

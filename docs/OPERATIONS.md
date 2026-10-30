@@ -1,13 +1,13 @@
 # Эксплуатация
 
-> Шаблон по образцу babkisoStasom. Значения с `<?>` подтверждает владелец.
+> По образцу babkisoStasom. Порт и поддомен выбрать до хакатона, свободны ли — проверить на сервере.
 
 ## Где живёт
 
-- Сервер: `<? rilya-server>`, каталог `/srv/<?hackaton>/`: код в `app/` (rsync), секреты
+- Сервер: `rilya-server` (Debian, Рим), каталог `/srv/hackaton/`: код в `app/` (rsync), секреты
   в `.env` с правами 0600.
-- `docker compose`, сервис слушает только `127.0.0.1:<?порт>`.
-- Публикация: `<? Cloudflare Tunnel>` → `https://<?поддомен>`. Правило в
+- `docker compose`, сервис слушает только `127.0.0.1:<порт>`.
+- Публикация: существующий Cloudflare Tunnel (`cloudflared.service`) → `https://<поддомен>.quietunit.com`. Правило в
   `/etc/cloudflared/config.yml` добавляет владелец или агент с его разрешения
   (перед правкой — бэкап конфига).
 
@@ -35,5 +35,5 @@ scripts/deploy.sh          # rsync → docker compose up -d --build → пров
 ## Если на сцене что-то упало
 
 1. Обновить страницу.
-2. `ssh <сервер> 'cd /srv/<?>/app && docker compose logs --tail 50'`.
+2. `ssh <сервер> 'cd /srv/hackaton/app && docker compose logs --tail 50'`.
 3. Нет времени чинить — показывать резервное видео.

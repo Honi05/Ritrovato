@@ -64,6 +64,32 @@
 
 ---
 
+## Reusable data: Urbe Hub's "Quartieri di Roma 2026"
+
+[github.com/urbe-hub/quartieri-roma-2026](https://github.com/urbe-hub/quartieri-roma-2026) (live: [romaquartieri.it](https://romaquartieri.it/)) is the organizers' own open project: a map of Rome's new administrative geography (delibera 150/2026). Code is MIT; data is open (GeoRoma, OSM ODbL, MIM and Ministero della Salute IODL 2.0, AGENAS, Regione Lazio, GHS-POP CC BY), credit required, Urbe Hub logo not reusable.
+
+**What's in `data/`:**
+- 457 area polygons (quartieri, rioni, zone) + 15 municipi, GeoJSON.
+- ~18 service categories as points: pharmacies, nidi, schools, Case della Comunità, pronto soccorso, libraries, markets, sport, parks, centri anziani, consultori, museums.
+- School details: places, closures for works, Scuola in Chiaro links.
+- Street index (14,908 streets) split by municipio.
+- 15-minute coverage gaps on 250 m hexagons, with population.
+
+**How to use it:** as agent tools rather than forking the UI (one 6,700-line template). Point-in-polygon → "which quartiere/municipio is this address in"; nearest service by category with its source; street name → coordinates. For visuals, link to their site's deep links (`#15=lat,lon` opens the 15-minute walk, also `#via=`), with a recorded fallback.
+
+**Per idea:**
+- **No. 3 Segnala Roma** — strong fit: address → correct municipio under the new boundaries → the right office to report to.
+- **No. 7 Voce di Quartiere** — strong fit: street → quartiere/municipio, the key for filtering decisions; plus "what services are here / missing" for the episode.
+- **No. 9 Nonno Digitale** — good fit: "where's the nearest pharmacy / Casa della Comunità / centro anziani?" answered by voice with an address and a source.
+- **No. 1 Ti chiamo io** — supporting: pick the nearest Casa della Comunità or facility before the call.
+- **No. 2 Permesso Pilot** — supporting: which municipio office handles your residenza.
+- **No. 8 Cicerone Vero** — weak: museums, parks, markets per quartiere for routes away from the center.
+- **No. 4, 5, 6, 10** — little or no use.
+
+Pitch angle: building on the organizers' own open data.
+
+---
+
 ## Favorites
 - **No. 1 and No. 9** — best demo: a real phone call on stage.
 - **No. 10** — a concrete euro amount on screen, a clear outcome.
@@ -73,3 +99,4 @@
 - What is actually available in Roma Mobilità open data (No. 4).
 - How Roma Capitale delibere are published (No. 7) and whether a registry of bandi exists (No. 10).
 - The project must be a web app with a live link, not iOS.
+- Whether reusing pre-existing open code/data (e.g. quartieri-roma-2026) is allowed.

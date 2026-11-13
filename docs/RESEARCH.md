@@ -197,7 +197,7 @@ object (+ brand if readable), or `NESSUN OGGETTO`.
 
 Measured: 2.6-3.1 s end to end (model 0.9 s). Keyring photo -> "Portachiavi Wikimedia"
 -> `interpret.search` -> category `keys`, 958 items. Probe script:
-scratchpad `probe/probe.py` (copy into block 05). Billed per uploaded file.
+`scripts/el_photo_probe.py` (base for block 05). Billed per uploaded file.
 
 ## Open questions
 

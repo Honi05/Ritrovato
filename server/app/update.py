@@ -129,23 +129,37 @@ def _group_tsv(tsv_text, width, height):
         w = float(parts[idx["width"]])
         h = float(parts[idx["height"]])
 
-        g = groups.setdefault(key, {"text": [], "left": float("inf"),
-                                    "top": float("inf"), "right": -float("inf"),
-                                    "bottom": -float("inf")})
-        g["text"].append(text)
-        g["left"] = min(g["left"], left)
-        g["top"] = min(g["top"], top)
-        g["right"] = max(g["right"], left + w)
-        g["bottom"] = max(g["bottom"], top + h)
+        groups.setdefault(key, []).append((left, top, left + w, top + h, text))
 
+    # Split each line on wide horizontal gaps so table columns become separate items,
+    # like macOS Vision's output that parse.py expects (number | description | date).
+    gap = 0.02 * width
     out = []
-    for g in groups.values():
-        if not g["text"]:
-            continue
-        x = g["left"] / width
-        y = 1 - (g["top"] + (g["bottom"] - g["top"])) / height
-        out.append((x, y, " ".join(g["text"])))
+    for words in groups.values():
+        words.sort()
+        segs = [[words[0]]]
+        for wd in words[1:]:
+            if wd[0] - segs[-1][-1][2] > gap:
+                segs.append([wd])
+            else:
+                segs[-1].append(wd)
+        for seg in segs:
+            left = seg[0][0]
+            bottom = max(wd[3] for wd in seg)
+            out.append((left / width, 1 - bottom / height, " ".join(wd[4] for wd in seg)))
     return out
+
+
+def fix_sequence(recs, prev):
+    """Registry numbers are consecutive; replace OCR digit misreads (4771 -> 4111) by prev+1."""
+    out = []
+    for rec in recs:
+        n = rec[1]
+        if prev and abs(n - (prev + 1)) > 5:
+            rec = (rec[0], prev + 1, *rec[2:])
+        prev = rec[1]
+        out.append(rec)
+    return out, prev
 
 
 def ocr_page(pdf_path, page_no):
@@ -162,7 +176,7 @@ def ocr_page(pdf_path, page_no):
             out_base = tmp / "ocr"
             lang = _tesseract_lang()
             cmd = [*TESSERACT_CMD, str(image_path), str(out_base),
-                   "--psm", "6", "-l", lang, "tsv"]
+                   "--psm", os.environ.get("TESSERACT_PSM", "11"), "-l", lang, "tsv"]
             proc = subprocess.run(cmd, capture_output=True, text=True, timeout=180)
             if proc.returncode != 0:
                 raise RuntimeError(f"tesseract failed: {proc.stderr.strip()[:300]}")
@@ -245,7 +259,8 @@ def run(force=False, pages=None):
                     prev = prev_reperto
                     for pno in range(start, end + 1):
                         lines = ocr_page(str(pdf_path), pno)
-                        recs, prev = parse_page(lines, year, pno, prev)
+                        recs, _ = parse_page(lines, year, pno, prev)
+                        recs, prev = fix_sequence(recs, prev)
                         for rec in recs:
                             new_rows.append(rec + classify(rec[3]))
 

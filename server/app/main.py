@@ -1,4 +1,5 @@
 """HTTP API. Contract: docs/ARCHITECTURE.md → "API contract"."""
+import logging
 import os
 import threading
 import time
@@ -24,7 +25,10 @@ async def lifespan(app):
         def updater():
             time.sleep(60)
             while True:
-                update.run()
+                try:
+                    update.run()
+                except Exception:  # never let the daily thread die
+                    logging.exception("daily update failed")
                 time.sleep(24 * 3600)
         threading.Thread(target=updater, daemon=True, name="daily-update").start()
     yield

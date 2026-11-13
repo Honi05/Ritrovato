@@ -115,10 +115,16 @@ def test_ocr_page_498_matches_stored_rows():
         pytest.skip("no stored rows for page 498")
 
     expected = {(row["reperto"], row["date"]) for row in expected_rows}
-    recs, _ = parse_page(lines, 2026, 498, prev)
-    actual = {(r[0], r[1]) for r in recs}
+    recs, _ = update.fix_sequence(parse_page(lines, 2026, 498, prev)[0], prev)
+    actual = {(r[1], r[2]) for r in recs}  # rec = (year, reperto, date, ...)
 
     overlap = len(actual & expected)
     print("missing:", expected - actual)
     print("extra:", actual - expected)
-    assert overlap / len(expected) >= 0.90, f"OCR page 498 overlap {overlap}/{len(expected)}"
+    assert overlap == len(expected), f"OCR page 498 overlap {overlap}/{len(expected)}"
+
+
+def test_fix_sequence_repairs_digit_misreads():
+    recs = [(2026, 4770, "d"), (2026, 4111, "d"), (2026, 4772, "d")]
+    fixed, last = update.fix_sequence(recs, 4769)
+    assert [r[1] for r in fixed] == [4770, 4771, 4772] and last == 4772

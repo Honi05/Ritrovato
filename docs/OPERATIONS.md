@@ -28,8 +28,8 @@ in production. Config: copy `.env.deploy.example` to `.env.deploy`.
 
 ## Secrets (`.env`, not in Git)
 
-`ANTHROPIC_API_KEY` (or another LLM), `EXA_API_KEY`, `ELEVENLABS_API_KEY`,
-`ELEVENLABS_AGENT_ID`, `PUBLIC_URL`, `DEMO_MODE`. Template without values: `.env.example`.
+`DEEPSEEK_API_KEY`, `ELEVENLABS_API_KEY`, `ELEVENLABS_PHOTO_AGENT_ID`, `PORT`.
+Template without values: `.env.example`. Docker on the server needs `sudo`.
 
 ## Before the hackathon (owner checklist)
 

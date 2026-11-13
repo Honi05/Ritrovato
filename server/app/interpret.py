@@ -251,11 +251,21 @@ def _prompt(categories: list[str]) -> str:
         f"Available categories: {cats}. "
         'Use the JSON keys "category" (one of the listed category ids or null), '
         '"brand" (official registry brand name in UPPERCASE, e.g. "SAMSUNG", or null), '
-        '"keywords" (0-3 ITALIAN nouns as the registry words them, e.g. "PATENTE", '
-        '"PASSAPORTO", "ZAINO"; translate from the user language; never copy foreign '
-        'words, articles or prepositions; no colours, places, personal data; empty if the '
-        'category already says it), "date_from" and "date_to" (ISO yyyy-mm-dd or null; '
-        'infer ranges such as "October" to that month in the current year), and '
+        '"keywords" (0-3 ITALIAN words as the registry writes them, most specific first; '
+        "translate from the user language; never copy foreign words, articles or "
+        "prepositions; no colours, places, personal data; empty if the category already "
+        "says it). Registry vocabulary: banks INTESA, UNICREDIT, POSTEPAY, BNL, REVOLUT, "
+        "FINECO, AMERICAN EXPRESS; card kinds BANCOMAT, CARTA DI CREDITO; foreign = ESTER; "
+        "documents IDENTITA (identity card), PATENTE (driving licence), PASSAPORTO, "
+        "SOGGIORNO (residence permit), SANITARIA (health card); phone CON SIM, SENZA SIM; "
+        "bags ZAINO (backpack), BORSELLO, TROLLEY (suitcase), POCHETTE; glasses DA VISTA, "
+        "DA SOLE; electronics AURICOLARE (earphones), IPAD, PORTATILE (laptop); wallet "
+        "PORTAFOGLI (never PORTAFOGLIO), keys CHIAVI, phone TELEFONO; contents of "
+        'a bag or wallet are keywords too (wallet with Intesa card and licence -> '
+        '["INTESA", "PATENTE"]). "date_from" and "date_to" (ISO yyyy-mm-dd or null; '
+        'a month such as "October" -> that month in the current year; a single day the '
+        "user LOST it -> date_from = that day, date_to = 14 days later, because items are "
+        "logged when found), and "
         '"ignored": the registry does not record colour, place found, or looks; list '
         'ONLY the ones the user actually mentioned, as keys "colour", "place", "photo", '
         '"other_unrecorded" (e.g. "black phone at Termini" -> ["colour", "place"]; '
@@ -465,6 +475,10 @@ def search(text: str, lang: str) -> dict:
     if filters is None:
         filters = fallback_interpret(text, lang)
     result = _db_search(filters)
+    while not result["total"] and len(filters.get("keywords") or []) > 1:
+        # drop the least specific keyword first (the model lists most specific first)
+        filters = {**filters, "keywords": filters["keywords"][:-1]}
+        result = _db_search(filters)
     for drop in (("keywords",), ("brand",), ("date_from", "date_to")):  # relax in this order
         if result["total"]:
             break

@@ -51,6 +51,12 @@ Task file: `docs/plans/blocks/07-ui-voice-photo.md`. If you use Claude, tell it
 only 20 such calls per 10 minutes per IP (500 per day overall). In tests, mock voice and
 photo with `page.route`; make at most one or two real calls by hand.
 
+## 3b. Then block 07b — "narrow it down" chips
+
+Task file: `docs/plans/blocks/07b-refine-chips.md`. "Lost my wallet" today returns ~4800
+wallets; chips like "Intesa card" or "Driving licence" cut that to a handful. Free (no AI
+call), uses the existing `GET /api/items`. 90 minutes.
+
 ## 4. Handing work over
 
 Commit on `feat/front`, push the branch, and message the owner. The owner merges into

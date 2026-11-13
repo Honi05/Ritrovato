@@ -129,3 +129,12 @@ def test_search_relaxation_path(monkeypatch):
     assert data["total"] > 0
     assert "relaxed" not in data
     assert data["interpreted"]["brand"] == "XYZ"
+
+
+def test_relaxation_drops_one_keyword_at_a_time(monkeypatch):
+    monkeypatch.setattr(main_module.interpret, "interpret", lambda t, l: {
+        "category": "wallet", "brand": None, "keywords": ["INTESA", "NONEXISTENT"],
+        "date_from": None, "date_to": None, "ignored": []})
+    data = TestClient(app).post("/api/search", json={"query": "x", "lang": "it"}).json()
+    assert 0 < data["total"] < 1000  # INTESA kept, only the bad word dropped
+    assert all("INTESA" in i["descr"] for i in data["items"])

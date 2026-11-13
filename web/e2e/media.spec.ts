@@ -282,3 +282,108 @@ test('entry card with a null reperto never prints "null"', async ({ page }) => {
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('—')
   expect(await page.locator('body').innerText()).not.toContain('null')
 })
+
+const RATE_LIMITED = { error: 'rate_limited', message: 'too many' }
+const RATE_MSG = 'Too many voice/photo searches right now'
+
+test('photo: 429 explains the limit, focuses the text box and keeps typed text', async ({ page }) => {
+  await page.route('**/api/search/photo', (r) => r.fulfill(json(RATE_LIMITED, 429)))
+  await page.goto('/')
+  await setLang(page, 'en')
+  const box = page.getByRole('searchbox')
+  await box.fill('chiavi')
+  await page.getByTestId('photo-input').setInputFiles({ name: 'x.png', mimeType: 'image/png', buffer: PNG })
+  await expect(page.getByRole('status')).toContainText(RATE_MSG)
+  await expect(box).toBeFocused()
+  await expect(box).toHaveValue('chiavi')
+  await expect(page).not.toHaveURL(/mode=photo/)
+  await box.press('Enter')
+  await expect(page).toHaveURL(/#\/search\?q=chiavi/)
+  await expect(page.getByRole('heading', { level: 1 })).toContainText(/possible match/)
+})
+
+test('voice: 429 explains the limit, focuses the text box and keeps typed text', async ({ page }) => {
+  await fakeRecorder(page)
+  await page.route('**/api/search/voice', (r) => r.fulfill(json(RATE_LIMITED, 429)))
+  await page.goto('/')
+  await setLang(page, 'en')
+  const box = page.getByRole('searchbox')
+  await box.fill('chiavi')
+  await page.getByRole('button', { name: 'Speak' }).click()
+  await page.getByRole('button', { name: 'Stop' }).click()
+  await expect(page.getByRole('status')).toContainText(RATE_MSG)
+  await expect(box).toBeFocused()
+  await expect(box).toHaveValue('chiavi')
+  await box.press('Enter')
+  await expect(page).toHaveURL(/#\/search\?q=chiavi/)
+  await expect(page.getByRole('heading', { level: 1 })).toContainText(/possible match/)
+})
+
+test('photo: 502 puts the cursor back in the text box', async ({ page }) => {
+  await page.route('**/api/search/photo', (r) => r.fulfill({ status: 502, contentType: 'text/html', body: 'Bad gateway' }))
+  await page.goto('/')
+  await setLang(page, 'en')
+  await page.getByTestId('photo-input').setInputFiles({ name: 'x.png', mimeType: 'image/png', buffer: PNG })
+  await expect(page.getByRole('status')).toContainText('Something went wrong')
+  await expect(page.getByRole('searchbox')).toBeFocused()
+})
+
+async function searchWallet(page: Page) {
+  await page.goto('/')
+  await setLang(page, 'en')
+  await page.getByRole('searchbox').fill('portafoglio')
+  await page.getByRole('searchbox').press('Enter')
+  await expect(page.getByRole('heading', { level: 1 })).toContainText(/possible match/)
+}
+
+test('refine: Intesa chip narrows wallets, tapping again restores them', async ({ page }) => {
+  await searchWallet(page)
+  const h1 = page.getByRole('heading', { level: 1 })
+  const all = Number(((await h1.textContent()) ?? '').replace(/\D/g, ''))
+  expect(all).toBeGreaterThan(1000)
+  const chip = page.getByRole('button', { name: 'Intesa', exact: true })
+  await chip.click()
+  await expect(chip).toHaveAttribute('aria-pressed', 'true')
+  await expect.poll(async () => Number(((await h1.textContent()) ?? '').replace(/\D/g, ''))).toBeLessThan(200)
+  const cards = page.locator('a[href^="#/item/"]')
+  await expect(cards.first()).toBeVisible()
+  for (const text of await cards.allInnerTexts()) expect(text.toUpperCase()).toContain('INTESA')
+  await chip.click()
+  await expect(chip).toHaveAttribute('aria-pressed', 'false')
+  await expect.poll(async () => Number(((await h1.textContent()) ?? '').replace(/\D/g, ''))).toBe(all)
+})
+
+test('refine: "Lost on" sends date_from and date_to = date + 14 days; zero results keep the chip', async ({ page }) => {
+  await searchWallet(page)
+  const urls: string[] = []
+  await page.route('**/api/items?*', (r) => {
+    urls.push(r.request().url())
+    return r.fulfill(json({ items: [], total: 0, interpreted: null }))
+  })
+  await page.getByLabel('Lost on').fill('2026-10-25')
+  await expect(page.getByText('No entries with this')).toBeVisible()
+  const u = new URL(urls[urls.length - 1])
+  expect(u.searchParams.get('date_from')).toBe('2026-10-25')
+  expect(u.searchParams.get('date_to')).toBe('2026-11-08')
+  expect(u.searchParams.get('category')).toBe('wallet')
+  const chip = page.getByRole('button', { name: 'BNL', exact: true })
+  await chip.click()
+  await expect(chip).toHaveAttribute('aria-pressed', 'true')
+  await expect(page.getByText('No entries with this')).toBeVisible()
+  expect(new URL(urls[urls.length - 1]).searchParams.get('q')).toContain('BNL')
+})
+
+test('refine: keys offer the date picker but no chips; labels are translated; no sideways scroll', async ({ page }) => {
+  await page.route('**/api/search', (r) => r.fulfill(json(KEYS)))
+  await page.goto('/#/search?q=chiavi')
+  await setLang(page, 'de')
+  await expect(page.getByLabel('Verloren am')).toBeVisible()
+  await expect(page.getByRole('region', { name: 'Eingrenzen' }).getByRole('button')).toHaveCount(0)
+  await page.route('**/api/search', (r) => r.fulfill(json({ ...KEYS, interpreted: { ...KEYS.interpreted, category: 'phone' } })))
+  await page.goto('/#/search?q=telefono')
+  await expect(page.getByRole('button', { name: 'Ohne SIM' })).toBeVisible()
+  await setLang(page, 'it')
+  await expect(page.getByRole('button', { name: 'Senza SIM' })).toBeVisible()
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)
+  expect(overflow).toBeLessThanOrEqual(0)
+})

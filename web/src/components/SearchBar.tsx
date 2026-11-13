@@ -20,6 +20,7 @@ export default function SearchBar({ initial = '', big = false }: { initial?: str
   const [status, setStatus] = useState<Status>({ kind: 'idle' })
   const id = useId()
   const fileRef = useRef<HTMLInputElement>(null)
+  const textRef = useRef<HTMLInputElement>(null)
   const rec = useRef<{ mr: MediaRecorder; stream: MediaStream; timer: number; tick: number } | null>(null)
   const alive = useRef(true)
   const m = t.media
@@ -45,7 +46,10 @@ export default function SearchBar({ initial = '', big = false }: { initial?: str
     let text = m.failed
     if (e instanceof MediaProblem) text = m[e.kind]
     else if (e instanceof ApiError && e.status === 413) text = m.tooLarge
+    else if (e instanceof ApiError && e.status === 429) text = m.rateLimited
     setStatus({ kind: 'message', text })
+    // Rate limit or server trouble: send the user to the text box, keeping what they typed.
+    if (e instanceof ApiError && (e.status === 429 || e.status === 502)) textRef.current?.focus()
   }
 
   /** Stores a voice/photo response and opens its result page, or explains why there is nothing to show. */
@@ -144,6 +148,7 @@ export default function SearchBar({ initial = '', big = false }: { initial?: str
         </label>
         <input
           id={id}
+          ref={textRef}
           type="search"
           value={q}
           onChange={(e) => setQ(e.target.value)}
@@ -174,7 +179,6 @@ export default function SearchBar({ initial = '', big = false }: { initial?: str
           ref={fileRef}
           type="file"
           accept="image/*"
-          capture="environment"
           data-testid="photo-input"
           tabIndex={-1}
           aria-hidden="true"

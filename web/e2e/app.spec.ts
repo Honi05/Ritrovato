@@ -32,7 +32,7 @@ test('home shows live register numbers and every category', async ({ page }) => 
   await page.goto('/')
   await setLang(page, 'en')
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Lost something in Rome?')
-  await expect(page.getByText('15,560')).toBeVisible()
+  await expect(page.getByText('15,560', { exact: true })).toBeVisible()
   await expect(page.locator('a[href^="#/catalogue?category="]')).toHaveCount(15)
   expect(errors).toEqual([])
 })

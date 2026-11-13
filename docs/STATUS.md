@@ -23,8 +23,8 @@ Plan: `docs/plans/ROADMAP.md`.
 | 01 | First deploy | main | qa-deploy | 00 | pending | — |
 | 02 | Text search (LLM → filters) | feat/back | DeepSeek (ds_code.py) | 00 | complete | b890135 |
 | 03 | UI: search, results, card, 5 languages | feat/front | teammate | 00 | in progress | — |
-| 04 | Voice (ElevenLabs STT) | feat/back | back-builder | 02 | pending | — |
-| 05 | Photo (vision) | feat/back | back-builder | 02 | pending | — |
+| 04 | Voice (ElevenLabs STT) | feat/back | DeepSeek (ds_code.py) | 02 | complete | see "blocks 04+05" |
+| 05 | Photo (ElevenLabs Agent, D-013) | feat/back | DeepSeek (ds_code.py) | 02 | complete | see "blocks 04+05" |
 | 06 | Daily update | feat/back | back-builder | 00 | pending | — |
 | 07 | UI: mic, photo upload, polish | feat/front | front-builder | 03 | pending | — |
 | 08 | Integration in production | main | orchestrator + qa-deploy | 04, 05, 07 | pending | — |

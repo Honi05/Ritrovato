@@ -161,11 +161,25 @@ Facts:
   (`/web-resources/cms/documents/Rinvenimenti_01012026_11112026.pdf`) and was fetchable with a
   plain `curl -sL` (200, ~100 KB HTML), no browser needed.
 
+## ElevenLabs Scribe (answered, 2026-11-13, from elevenlabs.io docs)
+
+- `POST https://api.elevenlabs.io/v1/speech-to-text`, header `xi-api-key`,
+  `multipart/form-data`: `file`, `model_id` (`scribe_v2` in examples; try `scribe_v3`,
+  fall back to v2 on 4xx).
+- Omit `language_code` → auto-detected; response has `text`, `language_code`,
+  `language_probability`.
+- Accepts `audio/webm`, `audio/opus`, `audio/mp4`, `audio/aac` — Chrome and Safari
+  recordings go as-is. Min 100 ms; size limit irrelevant for 10 s clips. Latency: unknown,
+  measure in block 04.
+
+## Source page INF39645 (answered, 2026-11-13)
+
+- `https://www.comune.roma.it/web/it/informazione-di-servizio.page?contentId=INF39645`
+  fetches with plain `curl` (browser User-Agent), no JS needed.
+- Current-year link: `href="https://www.comune.roma.it/web-resources/cms/documents/Rinvenimenti_01012026_<DDMMYYYY>.pdf"`
+  — the end date changes with each update (11112026 on 13 Nov; our seed is 04112026).
+  Block 06: regex `Rinvenimenti_0101(\d{4})_(\d{8})\.pdf`, compare with the stored name.
+
 ## Open questions
 
-- ElevenLabs Scribe: endpoint, SDK call, accepted browser formats (webm/opus from
-  Chrome, mp4 from Safari), language auto-detection, latency for a 5–10 s clip — `researcher`.
-- Source page `INF39645`: exact page URL, how the current-year PDF link looks in the
-  HTML, whether it can be fetched from the server without a browser — `researcher`.
-- Vision model on a scanned registry page: does it return registry numbers and dates
-  identical to the stored rows? Decides D-008 — `researcher` or block 06.
+- Photo query without a vision model (D-012) — owner decides.

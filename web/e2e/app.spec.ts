@@ -91,10 +91,11 @@ test('catalogue filters by category and brand, and pages', async ({ page }) => {
   const panel = page.locator('details').filter({ hasText: 'Filters' })
   if (!(await panel.evaluate((d: HTMLDetailsElement) => d.open))) await panel.locator('summary').click()
   await page.getByLabel('Type').selectOption('phone')
-  await page.getByLabel('Brand').fill('samsung')
+  await page.getByLabel('Brand').selectOption('SAMSUNG')
   await page.getByRole('button', { name: 'Apply' }).click()
 
   await expect(page).toHaveURL(/category=phone/)
+  await expect(page).toHaveURL(/brand=SAMSUNG/)
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(/possible matches/)
   const tags = page.locator('a[href^="#/item/"]')
   await expect(tags).toHaveCount(20)

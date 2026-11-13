@@ -8,12 +8,15 @@ import { href, navigate } from '../lib/router'
 const PAGE = 20
 const FIELDS = ['q', 'category', 'brand', 'date_from', 'date_to'] as const
 type Filters = Record<(typeof FIELDS)[number], string>
-// Most frequent brands in the register (docs/DATA.md); the field still accepts any brand.
-const BRANDS = ['APPLE', 'SAMSUNG', 'REDMI', 'XIAOMI', 'MOTOROLA', 'OPPO', 'HUAWEI', 'LENOVO', 'EASTPAK', 'INVICTA']
+// The register only records a usable brand for phones and electronics (docs/DATA.md).
+const BRANDED = ['', 'phone', 'electronics']
+// Most frequent brands there; the API matches the brand exactly.
+const BRANDS = ['APPLE', 'SAMSUNG', 'REDMI', 'XIAOMI REDMI', 'XIAOMI', 'MOTOROLA', 'OPPO', 'HUAWEI', 'HONOR', 'LENOVO']
 
 export default function Catalogue({ params }: { params: URLSearchParams }) {
   const { t, lang } = useI18n()
   const filters = Object.fromEntries(FIELDS.map((k) => [k, params.get(k) ?? ''])) as Filters
+  if (!BRANDED.includes(filters.category)) filters.brand = ''
   const key = FIELDS.map((k) => filters[k]).join('|')
 
   const [meta, setMeta] = useState<Meta | null>(null)
@@ -95,6 +98,8 @@ function FilterPanel({ initial, meta }: { initial: Filters; meta: Meta | null })
   const active = FIELDS.filter((k) => initial[k]).length
   const id = useId()
   const set = (k: keyof Filters) => (e: { target: { value: string } }) => setF({ ...f, [k]: e.target.value })
+  const branded = BRANDED.includes(f.category)
+  const brands = f.brand && !BRANDS.includes(f.brand) ? [f.brand, ...BRANDS] : BRANDS
   const label = 'flex flex-col gap-1.5 font-mono text-xs font-semibold tracking-[0.06em] uppercase'
   const field = 'min-h-11 w-full min-w-0 box-border border-2 border-ink bg-white px-2.5 font-sans text-[15px] font-medium normal-case tracking-normal'
 
@@ -112,7 +117,7 @@ function FilterPanel({ initial, meta }: { initial: Filters; meta: Meta | null })
       aria-label={t.filters.title}
       onSubmit={(e) => {
         e.preventDefault()
-        navigate(href('catalogue', { ...f, q: f.q.trim(), brand: f.brand.trim().toUpperCase() }))
+        navigate(href('catalogue', { ...f, q: f.q.trim(), brand: branded ? f.brand : '' }))
       }}
       className="flex flex-col gap-5 px-5 pb-5"
     >
@@ -134,22 +139,19 @@ function FilterPanel({ initial, meta }: { initial: Filters; meta: Meta | null })
           ))}
         </select>
       </label>
-      <label className={label}>
-        {t.filters.brand}
-        <input
-          type="text"
-          list={`${id}-brands`}
-          value={f.brand}
-          onChange={set('brand')}
-          placeholder={t.filters.anyBrand}
-          className={field}
-        />
-        <datalist id={`${id}-brands`}>
-          {BRANDS.map((b) => (
-            <option key={b} value={b} />
-          ))}
-        </datalist>
-      </label>
+      {branded && (
+        <label className={label}>
+          {t.filters.brand}
+          <select value={f.brand} onChange={set('brand')} className={field}>
+            <option value="">{t.filters.anyBrand}</option>
+            {brands.map((b) => (
+              <option key={b} value={b}>
+                {b}
+              </option>
+            ))}
+          </select>
+        </label>
+      )}
       <div className="flex flex-wrap gap-x-2 gap-y-5">
         <label className={`${label} min-w-0 flex-[1_1_160px]`}>
           {t.filters.from}

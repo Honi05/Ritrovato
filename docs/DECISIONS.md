@@ -9,11 +9,12 @@ Orchestrator (main chat), `researcher`, `back-builder`, `front-builder`, `qa-dep
 worktree, so conflicts are rare. Code goes to Codex and reading to DeepSeek: separate
 pools that don't spend the Claude 5-hour window.
 
-## D-002 · <date> · Stack — TBD
+## D-002 · 2026-11-13 · Stack: FastAPI + Vite/React/Tailwind, one container
 
-<Decide with the team. Candidates: Python 3.12 + FastAPI for `server/`, a static
-frontend or Vite for `web/`; or Next.js. Criterion: what deploys fastest to our server
-and what the builders know best.>
+`server/` is Python 3.12 + FastAPI (the data is SQLite and the parser is already Python).
+`web/` is Vite + React + TypeScript + Tailwind: the owner's criterion is that the site
+looks good, and a component stack gets there faster than hand-written HTML. The Docker
+image builds `web/` and FastAPI serves it, so there is still one service to deploy.
 
 ## D-003 · 2026-10-30 · Deploy to our own server
 
@@ -28,3 +29,35 @@ Judges open a link; they won't install TestFlight. The rules require a live link
 
 The team may include other participants. Docs, code and commits are in English;
 product UI in Italian and English.
+
+## D-006 · 2026-11-13 · Idea: official challenge 3, "Oggetti smarriti"
+
+Search over the city's found-items registry by catalogue filters, free text, voice and
+photo. The skeleton lives in this repo; the team repo `Honi05/Lost-items` holds the data
+originals. Voice is a microphone button (speech-to-text), not a conversational agent:
+one pipeline for all inputs and less to break on stage.
+
+## D-007 · 2026-11-13 · One pipeline; the LLM only builds filters
+
+Text, voice and photo all end in the same `interpret` step that produces catalogue
+filters; results come only from SQL. The model cannot invent an entry, and when it is
+unavailable the search degrades to keywords instead of failing.
+
+## D-008 · 2026-11-13 · Daily update reads new pages with a vision model
+
+The snapshot was OCR'd with macOS Vision, which does not exist on the Linux server. The
+list grows by a few pages a day, so the update sends only the new pages to the vision
+model and asks for records (number, date, description) directly. No OCR engine in the
+image, and no positional parser to re-tune for a different OCR. Revisit (Tesseract with
+`parse.py`) if block 06 finds the model misreads registry numbers on a known page.
+
+## D-009 · 2026-11-13 · Seed database in Git, live database in a volume
+
+`server/seed/oggetti.sqlite` (3 MB) ships in the image; the app copies it to the `data`
+volume on first start and the daily update writes there. Deploys cannot overwrite fresh
+data, and a fresh clone runs without extra steps.
+
+## D-010 · 2026-11-13 · Interface in IT, EN, ES, FR, DE
+
+Owner's choice: the main languages of visitors to Rome. Queries are understood in any
+language regardless; this is about interface strings.

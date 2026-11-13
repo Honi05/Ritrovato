@@ -18,6 +18,7 @@ Minimal set, strictly in this order:
 By topic, not upfront:
 
 - API contract between `server/` and `web/` → `docs/ARCHITECTURE.md`.
+- The registry data, its schema and limits → `docs/DATA.md`.
 - Server, deploy, secrets → `docs/OPERATIONS.md`.
 - How Exa, ElevenLabs, Avalanche work → `docs/RESEARCH.md`.
 - Why things were decided this way → `docs/DECISIONS.md`.

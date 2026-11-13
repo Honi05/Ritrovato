@@ -19,14 +19,24 @@ Plan: `docs/plans/ROADMAP.md`.
 
 | Block | Name | Branch | Executor | Depends on | Status | Commit |
 |---|---|---|---|---|---|---|
-| 00 | Skeleton and contract | main | orchestrator | — | pending | — |
+| 00 | Skeleton and contract | main | orchestrator | — | complete | see `git log` ("block 00") |
 | 01 | First deploy | main | qa-deploy | 00 | pending | — |
+| 02 | Text search (LLM → filters) | feat/back | back-builder | 00 | pending | — |
+| 03 | UI: search, results, card, 5 languages | feat/front | front-builder | 00 | pending | — |
+| 04 | Voice (ElevenLabs STT) | feat/back | back-builder | 02 | pending | — |
+| 05 | Photo (vision) | feat/back | back-builder | 02 | pending | — |
+| 06 | Daily update | feat/back | back-builder | 00 | pending | — |
+| 07 | UI: mic, photo upload, polish | feat/front | front-builder | 03 | pending | — |
+| 08 | Integration in production | main | orchestrator + qa-deploy | 04, 05, 07 | pending | — |
+| 09 | Pitch, video, submission | — | judge-pitch + owner | 08 | pending | — |
 
 Statuses: `pending`, `in progress`, `review`, `complete`, `blocked`, `cut`.
 
 ## Waiting on the owner
 
-- <owner action, e.g. API key in `.env` on the server>
+- Subdomain, port and tunnel rule on `rilya-server`; `.env.deploy` locally.
+- `ANTHROPIC_API_KEY` and `ELEVENLABS_API_KEY` in `.env` on the server.
+- Confirm or replace the working name "Ritrovato".
 
 ## Judge verdicts
 
@@ -35,4 +45,21 @@ Statuses: `pending`, `in progress`, `review`, `complete`, `blocked`, `cut`.
 
 ## Current handoff
 
-<date time> — <what's done, what's broken, what's next. Short, for the next chat.>
+2026-11-13 20:15 — Idea fixed (challenge 3, "Oggetti smarriti"). Block 00 is committed:
+docs (`PRODUCT.md`, `ARCHITECTURE.md` with the API contract, `DATA.md`, `DECISIONS.md`
+D-002 and D-006…D-010, `ROADMAP.md`) and the skeleton (catalogue API on the seed
+database, Vite/React/Tailwind app, Dockerfile, Compose). Checks: `pytest` 5 passed,
+`npm run build` green; the Docker image has not been built yet.
+
+The owner builds in separate sessions on cheaper models. Next session, in order:
+1. `researcher` on `docs/RESEARCH.md` → "Open questions".
+2. Block files for 02 and 03 from `_TEMPLATE.md` (acceptance lines are in `ROADMAP.md`),
+   then run both in worktrees in parallel.
+3. Block 01 once the owner has set the subdomain, port and keys.
+
+Known leftovers: unused Vite template files in `web/` (`src/App.css`, `src/assets/`,
+`public/icons.svg`) — block 03 removes them. Voice and photo endpoints return 501.
+
+Run locally: `cd server && uv venv && uv pip install -r requirements.txt pytest httpx &&
+.venv/bin/uvicorn app.main:app --reload`; `cd web && npm i && npm run dev` (proxies
+`/api` to port 8000).

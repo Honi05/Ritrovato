@@ -11,6 +11,12 @@
   `https://<subdomain>.quietunit.com`. The rule in `/etc/cloudflared/config.yml` is added
   by the owner, or by an agent with the owner's permission (back up the config first).
 
+## Data on the server
+
+The catalogue lives in the Docker volume `data` (`/data/oggetti.sqlite`), seeded from
+`server/seed/` on first start and updated daily by the app. `docker compose down -v`
+deletes it — never use `-v`. The host port is `PORT` in `.env` (default 8787).
+
 ## Deploy
 
 ```bash

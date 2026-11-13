@@ -8,7 +8,7 @@ from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from . import db
+from . import db, interpret
 
 Lang = Literal["it", "en", "es", "fr", "de"]
 WEB_DIST = Path(__file__).parent.parent.parent / "web" / "dist"
@@ -59,8 +59,7 @@ class SearchRequest(BaseModel):
 
 @app.post("/api/search")
 def search(req: SearchRequest):
-    # Block 02 replaces this keyword fallback with LLM interpretation; keep the fallback for LLM failures.
-    return {**db.search(req.query.split()), "interpreted": None}
+    return interpret.search(req.query, req.lang)
 
 
 @app.post("/api/search/voice")

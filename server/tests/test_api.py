@@ -1,5 +1,6 @@
 from fastapi.testclient import TestClient
 
+from app import interpret as interpret_module
 from app.main import app
 
 client = TestClient(app)
@@ -27,7 +28,13 @@ def test_document_numbers_are_hidden():
     assert r["items"] and not any("Nr:" in it["descr"] or "*" in it["descr"] for it in r["items"])
 
 
-def test_search_fallback():
+def test_search_fallback(monkeypatch):
+    monkeypatch.delenv("DEEPSEEK_API_KEY", raising=False)
+
+    def fail(*args, **kwargs):
+        raise AssertionError("no network in tests")
+
+    monkeypatch.setattr(interpret_module.httpx, "post", fail)
     assert client.post("/api/search", json={"query": "portafogli", "lang": "en"}).json()["total"] > 0
 
 

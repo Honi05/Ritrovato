@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { searchText, type SearchResponse } from '../api'
 import ItemTag from '../components/ItemTag'
 import SearchBar from '../components/SearchBar'
+import Refine, { type Refined } from '../components/Refine'
 import Understood from '../components/Understood'
 import { useI18n } from '../i18n'
 import { remember } from '../lib/items'
@@ -79,30 +80,45 @@ function MediaSearch({ mode }: { mode: Mode }) {
 
 function Results({ state, query }: { state: State; query: string }) {
   const { t, lang } = useI18n()
-  const res = state.status === 'done' ? state.res : null
-  const refine = res?.interpreted
-    ? href('catalogue', {
-        category: res.interpreted.category ?? undefined,
-        brand: res.interpreted.brand ?? undefined,
-        date_from: res.interpreted.date_from ?? undefined,
-        date_to: res.interpreted.date_to ?? undefined,
-      })
-    : href('catalogue', { q: query })
+  const base = state.status === 'done' ? state.res : null
+  // A narrowed result belongs to the search it was made from; a new search drops it.
+  const [narrow, setNarrow] = useState<{ from: SearchResponse; r: Refined } | null>(null)
+  const refined = narrow && narrow.from === base ? narrow.r : null
+  const res = refined?.res ?? base
+  const refine = refined
+    ? href('catalogue', refined.filters)
+    : base?.interpreted
+      ? href('catalogue', {
+          category: base.interpreted.category ?? undefined,
+          brand: base.interpreted.brand ?? undefined,
+          date_from: base.interpreted.date_from ?? undefined,
+          date_to: base.interpreted.date_to ?? undefined,
+        })
+      : href('catalogue', { q: query })
 
   return (
     <>
-      {res && <Understood interpreted={res.interpreted} />}
+      {base && <Understood interpreted={base.interpreted} />}
+      {base?.interpreted && (
+        <Refine
+          key={`${base.total}|${JSON.stringify(base.interpreted)}`}
+          interpreted={base.interpreted}
+          onChange={(r) => setNarrow(r && base ? { from: base, r } : null)}
+        />
+      )}
 
       <section aria-live="polite" aria-busy={state.status === 'loading'} className="flex flex-col gap-3.5 pt-3">
         {state.status === 'loading' && <p className="m-0 font-mono text-sm">{t.search.loading}</p>}
+        {refined?.loading && <p className="m-0 font-mono text-sm">{t.search.loading}</p>}
+        {refined?.error && <p className="m-0 border-2 border-ink bg-card p-4">{t.search.error}</p>}
         {state.status === 'error' && <p className="m-0 border-2 border-ink bg-card p-4">{t.search.error}</p>}
-        {res && (
+        {res && !refined?.error && (
           <>
             <div className="flex flex-wrap items-baseline justify-between gap-2">
               <h1 className="font-wide m-0 text-[30px] font-black">{t.search.matches(res.total)}</h1>
               <span className="font-mono text-[13px] uppercase">{t.search.newest}</span>
             </div>
-            {res.items.length === 0 && <p className="m-0 border-2 border-dashed border-ink p-5">{t.search.none}</p>}
+            {res.items.length === 0 && <p className="m-0 border-2 border-dashed border-ink p-5">{refined ? t.refine.none : t.search.none}</p>}
             {res.items.map((it, i) => (
               <ItemTag key={it.id} item={it} highlight={i === 0} />
             ))}

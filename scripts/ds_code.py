@@ -40,7 +40,7 @@ def main():
     for c in a.ctx:
         parts.append(f"<<<CONTEXT {c}>>>\n{(ROOT / c).read_text()}\n<<<END>>>")
     body = json.dumps({
-        "model": MODELS[a.mode], "max_tokens": 32000,
+        "model": MODELS[a.mode], "max_tokens": 64000,
         "messages": [{"role": "system", "content": SYSTEM},
                      {"role": "user", "content": "\n\n".join(parts)}],
     }).encode()
@@ -54,7 +54,8 @@ def main():
             if attempt == 2:
                 raise
             print(f"retrying after: {e!r}")
-    out = r["choices"][0]["message"]["content"]
+    out = r["choices"][0]["message"]["content"] or ""
+    print("finish_reason:", r["choices"][0].get("finish_reason"))
     (ROOT / ".ds_last.txt").write_text(out)  # raw answer for debugging; gitignored
 
     allow = (ROOT / a.allow).resolve()

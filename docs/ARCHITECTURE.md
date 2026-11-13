@@ -49,7 +49,9 @@ web/src/i18n/           it, en, es, fr, de strings
 ## API contract
 
 All responses are JSON. Errors: `{"error": "<code>", "message": "<text>"}` with codes
-`bad_request` (400), `too_large` (413), `not_implemented` (501), `upstream_failed` (502).
+`bad_request` (400), `too_large` (413), `rate_limited` (429), `not_implemented` (501),
+`upstream_failed` (502). Voice and photo are capped (20 per 10 min per client, 500 per day):
+on 429 or 502 from them the UI keeps the user's input and offers the text search instead.
 
 `lang` is one of `it`, `en`, `es`, `fr`, `de` (default `it`).
 

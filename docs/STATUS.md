@@ -20,13 +20,13 @@ Plan: `docs/plans/ROADMAP.md`.
 | Block | Name | Branch | Executor | Depends on | Status | Commit |
 |---|---|---|---|---|---|---|
 | 00 | Skeleton and contract | main | orchestrator | — | complete | see `git log` ("block 00") |
-| 01 | First deploy | main | qa-deploy | 00 | pending | — |
+| 01 | First deploy | main | orchestrator | 00 | complete | https://ritrovato.quietunit.com |
 | 02 | Text search (LLM → filters) | feat/back | DeepSeek (ds_code.py) | 00 | complete | b890135 |
-| 03 | UI: search, results, card, 5 languages | feat/front | teammate | 00 | complete | 357aae9 |
+| 03 | UI: search, results, card, 5 languages | feat/front | teammate | 00 | complete | 94953a2, live; e2e 28/30 (stale count assert) |
 | 04 | Voice (ElevenLabs STT) | feat/back | DeepSeek (ds_code.py) | 02 | complete | see "blocks 04+05" |
 | 05 | Photo (ElevenLabs Agent, D-013) | feat/back | DeepSeek (ds_code.py) | 02 | complete | see "blocks 04+05" |
-| 06 | Daily update | feat/back | back-builder | 00 | pending | — |
-| 07 | UI: mic, photo upload, polish | feat/front | front-builder | 03 | complete | ff33532 |
+| 06 | Daily update (Tesseract, D-012) | feat/back | DeepSeek + orchestrator | 00 | complete | see "block 06" |
+| 07 | UI: mic, photo upload, polish | feat/front | front-builder | 03 | complete | ff33532; e2e 58/58 (stubbed voice/photo) |
 | 08 | Integration in production | main | orchestrator + qa-deploy | 04, 05, 07 | pending | — |
 | 09 | Pitch, video, submission | — | judge-pitch + owner | 08 | pending | — |
 
@@ -34,8 +34,6 @@ Statuses: `pending`, `in progress`, `review`, `complete`, `blocked`, `cut`.
 
 ## Waiting on the owner
 
-- Subdomain, port and tunnel rule on `rilya-server`; `.env.deploy` locally.
-- `DEEPSEEK_API_KEY` and `ELEVENLABS_API_KEY` in `.env` on the server.
 - Confirm or replace the working name "Ritrovato".
 
 ## Judge verdicts

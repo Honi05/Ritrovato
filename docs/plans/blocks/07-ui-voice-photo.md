@@ -73,3 +73,10 @@ show the "use JPEG" message).
 ## Timebox
 
 150 minutes. If you can't make it, stop and report `BLOCKED` with the reason.
+
+## Follow-up (from the parallel block 07 file on origin/main, not yet built)
+
+- 429 `rate_limited` / 502 `upstream_failed`: show a message translated by error code
+  (today: generic retry text).
+- Transcript/description editable into the text box; keep input and focus the text box on error.
+- Real-call e2e for photo against production (one call only; paid, 20/10 min cap).

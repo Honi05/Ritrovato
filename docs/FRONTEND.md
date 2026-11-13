@@ -17,8 +17,7 @@ cd server && uv venv && uv pip install -r requirements.txt pytest httpx
 cd web && npm i && npm run dev
 ```
 
-`GET /api/items?q=iphone` already returns real entries. `POST /api/search` is live (block 02, DeepSeek);
-voice and photo answer 501 until blocks 04/05 — code against the contract types.
+All endpoints are live, including voice and photo: `https://ritrovato.quietunit.com/api/...`.
 
 ## 2. Read, in this order
 
@@ -34,12 +33,10 @@ voice and photo answer 501 until blocks 04/05 — code against the contract type
 | 03 | Search screen, chips "what we understood", results, entry card with pickup info, catalogue filters, IT/EN/ES/FR/DE, mobile layout | now → ~23:00 |
 | 07 | Mic recording → `POST /api/search/voice`; photo upload; "last checked" footer; polish | after 03 → Sat 06:00 |
 
-Details and acceptance checks are in each block file. Block 07's file comes later.
+Details and acceptance checks are in each block file: `docs/plans/blocks/07-ui-voice-photo.md`.
 
-**Photo search is open.** The backend LLM is DeepSeek, which cannot see images. Proposed:
-classify the photo in the browser with CLIP (transformers.js, zero-shot over the
-categories from `GET /api/meta`) and send the category as a text query. Do not start it
-until the owner confirms.
+Photo search is decided (D-013): the server describes the photo, the frontend only uploads it
+to `POST /api/search/photo`. No in-browser model.
 
 ## 4. Rules
 

@@ -150,12 +150,12 @@ function FilterPanel({ initial, meta }: { initial: Filters; meta: Meta | null })
           ))}
         </datalist>
       </label>
-      <div className="flex gap-2">
-        <label className={`${label} flex-1`}>
+      <div className="flex flex-wrap gap-x-2 gap-y-5">
+        <label className={`${label} min-w-0 flex-[1_1_160px]`}>
           {t.filters.from}
           <input type="date" value={f.date_from} onChange={set('date_from')} className={`${field} font-mono`} />
         </label>
-        <label className={`${label} flex-1`}>
+        <label className={`${label} min-w-0 flex-[1_1_160px]`}>
           {t.filters.to}
           <input type="date" value={f.date_to} onChange={set('date_to')} className={`${field} font-mono`} />
         </label>

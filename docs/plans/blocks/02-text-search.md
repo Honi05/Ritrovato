@@ -5,13 +5,13 @@ Branch: feat/back. Folder: server/.
 
 ## Goal
 
-`POST /api/search/text` turns a free-form query in any language into catalogue filters
+`POST /api/search` turns a free-form query in any language into catalogue filters
 with DeepSeek and returns matching entries; without a key it still answers via keywords.
 
 ## Context
 
 - Contract: `docs/ARCHITECTURE.md` → "API contract" (`Interpreted`, `SearchResponse`,
-  `POST /api/search/text`) and the pipeline diagram.
+  `POST /api/search`) and the pipeline diagram.
 - Recipe: `docs/RESEARCH.md` → "Text -> `Interpreted`". It was written for Claude; use
   DeepSeek instead (D-012): `POST https://api.deepseek.com/chat/completions`,
   model from env `LLM_MODEL` (default `deepseek-chat`), key from env `DEEPSEEK_API_KEY`,

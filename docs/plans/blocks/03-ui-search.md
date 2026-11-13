@@ -10,8 +10,8 @@ real API, in IT, EN, ES, FR, DE.
 ## Context
 
 - Contract: `docs/ARCHITECTURE.md` → "API contract" (`Item`, `Interpreted`,
-  `SearchResponse`, `GET /api/items`, `GET /api/meta`, `POST /api/search/text`).
-  Until block 02 lands in `main`, `/api/search/text` may return 501 — build against the
+  `SearchResponse`, `GET /api/items`, `GET /api/meta`, `POST /api/search`).
+  Until block 02 lands in `main`, `POST /api/search` only does keyword search — build against the
   contract types; `GET /api/items` already works on the seed DB.
 - Honesty rules: `docs/PRODUCT.md` → "Honesty rules" (show `ignored` as
   "colour is not recorded"; descriptions in original Italian).

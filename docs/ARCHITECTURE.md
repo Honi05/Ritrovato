@@ -76,7 +76,8 @@ All responses are JSON. Errors: `{"error": "<code>", "message": "<text>"}` with 
   "keywords": ["TELEFONO"],         // Italian, as worded in the registry
   "date_from": "2026-10-01",        // or null
   "date_to": "2026-10-31",          // or null
-  "ignored": ["colour"]             // mentioned by the user but not recorded in the registry
+  "ignored": ["colour"]             // mentioned by the user but not recorded in the registry;
+                                    // fixed keys only: colour, place, photo, other_unrecorded
 }
 
 // SearchResponse

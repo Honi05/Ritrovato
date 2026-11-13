@@ -17,8 +17,8 @@ cd server && uv venv && uv pip install -r requirements.txt pytest httpx
 cd web && npm i && npm run dev
 ```
 
-`GET /api/items?q=iphone` already returns real entries. `POST /api/search/text` answers
-501 until block 02 is merged to `main` (in progress) — code against the contract types.
+`GET /api/items?q=iphone` already returns real entries. `POST /api/search` is live (block 02, DeepSeek);
+voice and photo answer 501 until blocks 04/05 — code against the contract types.
 
 ## 2. Read, in this order
 

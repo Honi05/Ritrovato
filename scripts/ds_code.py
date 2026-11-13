@@ -46,7 +46,14 @@ def main():
     }).encode()
     req = urllib.request.Request("https://api.deepseek.com/chat/completions", body, {
         "Authorization": f"Bearer {key()}", "Content-Type": "application/json"})
-    r = json.load(urllib.request.urlopen(req, timeout=900))
+    for attempt in (1, 2):  # long reasoner answers sometimes drop mid-stream
+        try:
+            r = json.load(urllib.request.urlopen(req, timeout=900))
+            break
+        except (OSError, ValueError) as e:  # IncompleteRead, timeouts, truncated JSON
+            if attempt == 2:
+                raise
+            print(f"retrying after: {e!r}")
     out = r["choices"][0]["message"]["content"]
     (ROOT / ".ds_last.txt").write_text(out)  # raw answer for debugging; gitignored
 

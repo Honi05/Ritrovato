@@ -19,6 +19,7 @@ Plan: `docs/plans/ROADMAP.md`.
 
 | Block | Name | Branch | Executor | Depends on | Status | Commit |
 |---|---|---|---|---|---|---|
+| Fri 23:05 (#1) | problem 9, agent 5, clarity 8, works 7, ElevenLabs 7, Exa 1, wow 6 | Wallet demo query returns 2,631 hits; not visibly an agent; Exa unused; voice/photo untested in prod | 07b + 429 + gallery picker underway; proposed Exa "other places to ask" (2 h, cut if not in prod by 05:00); block 08 by 03:00; backup video before 08:00 |
 | 00 | Skeleton and contract | main | orchestrator | — | complete | see `git log` ("block 00") |
 | 01 | First deploy | main | orchestrator | 00 | complete | https://ritrovato.quietunit.com |
 | 02 | Text search (LLM → filters) | feat/back | DeepSeek (ds_code.py) | 00 | complete | b890135 |

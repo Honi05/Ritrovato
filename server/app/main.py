@@ -8,7 +8,7 @@ from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from . import db, interpret
+from . import db, interpret, photo, voice
 
 Lang = Literal["it", "en", "es", "fr", "de"]
 WEB_DIST = Path(__file__).parent.parent.parent / "web" / "dist"
@@ -64,12 +64,39 @@ def search(req: SearchRequest):
 
 @app.post("/api/search/voice")
 def search_voice(audio: UploadFile, lang: Lang = Form("it")):
-    raise HTTPException(501, "not_implemented: voice search arrives in block 04")
+    data = audio.file.read(10 * 1024 * 1024 + 1)
+    if len(data) > 10 * 1024 * 1024:
+        raise HTTPException(413, "too_large: audio exceeds 10 MB")
+
+    try:
+        text = voice.transcribe(data, audio.filename, audio.content_type)
+    except Exception:
+        raise HTTPException(502, "upstream_failed: voice transcription failed") from None
+
+    if not text:
+        return {"items": [], "total": 0, "interpreted": None, "transcript": ""}
+
+    return {**interpret.search(text, lang), "transcript": text}
 
 
 @app.post("/api/search/photo")
-def search_photo(image: UploadFile, lang: Lang = Form("it")):
-    raise HTTPException(501, "not_implemented: photo search arrives in block 05")
+async def search_photo(image: UploadFile, lang: Lang = Form("it")):
+    if image.content_type not in {"image/jpeg", "image/png", "image/webp"}:
+        raise HTTPException(400, "bad_request: image must be jpeg, png or webp")
+
+    data = await image.read(8 * 1024 * 1024 + 1)
+    if len(data) > 8 * 1024 * 1024:
+        raise HTTPException(413, "too_large: image exceeds 8 MB")
+
+    try:
+        text = await photo.describe(data, image.content_type)
+    except Exception:
+        raise HTTPException(502, "upstream_failed: photo description failed") from None
+
+    if text is None or not text.strip():
+        return {"items": [], "total": 0, "interpreted": None, "description": None}
+
+    return {**interpret.search(text, lang), "description": text}
 
 
 if WEB_DIST.exists():

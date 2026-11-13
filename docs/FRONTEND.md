@@ -3,6 +3,8 @@
 You own `web/`. The owner and the orchestrator chat own `server/`, the API contract and
 `main`. Submission is **Saturday 14:00**; feature freeze **Saturday 08:00**.
 
+**What to do now: `docs/NEXT-FRONT.md`.**
+
 ## 1. Setup (10 min)
 
 ```bash

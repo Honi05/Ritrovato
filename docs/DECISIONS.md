@@ -84,3 +84,13 @@ image attachments when the agent's LLM supports them. A text-only agent on
 `gemini-3.5-flash-lite` describes the photo in 2.6-3.1 s (probe, `docs/RESEARCH.md`); the
 description goes into the shared `interpret.search`. Second ElevenLabs use, which helps
 the sponsor prize. Fallback if it fails on stage: the user types the object.
+
+## D-014 · 2026-11-13 · Query interpretation through an ElevenLabs Agent, DeepSeek as fallback
+
+Owner's call: all AI on the sponsor. `interpret` first asks a text-only ElevenLabs agent
+(`gemini-3.5-flash`, temperature 0, agent `agent_9601m7b9whwse8g8nfzkdks3y4j5`, override
+`ELEVENLABS_INTERPRET_AGENT_ID`); the server sends the same prompt as a conversation
+override each call, so prompt and today's date stay in code. Probe on 5 demo queries:
+1.3-1.9 s vs DeepSeek 0.8-1.4 s, same filters, agent better on "in October". On any agent
+failure or after 8 s, DeepSeek answers; without both keys, the keyword fallback. Partly
+replaces D-012.

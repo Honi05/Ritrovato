@@ -1,16 +1,20 @@
-"""Text -> Interpreted filters via DeepSeek (block 02). Falls back to mapped keyword filters on error."""
+"""Text -> Interpreted filters via an ElevenLabs agent, then DeepSeek, then mapped keyword filters."""
 import json
 import os
 import re
+import time
 from datetime import datetime
 
 import httpx
+from websockets.sync.client import connect
 
 from . import db
 
 DEEPSEEK_URL = "https://api.deepseek.com/chat/completions"
 DEFAULT_MODEL = "deepseek-chat"
 TIMEOUT = 15.0
+INTERPRET_AGENT_ID = "agent_9601m7b9whwse8g8nfzkdks3y4j5"
+AGENT_TIMEOUT = 8.0  # then DeepSeek still has time before the client gives up
 
 _IGNORED_KEYS = {"colour", "place", "photo", "other_unrecorded"}
 
@@ -253,8 +257,9 @@ def _prompt(categories: list[str]) -> str:
         '"brand" (official registry brand name in UPPERCASE, e.g. "SAMSUNG", or null), '
         '"keywords" (0-3 ITALIAN words as the registry writes them, most specific first; '
         "translate from the user language; never copy foreign words, articles or "
-        "prepositions; no colours, places, personal data; empty if the category already "
-        "says it). Registry vocabulary: banks INTESA, UNICREDIT, POSTEPAY, BNL, REVOLUT, "
+        "prepositions; no colours, places, personal data; never the item itself when the "
+        "category already says it: no PORTAFOGLI for wallet, no TELEFONO for phone, no CHIAVI "
+        "for keys). Registry vocabulary: banks INTESA, UNICREDIT, POSTEPAY, BNL, REVOLUT, "
         "FINECO, AMERICAN EXPRESS; card kinds BANCOMAT, CARTA DI CREDITO; foreign = ESTER; "
         "documents IDENTITA (identity card), PATENTE (driving licence), PASSAPORTO, "
         "SOGGIORNO (residence permit), SANITARIA (health card); phone CON SIM, SENZA SIM; "
@@ -302,6 +307,41 @@ def _request_filter(text: str, lang: str) -> dict | None:
         return parsed if isinstance(parsed, dict) else None
     except Exception:
         return None
+
+
+def _request_filter_agent(text: str, lang: str) -> dict | None:
+    """Same prompt via the ElevenLabs text-only agent; None on any failure (DeepSeek is the fallback)."""
+    key = os.environ.get("ELEVENLABS_API_KEY")
+    if not key:
+        return None
+    agent_id = os.environ.get("ELEVENLABS_INTERPRET_AGENT_ID", INTERPRET_AGENT_ID)
+    try:
+        signed = httpx.get(
+            "https://api.elevenlabs.io/v1/convai/conversation/get-signed-url",
+            params={"agent_id": agent_id},
+            headers={"xi-api-key": key},
+            timeout=TIMEOUT,
+        )
+        signed.raise_for_status()
+        with connect(signed.json()["signed_url"], open_timeout=TIMEOUT, max_size=None) as ws:
+            ws.send(json.dumps({
+                "type": "conversation_initiation_client_data",
+                "conversation_config_override": {"agent": {"prompt": {"prompt": _prompt(_category_ids())}}},
+            }))
+            ws.send(json.dumps({"type": "user_message", "text": f"{lang}: {text}"}))
+            deadline = time.monotonic() + AGENT_TIMEOUT
+            while (left := deadline - time.monotonic()) > 0:
+                message = json.loads(ws.recv(timeout=left))
+                if message.get("type") == "ping":
+                    ws.send(json.dumps({"type": "pong", "event_id": message["ping_event"]["event_id"]}))
+                elif message.get("type") == "agent_response":
+                    answer = message["agent_response_event"]["agent_response"].strip()
+                    answer = answer.removeprefix("```json").removeprefix("```").removesuffix("```")
+                    parsed = json.loads(answer)
+                    return parsed if isinstance(parsed, dict) else None
+    except Exception:
+        return None
+    return None
 
 
 def _iso_date(value) -> str | None:
@@ -376,7 +416,7 @@ def _detect_brand(text: str) -> str | None:
 
 def interpret(text: str, lang: str) -> dict | None:
     """Return valid Interpreted filters, or None when the keyword fallback must be used."""
-    parsed = _request_filter(text, lang)
+    parsed = _request_filter_agent(text, lang) or _request_filter(text, lang)
     if not parsed:
         return None
 

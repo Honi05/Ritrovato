@@ -138,3 +138,21 @@ def test_relaxation_drops_one_keyword_at_a_time(monkeypatch):
     data = TestClient(app).post("/api/search", json={"query": "x", "lang": "it"}).json()
     assert 0 < data["total"] < 1000  # INTESA kept, only the bad word dropped
     assert all("INTESA" in i["descr"] for i in data["items"])
+
+
+def test_agent_first_then_deepseek(monkeypatch):
+    agent_answer = {"category": "phone", "brand": "SAMSUNG", "keywords": [],
+                    "date_from": None, "date_to": None, "ignored": []}
+    calls = []
+    monkeypatch.setattr(interpret_module, "_request_filter_agent",
+                        lambda t, l: calls.append("agent") or agent_answer)
+    monkeypatch.setattr(interpret_module, "_request_filter",
+                        lambda t, l: calls.append("deepseek") or {"category": "wallet"})
+    assert interpret_module.interpret("x", "it")["category"] == "phone"
+    assert calls == ["agent"]
+
+    calls.clear()
+    monkeypatch.setattr(interpret_module, "_request_filter_agent",
+                        lambda t, l: calls.append("agent") or None)
+    assert interpret_module.interpret("x", "it")["category"] == "wallet"
+    assert calls == ["agent", "deepseek"]

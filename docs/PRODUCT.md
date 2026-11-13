@@ -39,6 +39,7 @@ official source, plus how to collect it (office, fees, documents — with the so
 - The registry records type, brand and date found. It has **no colour, no place found,
   no photo**. When the user mentions those, the site says they are not recorded and
   searches without them — it never pretends to match them.
+- Partial document, card and IMEI numbers printed in the registry are never shown.
 - Descriptions are shown in the original Italian (optionally with a translation);
   nothing is invented.
 

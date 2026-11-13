@@ -22,6 +22,11 @@ def test_items_filters():
         assert it["source"]["page"] > 0
 
 
+def test_document_numbers_are_hidden():
+    r = client.get("/api/items", params={"category": "id_document", "limit": 100}).json()
+    assert r["items"] and not any("Nr:" in it["descr"] or "*" in it["descr"] for it in r["items"])
+
+
 def test_search_fallback():
     assert client.post("/api/search", json={"query": "portafogli", "lang": "en"}).json()["total"] > 0
 

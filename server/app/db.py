@@ -1,5 +1,6 @@
 """Read access to the lost-items catalogue (SQLite, table `oggetti`). Schema: docs/DATA.md."""
 import os
+import re
 import shutil
 import sqlite3
 from pathlib import Path
@@ -25,13 +26,24 @@ def connect():
     return con
 
 
+# shortcut: regex + token filter catches labelled numbers and most OCR-garbled ones, not all;
+# upgrade to cleaning at ingest time (block 06) and review leftovers before going public.
+_NUMBERS = re.compile(r"\s*-?\s*\b(?:Nr|IMEI)\s*:.*?(?=\s+-\s+|$)")
+
+
+def public_descr(descr):
+    """Registry text without partial document/card/IMEI numbers (D-011)."""
+    words = _NUMBERS.sub("", descr).split()
+    return " ".join(w for w in words if "*" not in w and not re.search(r"\d{4}", w)).strip(" -")
+
+
 def _item(r):
     return {
         "id": f"{r['year']}-{r['reperto']}-{r['page']}",
         "year": r["year"],
         "reperto": r["reperto"],
         "date": r["iso"],
-        "descr": r["descr"],
+        "descr": public_descr(r["descr"]),
         "category": r["category"],
         "tags": r["tags"].split(",") if r["tags"] else [],
         "brand": r["brand"] or None,
@@ -43,6 +55,8 @@ def search(keywords=(), category=None, brand=None, date_from=None, date_to=None,
     """All filters are AND-ed; every keyword must occur in the description."""
     where, args = [], []
     for kw in keywords:
+        if re.search(r"\d{4}", kw):  # never match on document numbers (D-011)
+            continue
         where.append("descr LIKE ?")
         args.append(f"%{kw}%")
     for col, val in (("category", category), ("brand", brand)):

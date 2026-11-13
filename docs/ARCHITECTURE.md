@@ -62,7 +62,7 @@ All responses are JSON. Errors: `{"error": "<code>", "message": "<text>"}` with 
   "year": 2026,
   "reperto": 6741,                  // registry number
   "date": "2026-11-03",             // date found, ISO
-  "descr": "TELEFONO CELLULARE SENZA SIM - APPLE IPHONE - IMEI: NO IMEI*",  // original Italian
+  "descr": "TELEFONO CELLULARE SENZA SIM - APPLE IPHONE",  // original Italian, numbers removed (see Safety)
   "category": "phone",              // see docs/DATA.md for the 15 categories
   "tags": ["phone"],
   "brand": "APPLE",                 // or null
@@ -159,6 +159,9 @@ data it has. Details and the choice of OCR: block 06, `docs/DECISIONS.md` D-007.
 
 ## Safety
 
+- No personal data leaves the server: partial document, card and IMEI numbers
+  (`Nr: CA916****`) are stripped from `descr` in every API response and are never sent
+  to the browser. Keyword search does not match on them either. `docs/DATA.md` → Limits.
 - User text, transcripts, photo content and OCR'd PDF text are data, never instructions.
 - Keys live only in `.env` on the server; the browser talks only to `/api`.
 

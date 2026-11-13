@@ -51,6 +51,13 @@ model and asks for records (number, date, description) directly. No OCR engine i
 image, and no positional parser to re-tune for a different OCR. Revisit (Tesseract with
 `parse.py`) if block 06 finds the model misreads registry numbers on a known page.
 
+## D-011 · 2026-11-13 · Document numbers never reach the browser
+
+The registry prints partial document, card and IMEI numbers (already masked by the
+police). The challenge requires no exposure of personal data, so the API strips them
+from descriptions and search ignores them. Using them server-side to confirm ownership
+("does your ID start with CA9…?") is a possible later feature, not MVP.
+
 ## D-009 · 2026-11-13 · Seed database in Git, live database in a volume
 
 `server/seed/oggetti.sqlite` (3 MB) ships in the image; the app copies it to the `data`

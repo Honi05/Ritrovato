@@ -180,6 +180,25 @@ Facts:
   — the end date changes with each update (11112026 on 13 Nov; our seed is 04112026).
   Block 06: regex `Rinvenimenti_0101(\d{4})_(\d{8})\.pdf`, compare with the stored name.
 
+## Photo -> description via ElevenLabs Agent (answered, probe 2026-11-13)
+
+Agent `agent_1001m7b5fdv5ese97f0hxxjgd9x5`: LLM `gemini-3.5-flash-lite` (image input),
+`text_only: true`, `file_input.enabled: true`, prompt = one Italian sentence naming the
+object (+ brand if readable), or `NESSUN OGGETTO`.
+
+1. `GET https://api.elevenlabs.io/v1/convai/conversation/get-signed-url?agent_id=<id>&include_conversation_id=true`,
+   header `xi-api-key` -> `signed_url` (contains `conversation_id`).
+2. Open WebSocket to `signed_url`, send `{"type": "conversation_initiation_client_data"}`.
+3. `POST https://api.elevenlabs.io/v1/convai/conversations/{conversation_id}/files`,
+   multipart field `file` -> `{"file_id": ...}` (no auth header needed).
+4. Send `{"type": "multimodal_message", "text": {"type": "user_message", "text": "Descrivi l'oggetto nella foto.", "source_medium": "image"}, "files": [{"type": "file_input", "file_id": "<id>"}]}`.
+5. Reply: event `agent_response` -> `agent_response_event.agent_response`. Answer `ping`
+   with `{"type": "pong", "event_id": ping_event.event_id}`.
+
+Measured: 2.6-3.1 s end to end (model 0.9 s). Keyring photo -> "Portachiavi Wikimedia"
+-> `interpret.search` -> category `keys`, 958 items. Probe script:
+scratchpad `probe/probe.py` (copy into block 05). Billed per uploaded file.
+
 ## Open questions
 
-- Photo query without a vision model (D-012) — owner decides.
+None.

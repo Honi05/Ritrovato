@@ -36,7 +36,6 @@ Statuses: `pending`, `in progress`, `review`, `complete`, `blocked`, `cut`.
 
 - Subdomain, port and tunnel rule on `rilya-server`; `.env.deploy` locally.
 - `DEEPSEEK_API_KEY` and `ELEVENLABS_API_KEY` in `.env` on the server.
-- Photo query without vision (D-012): browser CLIP or cut.
 - Confirm or replace the working name "Ritrovato".
 
 ## Judge verdicts

@@ -129,7 +129,7 @@ Request: `{"query": "I lost my black Samsung phone in October", "lang": "en"}` (
 | Step | Service | Key |
 |---|---|---|
 | Query interpretation | DeepSeek (`deepseek-chat`, JSON output, overridable via `LLM_MODEL`) | `DEEPSEEK_API_KEY` |
-| Photo description | open — DeepSeek has no vision (D-012) | — |
+| Photo description | ElevenLabs Agent `ritrovato-photo-probe` (gemini-3.5-flash-lite, text-only, file input) (D-013) | `ELEVENLABS_API_KEY`, `ELEVENLABS_PHOTO_AGENT_ID` |
 | OCR of new PDF pages | Tesseract + `parse.py` (D-012) | — |
 | Speech-to-text | ElevenLabs Scribe | `ELEVENLABS_API_KEY` |
 | "Other places to ask" (nice to have) | Exa | `EXA_API_KEY` |

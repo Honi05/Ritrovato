@@ -76,3 +76,11 @@ with JSON output via the OpenAI-compatible API (`https://api.deepseek.com`). Dee
 no vision, so: D-008 is replaced by Tesseract + `parse.py` for new PDF pages, and the
 photo query (block 05) is open until the owner picks a non-server option or cuts it.
 Development code is also written by DeepSeek through `scripts/ds_code.py`.
+
+## D-013 · 2026-11-13 · Photo description through an ElevenLabs Agent
+
+DeepSeek has no vision (D-012). ElevenLabs has no image-to-text API, but its Agents accept
+image attachments when the agent's LLM supports them. A text-only agent on
+`gemini-3.5-flash-lite` describes the photo in 2.6-3.1 s (probe, `docs/RESEARCH.md`); the
+description goes into the shared `interpret.search`. Second ElevenLabs use, which helps
+the sponsor prize. Fallback if it fails on stage: the user types the object.

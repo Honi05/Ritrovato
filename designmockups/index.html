@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Ritrovato home</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#E9EAE5}
+a{color:#111}a:hover{color:#B8320A}
+input::placeholder{color:#6A6C64}
+</style>
+</head>
+<body>
+<div style="min-height: 100%; background: #E9EAE5; color: #111111; font-family: 'Archivo', system-ui, sans-serif; background-image: linear-gradient(#DADBD5 1px, transparent 1px), linear-gradient(90deg, #DADBD5 1px, transparent 1px); background-size: 32px 32px;">
+<div style="max-width: 1200px; margin: 0 auto; padding: 0 32px 64px; box-sizing: border-box;">
+
+<header style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; padding: 22px 0; border-bottom: 2px solid #111111;">
+  <a href="index.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #111111;">
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9.5 9.5 3H21v18H9.5L3 14.5z"></path><circle cx="9" cy="12" r="1.6"></circle></svg>
+    <span style="font-stretch: 125%; font-weight: 900; font-size: 22px; letter-spacing: 0.04em;">RITROVATO</span>
+  </a>
+  <nav aria-label="Main" style="display: flex; flex-wrap: wrap; gap: 24px; font-size: 15px; font-weight: 600;">
+    <a href="results.html" style="text-decoration: none;">Catalogue</a>
+    <a href="item.html" style="text-decoration: none;">How to collect</a>
+    <a href="operator.html" style="text-decoration: none;">Operators</a>
+  </nav>
+  <div role="group" aria-label="Language" style="display: flex; border: 2px solid #111111; font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600;">
+    <button type="button" style="min-width: 44px; min-height: 36px; border: 0; background: transparent; color: #111111; font: inherit; cursor: pointer;">IT</button>
+    <button type="button" aria-pressed="true" style="min-width: 44px; min-height: 36px; border: 0; background: #111111; color: #E9EAE5; font: inherit; cursor: pointer;">EN</button>
+    <button type="button" style="min-width: 44px; min-height: 36px; border: 0; background: transparent; color: #111111; font: inherit; cursor: pointer;">ES</button>
+    <button type="button" style="min-width: 44px; min-height: 36px; border: 0; background: transparent; color: #111111; font: inherit; cursor: pointer;">FR</button>
+    <button type="button" style="min-width: 44px; min-height: 36px; border: 0; background: transparent; color: #111111; font: inherit; cursor: pointer;">DE</button>
+  </div>
+</header>
+
+<section style="display: flex; flex-wrap: wrap; gap: 48px; align-items: center; padding: 64px 0 48px;">
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 24px;">
+    <p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; letter-spacing: 0.08em;">REGISTER OF FOUND OBJECTS · POLIZIA ROMA CAPITALE</p>
+    <h1 style="margin: 0; font-stretch: 112%; font-weight: 900; font-size: clamp(48px, 7vw, 92px); line-height: 0.92; letter-spacing: -0.02em;">Lost something<br>in Rome?</h1>
+    <p style="margin: 0; max-width: 560px; font-size: 19px; line-height: 1.5; color: #3C3E37;">Describe it in your own language. We search the city's found-objects register for you: 1,195 scanned pages that nobody could search until now.</p>
+
+    <form role="search" style="display: flex; flex-wrap: wrap; gap: 0; border: 3px solid #111111; background: #FFFFFF; box-shadow: 8px 8px 0 #111111;">
+      <label for="q" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%);">What did you lose?</label>
+      <input id="q" type="text" placeholder="e.g. black Samsung phone, lost in October" style="flex: 1 1 280px; min-width: 0; min-height: 64px; border: 0; padding: 0 20px; font: 500 19px 'Archivo', sans-serif; color: #111111; background: transparent; outline: none;">
+      <div style="display: flex; flex: 1 1 auto;">
+        <a href="voice.html" aria-label="Search by voice" style="display: flex; align-items: center; justify-content: center; width: 64px; min-height: 64px; border-left: 2px solid #111111;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0M12 18v3"></path></svg>
+        </a>
+        <a href="photo.html" aria-label="Search by photo" style="display: flex; align-items: center; justify-content: center; width: 64px; min-height: 64px; border-left: 2px solid #111111;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"></path><circle cx="12" cy="13" r="3.5"></circle></svg>
+        </a>
+        <a href="results.html" style="flex: 1 1 auto; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 0 26px; min-height: 64px; background: #FF5A1F; color: #111111; text-decoration: none; font-weight: 800; font-size: 17px; border-left: 2px solid #111111;">Search
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+        </a>
+      </div>
+    </form>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; font-size: 14px;">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; color: #3C3E37;">TRY</span>
+      <a href="results.html" style="padding: 8px 14px; border: 1.5px solid #111111; border-radius: 999px; text-decoration: none; background: #F7F7F3;">black Samsung phone, October</a>
+      <a href="results.html" style="padding: 8px 14px; border: 1.5px solid #111111; border-radius: 999px; text-decoration: none; background: #F7F7F3;">portafoglio con patente</a>
+      <a href="results.html" style="padding: 8px 14px; border: 1.5px solid #111111; border-radius: 999px; text-decoration: none; background: #F7F7F3;">perdí mis llaves</a>
+    </div>
+  </div>
+
+  <div aria-hidden="true" style="flex: 1 1 320px; display: flex; justify-content: center; padding: 24px 0;">
+    <div style="position: relative; width: 300px; transform: rotate(-5deg);">
+      <div style="position: absolute; left: -70px; top: 52px; width: 110px; height: 2px; background: #111111; transform: rotate(-18deg);"></div>
+      <div style="position: relative; background: #E6D3A0; border: 2px solid #111111; clip-path: polygon(16% 0, 100% 0, 100% 100%, 16% 100%, 0 86%, 0 14%); padding: 28px 28px 28px 66px; box-shadow: 10px 10px 0 rgba(17,17,17,0.18); display: flex; flex-direction: column; gap: 14px;">
+        <div style="position: absolute; left: 22px; top: 50%; width: 20px; height: 20px; margin-top: -10px; border-radius: 50%; background: #E9EAE5; border: 2px solid #111111;"></div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.1em;">REPERTO Nº</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 54px; font-weight: 600; line-height: 1;">6777</div>
+        <div style="height: 2px; background: #111111;"></div>
+        <div style="font-weight: 800; font-size: 20px; line-height: 1.2;">OCCHIALE DA VISTA</div>
+        <div style="display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 13px;"><span>04/11/2026</span><span>p. 498</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section aria-label="Register in numbers" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); border: 2px solid #111111; background: #111111; gap: 2px;">
+  <div style="background: #F7F7F3; padding: 20px 22px;"><div style="font-family: 'IBM Plex Mono', monospace; font-size: 34px; font-weight: 600;">15,560</div><div style="font-size: 14px; color: #3C3E37; margin-top: 4px;">entries in the register</div></div>
+  <div style="background: #F7F7F3; padding: 20px 22px;"><div style="font-family: 'IBM Plex Mono', monospace; font-size: 34px; font-weight: 600;">2025–26</div><div style="font-size: 14px; color: #3C3E37; margin-top: 4px;">two full lists, digitised</div></div>
+  <div style="background: #F7F7F3; padding: 20px 22px;"><div style="font-family: 'IBM Plex Mono', monospace; font-size: 34px; font-weight: 600;">04 NOV</div><div style="font-size: 14px; color: #3C3E37; margin-top: 4px;">newest entry found</div></div>
+  <div style="background: #FF5A1F; padding: 20px 22px;"><div style="font-family: 'IBM Plex Mono', monospace; font-size: 34px; font-weight: 600;">DAILY</div><div style="font-size: 14px; color: #111111; margin-top: 4px;">last check: [TODAY 06:00]</div></div>
+</section>
+
+<section style="padding-top: 56px; display: flex; flex-direction: column; gap: 20px;">
+  <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 12px;">
+    <h2 style="margin: 0; font-stretch: 112%; font-weight: 900; font-size: 32px;">Browse by type</h2>
+    <a href="results.html" style="font-weight: 700; font-size: 15px;">Open full catalogue →</a>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px;">
+    <a href="results.html" style="display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 16px 18px; min-height: 44px; background: #E6D3A0; border: 2px solid #111111; text-decoration: none; font-weight: 700;">Wallets<span style="font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 14px;">4,831</span></a>
+    <a href="results.html" style="display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 16px 18px; min-height: 44px; background: #F7F7F3; border: 2px solid #111111; text-decoration: none; font-weight: 700;">ID documents<span style="font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 14px;">2,273</span></a>
+    <a href="results.html" style="display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 16px 18px; min-height: 44px; background: #F7F7F3; border: 2px solid #111111; text-decoration: none; font-weight: 700;">Payment cards<span style="font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 14px;">1,910</span></a>
+    <a href="results.html" style="display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 16px 18px; min-height: 44px; background: #F7F7F3; border: 2px solid #111111; text-decoration: none; font-weight: 700;">Bags<span style="font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 14px;">1,476</span></a>
+    <a href="results.html" style="display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 16px 18px; min-height: 44px; background: #E6D3A0; border: 2px solid #111111; text-decoration: none; font-weight: 700;">Phones<span style="font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 14px;">1,005</span></a>
+    <a href="results.html" style="display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 16px 18px; min-height: 44px; background: #F7F7F3; border: 2px solid #111111; text-decoration: none; font-weight: 700;">Keys<span style="font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 14px;">958</span></a>
+    <a href="results.html" style="display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 16px 18px; min-height: 44px; background: #F7F7F3; border: 2px solid #111111; text-decoration: none; font-weight: 700;">Other documents<span style="font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 14px;">793</span></a>
+    <a href="results.html" style="display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 16px 18px; min-height: 44px; background: #F7F7F3; border: 2px solid #111111; text-decoration: none; font-weight: 700;">Electronics<span style="font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 14px;">340</span></a>
+    <a href="results.html" style="display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 16px 18px; min-height: 44px; background: #F7F7F3; border: 2px solid #111111; text-decoration: none; font-weight: 700;">Clothing &amp; umbrellas<span style="font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 14px;">293</span></a>
+    <a href="results.html" style="display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 16px 18px; min-height: 44px; background: #F7F7F3; border: 2px solid #111111; text-decoration: none; font-weight: 700;">Glasses<span style="font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 14px;">246</span></a>
+    <a href="results.html" style="display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 16px 18px; min-height: 44px; background: #F7F7F3; border: 2px solid #111111; text-decoration: none; font-weight: 700;">Watches &amp; jewellery<span style="font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 14px;">103</span></a>
+    <a href="results.html" style="display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 16px 18px; min-height: 44px; background: #F7F7F3; border: 2px solid #111111; text-decoration: none; font-weight: 700;">More types<span style="font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 14px;">+4</span></a>
+  </div>
+</section>
+
+<section style="margin-top: 56px; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px;">
+  <div style="display: flex; flex-direction: column; gap: 10px; padding-top: 16px; border-top: 3px solid #111111;"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600;">01</span><h3 style="margin: 0; font-size: 21px; font-weight: 800;">Describe it</h3><p style="margin: 0; font-size: 16px; line-height: 1.5; color: #3C3E37;">Type, speak or show a photo, in Italian, English, Spanish, French or German.</p></div>
+  <div style="display: flex; flex-direction: column; gap: 10px; padding-top: 16px; border-top: 3px solid #111111;"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600;">02</span><h3 style="margin: 0; font-size: 21px; font-weight: 800;">We check the register</h3><p style="margin: 0; font-size: 16px; line-height: 1.5; color: #3C3E37;">Every result is a real entry with its number and the page of the official PDF.</p></div>
+  <div style="display: flex; flex-direction: column; gap: 10px; padding-top: 16px; border-top: 3px solid #111111;"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600;">03</span><h3 style="margin: 0; font-size: 21px; font-weight: 800;">Collect it</h3><p style="margin: 0; font-size: 16px; line-height: 1.5; color: #3C3E37;">Where to go, what to bring, what it costs. ID documents are free.</p></div>
+</section>
+
+<footer style="margin-top: 64px; padding-top: 20px; border-top: 2px solid #111111; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; font-size: 14px; color: #3C3E37;">
+  <span>Source: Polizia Roma Capitale, Reparto Oggetti Rinvenuti. Not an official city service.</span>
+  <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px;">The register records type, brand and date. No colour, place or photo.</span>
+</footer>
+
+</div>
+</div>
+</body>
+</html>

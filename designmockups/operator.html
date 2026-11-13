@@ -7,113 +7,143 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
 <style>
-body{margin:0;background:#E9EAE5}
-a{color:#111}a:hover{color:#B8320A}
+body{margin:0;background:#151613}
+a{color:#F7F7F3}a:hover{color:#FF8A5C}
+input::placeholder,textarea::placeholder{color:#8E9087}
 </style>
 </head>
 <body>
-<div style="min-height: 100%; background: #E9EAE5; color: #111111; font-family: 'Archivo', system-ui, sans-serif;">
+<div style="min-height: 100%; background: #151613; color: #F7F7F3; font-family: 'Archivo', system-ui, sans-serif; background-image: linear-gradient(#20211D 1px, transparent 1px), linear-gradient(90deg, #20211D 1px, transparent 1px); background-size: 32px 32px;">
 
-<header style="background: #111111; color: #F7F7F3; border-bottom: 4px solid #FF5A1F;">
-  <div style="max-width: 1200px; margin: 0 auto; padding: 16px 32px; box-sizing: border-box; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px;">
+<header style="border-bottom: 1px solid #34362F;">
+  <div style="max-width: 1240px; margin: 0 auto; padding: 14px 32px; box-sizing: border-box; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px;">
     <div style="display: flex; align-items: center; gap: 14px;">
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F7F7F3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9.5 9.5 3H21v18H9.5L3 14.5z"></path><circle cx="9" cy="12" r="1.6"></circle></svg>
       <span style="font-stretch: 125%; font-weight: 900; font-size: 20px; letter-spacing: 0.04em;">RITROVATO</span>
-      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; padding: 4px 8px; background: #FF5A1F; color: #111111;">SPORTELLO OPERATORI</span>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; padding: 4px 8px; background: #FF5A1F; color: #111111;">SPORTELLO</span>
     </div>
-    <nav aria-label="Sezioni" style="display: flex; flex-wrap: wrap; gap: 4px; font-size: 15px; font-weight: 600;">
-      <a href="operator.html" aria-current="page" style="padding: 10px 14px; background: #F7F7F3; color: #111111; text-decoration: none;">Nuovo reperto</a>
-      <a href="operator.html" style="padding: 10px 14px; color: #F7F7F3; text-decoration: none;">Restituzioni <span style="font-family: 'IBM Plex Mono', monospace;">(3)</span></a>
-      <a href="operator.html" style="padding: 10px 14px; color: #F7F7F3; text-decoration: none;">Registro</a>
+    <nav aria-label="Sezioni" style="display: flex; flex-wrap: wrap; gap: 4px; padding: 4px; border: 1px solid #34362F; font-size: 15px; font-weight: 700;">
+      <a href="operator.html" aria-current="page" style="padding: 10px 16px; background: #F7F7F3; color: #111111; text-decoration: none;">Nuovo reperto</a>
+      <a href="operator.html" style="padding: 10px 16px; text-decoration: none;">Restituzioni <span style="font-family: 'IBM Plex Mono', monospace; color: #FF8A5C;">3</span></a>
+      <a href="operator.html" style="padding: 10px 16px; text-decoration: none;">Registro</a>
     </nav>
-    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #C9CBC3;">Operatore [ID] · Reparto Oggetti Rinvenuti</span>
+    <div style="display: flex; align-items: center; gap: 10px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #C9CBC3;">
+      <span style="width: 8px; height: 8px; border-radius: 50%; background: #5FD38D;"></span>Operatore [ID]
+    </div>
   </div>
 </header>
 
-<div style="max-width: 1200px; margin: 0 auto; padding: 32px 32px 64px; box-sizing: border-box; display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start;">
+<div style="max-width: 1240px; margin: 0 auto; padding: 32px 32px 64px; box-sizing: border-box; display: flex; flex-direction: column; gap: 32px;">
 
-  <section aria-label="Nuovo reperto" style="flex: 999 1 640px; min-width: 0; display: flex; flex-direction: column; gap: 20px;">
-    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 12px;">
-      <h1 style="margin: 0; font-stretch: 112%; font-weight: 900; font-size: 34px;">Nuovo reperto</h1>
-      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 15px;">Prossimo numero <b style="font-size: 22px;">6778</b> / 2026</span>
+  <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px;">
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.1em; color: #C9CBC3;">REPARTO OGGETTI RINVENUTI · 13/11/2026</span>
+      <h1 style="margin: 0; font-stretch: 115%; font-weight: 900; font-size: clamp(36px, 5vw, 56px); line-height: 0.95;">Nuovo reperto</h1>
     </div>
+    <div style="display: flex; align-items: baseline; gap: 12px; padding: 12px 18px; border: 1px solid #34362F; background: #1D1E1A;">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #C9CBC3; letter-spacing: 0.08em;">PROSSIMO Nº</span>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 34px; font-weight: 600; color: #FF8A5C;">6778</span>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 14px; color: #C9CBC3;">/ 2026</span>
+    </div>
+  </div>
 
-    <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: stretch;">
-      <div style="flex: 1 1 260px; display: flex; flex-direction: column; gap: 10px;">
-        <div role="img" aria-label="Segnaposto per la foto dell'oggetto: uno zaino" style="height: 300px; background: #2A2B27; border: 2px solid #111111; position: relative; display: flex; align-items: center; justify-content: center;">
-          <svg width="110" height="110" viewBox="0 0 24 24" fill="none" stroke="#E6D3A0" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0v11H6z"></path><path d="M9 4.5V3h6v1.5M6 13h12M10 13v3h4v-3"></path></svg>
-          <span style="position: absolute; top: 12px; left: 12px; width: 28px; height: 28px; border-top: 3px solid #FF5A1F; border-left: 3px solid #FF5A1F;"></span>
-          <span style="position: absolute; top: 12px; right: 12px; width: 28px; height: 28px; border-top: 3px solid #FF5A1F; border-right: 3px solid #FF5A1F;"></span>
-          <span style="position: absolute; bottom: 12px; left: 12px; width: 28px; height: 28px; border-bottom: 3px solid #FF5A1F; border-left: 3px solid #FF5A1F;"></span>
-          <span style="position: absolute; bottom: 12px; right: 12px; width: 28px; height: 28px; border-bottom: 3px solid #FF5A1F; border-right: 3px solid #FF5A1F;"></span>
-          <span style="position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%); font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #C9CBC3;">[FOTO REPERTO]</span>
+  <div style="display: flex; flex-wrap: wrap; gap: 28px; align-items: stretch;">
+
+    <section aria-label="Foto del reperto" style="flex: 3 1 440px; min-width: 0; display: flex; flex-direction: column; gap: 14px;">
+      <div role="img" aria-label="Segnaposto: foto di uno zaino con le etichette riconosciute" style="position: relative; height: 440px; background: radial-gradient(circle at 50% 45%, #3A3B35 0%, #1B1C18 70%); border: 1px solid #34362F; overflow: hidden;">
+        <div aria-hidden="true" style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;">
+          <svg width="190" height="190" viewBox="0 0 24 24" fill="none" stroke="#E6D3A0" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 0 1 12 0v11H6z"></path><path d="M9 4.5V3h6v1.5M6 13h12M10 13v3h4v-3"></path></svg>
         </div>
-        <div style="display: flex; gap: 8px;">
-          <button type="button" style="flex: 1; min-height: 48px; border: 2px solid #111111; background: #111111; color: #F7F7F3; font: 700 15px 'Archivo', sans-serif;">Scatta foto</button>
-          <button type="button" style="flex: 1; min-height: 48px; border: 2px solid #111111; background: #F7F7F3; color: #111111; font: 700 15px 'Archivo', sans-serif;">Carica file</button>
+        <div aria-hidden="true" style="position: absolute; left: 31%; top: 22%; width: 38%; height: 60%; border: 2px solid #FF5A1F;"></div>
+        <div aria-hidden="true" style="position: absolute; left: 0; right: 0; top: 52%; height: 2px; background: #FF5A1F; opacity: 0.55;"></div>
+        <span aria-hidden="true" style="position: absolute; top: 16px; left: 16px; width: 34px; height: 34px; border-top: 3px solid #F7F7F3; border-left: 3px solid #F7F7F3;"></span>
+        <span aria-hidden="true" style="position: absolute; top: 16px; right: 16px; width: 34px; height: 34px; border-top: 3px solid #F7F7F3; border-right: 3px solid #F7F7F3;"></span>
+        <span aria-hidden="true" style="position: absolute; bottom: 16px; left: 16px; width: 34px; height: 34px; border-bottom: 3px solid #F7F7F3; border-left: 3px solid #F7F7F3;"></span>
+        <span aria-hidden="true" style="position: absolute; bottom: 16px; right: 16px; width: 34px; height: 34px; border-bottom: 3px solid #F7F7F3; border-right: 3px solid #F7F7F3;"></span>
+
+        <div style="position: absolute; left: 6%; top: 16%; display: flex; align-items: center; gap: 8px; padding: 7px 12px 7px 22px; background: #E6D3A0; color: #111111; clip-path: polygon(10px 0, 100% 0, 100% 100%, 10px 100%, 0 50%); font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600;">TIPO · ZAINO</div>
+        <div style="position: absolute; right: 6%; top: 30%; display: flex; align-items: center; gap: 8px; padding: 7px 12px 7px 22px; background: #E6D3A0; color: #111111; clip-path: polygon(10px 0, 100% 0, 100% 100%, 10px 100%, 0 50%); font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600;">MARCA · EASTPAK</div>
+        <div style="position: absolute; left: 8%; bottom: 20%; display: flex; align-items: center; gap: 8px; padding: 7px 12px 7px 22px; background: #E6D3A0; color: #111111; clip-path: polygon(10px 0, 100% 0, 100% 100%, 10px 100%, 0 50%); font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600;">COLORE · NERO</div>
+
+        <div style="position: absolute; left: 16px; right: 16px; bottom: 16px; display: flex; justify-content: center;">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #C9CBC3; background: rgba(21,22,19,0.8); padding: 4px 10px;">[FOTO REPERTO] · resta interna, mai pubblicata</span>
         </div>
-        <p style="margin: 0; font-size: 13px; line-height: 1.5; color: #3C3E37;">La foto resta interna. Il sito pubblico mostra solo la descrizione. Documenti e carte: non fotografare il numero.</p>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+        <button type="button" style="flex: 2 1 200px; min-height: 52px; display: flex; align-items: center; justify-content: center; gap: 10px; border: 0; background: #FF5A1F; color: #111111; font: 800 16px 'Archivo', sans-serif;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"></path><circle cx="12" cy="13" r="3.5"></circle></svg>Scatta di nuovo
+        </button>
+        <button type="button" style="flex: 1 1 140px; min-height: 52px; border: 1px solid #5A5C54; background: transparent; color: #F7F7F3; font: 700 15px 'Archivo', sans-serif;">Carica file</button>
+      </div>
+    </section>
+
+    <section aria-label="Dati del reperto" style="flex: 2 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
+      <form style="display: flex; flex-direction: column; gap: 14px; padding: 22px; background: #F7F7F3; color: #111111;">
+        <div style="display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 700;">
+          <span style="width: 10px; height: 10px; background: #FF5A1F;"></span>Compilato dalla foto · controlla e conferma
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;">
+          <label style="display: flex; flex-direction: column; gap: 6px; font-size: 12px; font-weight: 700;">Categoria<select style="min-height: 44px; min-width: 0; border: 2px solid #111111; background: #FFFFFF; font: 500 15px 'Archivo', sans-serif; padding: 0 8px;"><option>Borsa / zaino</option></select></label>
+          <label style="display: flex; flex-direction: column; gap: 6px; font-size: 12px; font-weight: 700;">Marca<input type="text" value="EASTPAK" style="min-height: 44px; min-width: 0; border: 2px solid #111111; font: 500 15px 'IBM Plex Mono', monospace; padding: 0 10px;"></label>
+          <label style="display: flex; flex-direction: column; gap: 6px; font-size: 12px; font-weight: 700;">Colore<input type="text" value="NERO" style="min-height: 44px; min-width: 0; border: 2px solid #111111; font: 500 15px 'IBM Plex Mono', monospace; padding: 0 10px;"></label>
+          <label style="display: flex; flex-direction: column; gap: 6px; font-size: 12px; font-weight: 700;">Luogo<input type="text" placeholder="es. Metro B Piramide" style="min-height: 44px; min-width: 0; border: 2px solid #111111; font: 500 15px 'Archivo', sans-serif; padding: 0 10px;"></label>
+        </div>
+        <label style="display: flex; flex-direction: column; gap: 6px; font-size: 12px; font-weight: 700;">Contenuto<input type="text" value="INDUMENTI - CARICABATTERIE" style="min-height: 44px; min-width: 0; border: 2px solid #111111; font: 500 15px 'IBM Plex Mono', monospace; padding: 0 10px;"></label>
+      </form>
+
+      <div aria-label="Anteprima etichetta" role="group" style="position: relative; background: #E6D3A0; color: #111111; clip-path: polygon(36px 0, 100% 0, 100% 100%, 36px 100%, 0 calc(100% - 30px), 0 30px); padding: 18px 20px 18px 64px; display: flex; flex-direction: column; gap: 8px;">
+        <span aria-hidden="true" style="position: absolute; left: 22px; top: 50%; width: 18px; height: 18px; margin-top: -9px; border-radius: 50%; background: #151613;"></span>
+        <div style="display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.1em;"><span>ETICHETTA · ANTEPRIMA</span><span>13/11/2026</span></div>
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 12px;">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 46px; font-weight: 600; line-height: 1;">6778</span>
+          <span aria-hidden="true" style="display: flex; gap: 2px; height: 36px; align-items: stretch;"><span style="width: 2px; background: #111111;"></span><span style="width: 4px; background: #111111;"></span><span style="width: 1px; background: #111111;"></span><span style="width: 3px; background: #111111;"></span><span style="width: 1px; background: #111111;"></span><span style="width: 4px; background: #111111;"></span><span style="width: 2px; background: #111111;"></span><span style="width: 1px; background: #111111;"></span><span style="width: 3px; background: #111111;"></span><span style="width: 2px; background: #111111;"></span><span style="width: 4px; background: #111111;"></span><span style="width: 1px; background: #111111;"></span></span>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600;">ZAINO - EASTPAK - NERO - INDUMENTI - CARICABATTERIE</div>
       </div>
 
-      <form style="flex: 2 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 14px; padding: 22px; background: #F7F7F3; border: 2px solid #111111;">
-        <div style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: #E6D3A0; border: 2px solid #111111; font-size: 14px; font-weight: 600;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"></path></svg>
-          Compilato dalla foto. Controlla prima di salvare.
+      <button type="submit" style="min-height: 56px; border: 0; background: #F7F7F3; color: #111111; font: 800 17px 'Archivo', sans-serif; box-shadow: 6px 6px 0 #FF5A1F;">Salva e stampa etichetta</button>
+    </section>
+  </div>
+
+  <section aria-label="Restituzioni" style="display: flex; flex-direction: column; gap: 16px; padding-top: 28px; border-top: 1px solid #34362F;">
+    <h2 style="margin: 0; font-stretch: 115%; font-weight: 900; font-size: 28px;">Restituzioni</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px;">
+
+      <div style="display: flex; flex-direction: column; gap: 10px; padding: 14px; background: #1D1E1A; border: 1px solid #34362F;">
+        <div style="display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.08em;"><span>DA VERIFICARE</span><span style="color: #FF8A5C;">1</span></div>
+        <div style="display: flex; flex-direction: column; gap: 10px; padding: 14px; background: #F7F7F3; color: #111111;">
+          <div style="display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 12px;"><span>[R-002] · delega</span><b style="font-size: 18px;">6073</b></div>
+          <strong style="font-size: 15px;">Portafogli con documenti</strong>
+          <span style="font-size: 13px; line-height: 1.4;">Manca copia del documento del delegante</span>
+          <button type="button" style="min-height: 44px; border: 2px solid #111111; background: transparent; font: 700 14px 'Archivo', sans-serif;">Chiedi documento</button>
         </div>
-        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px;">
-          <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 700;">Categoria<select style="min-height: 44px; border: 2px solid #111111; background: #FFFFFF; font: 500 15px 'Archivo', sans-serif; padding: 0 10px;"><option>Borsa / zaino</option></select></label>
-          <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 700;">Tipo<input type="text" value="ZAINO" style="min-height: 44px; min-width: 0; border: 2px solid #111111; font: 500 15px 'IBM Plex Mono', monospace; padding: 0 10px;"></label>
-          <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 700;">Marca<input type="text" value="EASTPAK" style="min-height: 44px; min-width: 0; border: 2px solid #111111; font: 500 15px 'IBM Plex Mono', monospace; padding: 0 10px;"></label>
-          <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 700;">Colore <span style="font-weight: 500; font-size: 12px;">(nuovo campo)</span><input type="text" value="NERO" style="min-height: 44px; min-width: 0; border: 2px solid #111111; font: 500 15px 'IBM Plex Mono', monospace; padding: 0 10px;"></label>
-          <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 700;">Data acquisizione<input type="text" value="13/11/2026" style="min-height: 44px; min-width: 0; border: 2px solid #111111; font: 500 15px 'IBM Plex Mono', monospace; padding: 0 10px;"></label>
-          <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 700;">Luogo ritrovamento <span style="font-weight: 500; font-size: 12px;">(nuovo campo)</span><input type="text" placeholder="es. Metro B, Piramide" style="min-height: 44px; min-width: 0; border: 2px solid #111111; font: 500 15px 'Archivo', sans-serif; padding: 0 10px;"></label>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 10px; padding: 14px; background: #1D1E1A; border: 1px solid #34362F;">
+        <div style="display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.08em;"><span>PRONTI AL RITIRO</span><span style="color: #FF8A5C;">2</span></div>
+        <div style="display: flex; flex-direction: column; gap: 10px; padding: 14px; background: #E6D3A0; color: #111111;">
+          <div style="display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 12px;"><span>[R-001] · sito</span><b style="font-size: 18px;">6544</b></div>
+          <strong style="font-size: 15px;">Telefono Samsung</strong>
+          <span style="font-size: 13px; line-height: 1.4;">IMEI verificato con il registro · €10,40</span>
+          <button type="button" style="min-height: 44px; border: 0; background: #111111; color: #F7F7F3; font: 700 14px 'Archivo', sans-serif;">Fissa appuntamento</button>
         </div>
-        <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 700;">Contenuto<textarea rows="2" style="border: 2px solid #111111; font: 500 15px 'IBM Plex Mono', monospace; padding: 10px; resize: vertical;">INDUMENTI - CARICABATTERIE</textarea></label>
-        <div style="display: flex; flex-direction: column; gap: 6px;">
-          <span style="font-size: 13px; font-weight: 700;">Riga nel registro</span>
-          <div style="padding: 12px; background: #FFFFFF; border: 2px dashed #111111; font-family: 'IBM Plex Mono', monospace; font-size: 14px;">6778 · ZAINO - EASTPAK - NERO - INDUMENTI - CARICABATTERIE · 13/11/2026</div>
+        <div style="display: flex; flex-direction: column; gap: 10px; padding: 14px; background: #E6D3A0; color: #111111;">
+          <div style="display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 12px;"><span>[R-003] · ambasciata</span><b style="font-size: 18px;">11</b></div>
+          <strong style="font-size: 15px;">Patente estera</strong>
+          <span style="font-size: 13px; line-height: 1.4;">Documento d'identità: nessun costo</span>
+          <button type="button" style="min-height: 44px; border: 0; background: #111111; color: #F7F7F3; font: 700 14px 'Archivo', sans-serif;">Segna come restituito</button>
         </div>
-        <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-          <button type="submit" style="min-height: 52px; padding: 0 24px; border: 2px solid #111111; background: #FF5A1F; color: #111111; font: 800 16px 'Archivo', sans-serif; box-shadow: 4px 4px 0 #111111;">Salva e stampa etichetta</button>
-          <button type="button" style="min-height: 52px; padding: 0 20px; border: 2px solid #111111; background: transparent; color: #111111; font: 700 15px 'Archivo', sans-serif;">Annulla</button>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 10px; padding: 14px; background: #1D1E1A; border: 1px solid #34362F;">
+        <div style="display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.08em;"><span>RESTITUITI OGGI</span><span style="color: #FF8A5C;">[N]</span></div>
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; min-height: 140px; border: 1px dashed #5A5C54; color: #C9CBC3; font-size: 14px; text-align: center; padding: 14px;">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#C9CBC3" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg>
+          Le restituzioni completate compaiono qui
         </div>
-      </form>
+      </div>
     </div>
   </section>
-
-  <aside aria-label="Restituzioni in attesa" style="flex: 1 1 300px; display: flex; flex-direction: column; gap: 12px;">
-    <h2 style="margin: 0; font-stretch: 112%; font-weight: 900; font-size: 22px;">Restituzioni in attesa</h2>
-
-    <div style="display: flex; flex-direction: column; gap: 10px; padding: 16px; background: #F7F7F3; border: 2px solid #111111;">
-      <div style="display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 13px;"><span>RICHIESTA [R-001]</span><span>via sito</span></div>
-      <strong style="font-size: 16px;">Reperto 6544 · Telefono Samsung</strong>
-      <div style="display: flex; align-items: center; gap: 8px; font-size: 14px;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg>
-        IMEI coincide con il registro
-      </div>
-      <button type="button" style="min-height: 44px; border: 2px solid #111111; background: #111111; color: #F7F7F3; font: 700 14px 'Archivo', sans-serif;">Fissa appuntamento</button>
-    </div>
-
-    <div style="display: flex; flex-direction: column; gap: 10px; padding: 16px; background: #F7F7F3; border: 2px solid #111111;">
-      <div style="display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 13px;"><span>RICHIESTA [R-002]</span><span>delega</span></div>
-      <strong style="font-size: 16px;">Reperto 6073 · Portafogli</strong>
-      <div style="display: flex; align-items: center; gap: 8px; font-size: 14px;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
-        Manca copia documento del delegante
-      </div>
-      <button type="button" style="min-height: 44px; border: 2px solid #111111; background: transparent; color: #111111; font: 700 14px 'Archivo', sans-serif;">Chiedi documento</button>
-    </div>
-
-    <div style="display: flex; flex-direction: column; gap: 10px; padding: 16px; background: #F7F7F3; border: 2px solid #111111;">
-      <div style="display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 13px;"><span>RICHIESTA [R-003]</span><span>ambasciata</span></div>
-      <strong style="font-size: 16px;">Reperto 11 · Patente estera</strong>
-      <div style="display: flex; align-items: center; gap: 8px; font-size: 14px;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg>
-        Documento: restituzione gratuita
-      </div>
-      <button type="button" style="min-height: 44px; border: 2px solid #111111; background: #111111; color: #F7F7F3; font: 700 14px 'Archivo', sans-serif;">Segna come restituito</button>
-    </div>
-  </aside>
 </div>
 
 </div>

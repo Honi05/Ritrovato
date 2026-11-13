@@ -8,7 +8,7 @@
   (rsync), secrets in `.env` with mode 0600.
 - `docker compose`; the service listens only on `127.0.0.1:<port>`.
 - Published via the existing Cloudflare Tunnel (`cloudflared.service`) →
-  `https://<subdomain>.quietunit.com`. The rule in `/etc/cloudflared/config.yml` is added
+  `https://ritrovato.quietunit.com` (port 8787). The rule in `/etc/cloudflared/config.yml` is added
   by the owner, or by an agent with the owner's permission (back up the config first).
 
 ## Data on the server

@@ -127,7 +127,9 @@ Request: `{"query": "I lost my black Samsung phone in October", "lang": "en"}` (
 
 | Step | Service | Key |
 |---|---|---|
-| Query interpretation, photo description, OCR of new PDF pages | Claude (`claude-haiku-5-5`, overridable via `LLM_MODEL`) | `ANTHROPIC_API_KEY` |
+| Query interpretation | DeepSeek (`deepseek-chat`, JSON output, overridable via `LLM_MODEL`) | `DEEPSEEK_API_KEY` |
+| Photo description | open — DeepSeek has no vision (D-012) | — |
+| OCR of new PDF pages | Tesseract + `parse.py` (D-012) | — |
 | Speech-to-text | ElevenLabs Scribe | `ELEVENLABS_API_KEY` |
 | "Other places to ask" (nice to have) | Exa | `EXA_API_KEY` |
 

@@ -68,3 +68,11 @@ data, and a fresh clone runs without extra steps.
 
 Owner's choice: the main languages of visitors to Rome. Queries are understood in any
 language regardless; this is about interface strings.
+
+## D-012 · 2026-11-13 · Runtime LLM is DeepSeek only
+
+Owner's call: one provider, DeepSeek, for the product. `interpret` uses `deepseek-chat`
+with JSON output via the OpenAI-compatible API (`https://api.deepseek.com`). DeepSeek has
+no vision, so: D-008 is replaced by Tesseract + `parse.py` for new PDF pages, and the
+photo query (block 05) is open until the owner picks a non-server option or cuts it.
+Development code is also written by DeepSeek through `scripts/ds_code.py`.

@@ -1,0 +1,177 @@
+import { useEffect, useId, useState } from 'react'
+import { getItems, getMeta, type Item, type ItemsParams, type Meta } from '../api'
+import ItemTag from '../components/ItemTag'
+import { useI18n } from '../i18n'
+import { remember } from '../lib/items'
+import { href, navigate } from '../lib/router'
+
+const PAGE = 20
+const FIELDS = ['q', 'category', 'brand', 'date_from', 'date_to'] as const
+type Filters = Record<(typeof FIELDS)[number], string>
+// Most frequent brands in the register (docs/DATA.md); the field still accepts any brand.
+const BRANDS = ['APPLE', 'SAMSUNG', 'REDMI', 'XIAOMI', 'MOTOROLA', 'OPPO', 'HUAWEI', 'LENOVO', 'EASTPAK', 'INVICTA']
+
+export default function Catalogue({ params }: { params: URLSearchParams }) {
+  const { t, lang } = useI18n()
+  const filters = Object.fromEntries(FIELDS.map((k) => [k, params.get(k) ?? ''])) as Filters
+  const key = FIELDS.map((k) => filters[k]).join('|')
+
+  const [meta, setMeta] = useState<Meta | null>(null)
+  const [items, setItems] = useState<Item[]>([])
+  const [total, setTotal] = useState<number | null>(null)
+  const [error, setError] = useState(false)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    getMeta().then(setMeta, () => setMeta(null))
+  }, [])
+
+  const load = (offset: number) => {
+    setLoading(true)
+    setError(false)
+    const p: ItemsParams = { ...filters, limit: PAGE, offset }
+    return getItems(p).then(
+      (r) => {
+        remember(r.items)
+        setItems((prev) => (offset === 0 ? r.items : [...prev, ...r.items]))
+        setTotal(r.total)
+        setLoading(false)
+      },
+      () => {
+        setError(true)
+        setLoading(false)
+      },
+    )
+  }
+
+  useEffect(() => {
+    load(0)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key])
+
+  return (
+    <div className="flex flex-wrap items-start gap-8 pt-8">
+      <FilterPanel key={key} initial={filters} meta={meta} />
+
+      <section aria-live="polite" aria-busy={loading} className="flex min-w-0 flex-[999_1_560px] flex-col gap-3.5">
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <h1 className="font-wide m-0 text-[30px] font-black">
+            {total === null ? t.nav.catalogue : t.search.matches(total)}
+          </h1>
+          <span className="font-mono text-[13px] uppercase">{t.search.newest}</span>
+        </div>
+        {error && <p className="m-0 border-2 border-ink bg-card p-4">{t.search.error}</p>}
+        {!loading && !error && items.length === 0 && (
+          <p className="m-0 border-2 border-dashed border-ink p-5">{t.search.none}</p>
+        )}
+        {items.map((it) => (
+          <ItemTag key={it.id} item={it} />
+        ))}
+        {loading && <p className="m-0 font-mono text-sm">{t.search.loading}</p>}
+        {!loading && total !== null && items.length < total && (
+          <button
+            type="button"
+            onClick={() => load(items.length)}
+            className="min-h-12 cursor-pointer self-start border-2 border-ink bg-transparent px-5 font-bold hover:bg-card"
+          >
+            {t.search.more} ({(total - items.length).toLocaleString(lang)})
+          </button>
+        )}
+        <p className="m-0 font-mono text-[13px] text-muted">{t.search.hidden}</p>
+      </section>
+    </div>
+  )
+}
+
+function FilterPanel({ initial, meta }: { initial: Filters; meta: Meta | null }) {
+  const { t } = useI18n()
+  const [f, setF] = useState(initial)
+  // Open beside the results on wide screens; collapsed above them on phones.
+  const [open, setOpen] = useState(() => window.matchMedia('(min-width: 900px)').matches)
+  const active = FIELDS.filter((k) => initial[k]).length
+  const id = useId()
+  const set = (k: keyof Filters) => (e: { target: { value: string } }) => setF({ ...f, [k]: e.target.value })
+  const label = 'flex flex-col gap-1.5 font-mono text-xs font-semibold tracking-[0.06em] uppercase'
+  const field = 'min-h-11 w-full min-w-0 box-border border-2 border-ink bg-white px-2.5 font-sans text-[15px] font-medium normal-case tracking-normal'
+
+  return (
+    <details
+      open={open}
+      onToggle={(e) => setOpen(e.currentTarget.open)}
+      className="min-w-0 flex-[1_1_240px] border-2 border-ink bg-card"
+    >
+      <summary className="cursor-pointer px-5 py-4 text-lg font-extrabold">
+        {t.filters.title}
+        {active > 0 && <span className="ml-2 bg-ink px-2 py-0.5 font-mono text-sm text-card">{active}</span>}
+      </summary>
+    <form
+      aria-label={t.filters.title}
+      onSubmit={(e) => {
+        e.preventDefault()
+        navigate(href('catalogue', { ...f, q: f.q.trim(), brand: f.brand.trim().toUpperCase() }))
+      }}
+      className="flex flex-col gap-5 px-5 pb-5"
+    >
+      <label className={label}>
+        {t.filters.keyword}
+        <input type="text" value={f.q} onChange={set('q')} className={field} aria-describedby={`${id}-kw`} />
+        <span id={`${id}-kw`} className="font-sans text-xs font-normal tracking-normal text-muted normal-case">
+          {t.filters.keywordHint}
+        </span>
+      </label>
+      <label className={label}>
+        {t.filters.type}
+        <select value={f.category} onChange={set('category')} className={field}>
+          <option value="">{t.filters.anyType}</option>
+          {meta?.categories.map((c) => (
+            <option key={c.id} value={c.id}>
+              {t.categories[c.id] ?? c.id} ({c.count.toLocaleString()})
+            </option>
+          ))}
+        </select>
+      </label>
+      <label className={label}>
+        {t.filters.brand}
+        <input
+          type="text"
+          list={`${id}-brands`}
+          value={f.brand}
+          onChange={set('brand')}
+          placeholder={t.filters.anyBrand}
+          className={field}
+        />
+        <datalist id={`${id}-brands`}>
+          {BRANDS.map((b) => (
+            <option key={b} value={b} />
+          ))}
+        </datalist>
+      </label>
+      <div className="flex gap-2">
+        <label className={`${label} flex-1`}>
+          {t.filters.from}
+          <input type="date" value={f.date_from} onChange={set('date_from')} className={`${field} font-mono`} />
+        </label>
+        <label className={`${label} flex-1`}>
+          {t.filters.to}
+          <input type="date" value={f.date_to} onChange={set('date_to')} className={`${field} font-mono`} />
+        </label>
+      </div>
+      <p className="m-0 text-[13px] leading-normal text-muted">{t.filters.dateNote}</p>
+      <div className="flex flex-wrap gap-2">
+        <button
+          type="submit"
+          className="min-h-11 flex-1 cursor-pointer border-2 border-ink bg-signal px-4 font-extrabold text-ink hover:bg-[#ff7a47]"
+        >
+          {t.filters.apply}
+        </button>
+        <a
+          href={href('catalogue')}
+          className="flex min-h-11 items-center border-2 border-ink px-4 font-bold no-underline hover:bg-white"
+        >
+          {t.filters.reset}
+        </a>
+      </div>
+    </form>
+    </details>
+  )
+}

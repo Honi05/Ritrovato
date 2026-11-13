@@ -1,1 +1,45 @@
 @import "tailwindcss";
+
+@theme {
+  --color-paper: #e9eae5;
+  --color-grid: #dadbd5;
+  --color-card: #f7f7f3;
+  --color-ink: #111111;
+  --color-muted: #3c3e37;
+  --color-manila: #e6d3a0;
+  --color-signal: #ff5a1f;
+  --color-signal-ink: #b8320a;
+  --font-sans: "Archivo", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+@layer base {
+  body {
+    @apply bg-paper text-ink font-sans antialiased;
+    background-image:
+      linear-gradient(var(--color-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-grid) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+  a:hover { color: var(--color-signal-ink); }
+  :focus-visible { outline: 3px solid var(--color-signal); outline-offset: 2px; }
+}
+
+@utility font-wide { font-stretch: 112%; }
+@utility font-widest { font-stretch: 125%; }
+
+/* Luggage-tag silhouette: clipped left corners; pair with a .tag-hole child. */
+@utility tag-shape {
+  clip-path: polygon(28px 0, 100% 0, 100% 100%, 28px 100%, 0 calc(100% - 22px), 0 22px);
+}
+@utility tag-hole {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  width: 16px;
+  height: 16px;
+  margin-top: -8px;
+  border-radius: 9999px;
+  background: var(--color-paper);
+  border: 2px solid var(--color-ink);
+}

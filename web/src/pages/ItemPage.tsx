@@ -27,7 +27,7 @@ export default function ItemPage({ id }: { id: string }) {
     )
   }
 
-  const ref = `${item.reperto}/${item.year}`
+  const ref = item.reperto == null ? undefined : `${item.reperto}/${item.year}`
   const dt = 'font-mono text-[11px] font-semibold tracking-[0.08em] uppercase'
 
   return (
@@ -40,7 +40,7 @@ export default function ItemPage({ id }: { id: string }) {
             <div className="font-mono text-xs font-semibold tracking-[0.1em] uppercase">
               {t.item.number} · {item.year}
             </div>
-            <h1 className="m-0 font-mono text-[clamp(56px,10vw,88px)] leading-[0.9] font-semibold">{item.reperto}</h1>
+            <h1 className="m-0 font-mono text-[clamp(56px,10vw,88px)] leading-[0.9] font-semibold">{item.reperto ?? '—'}</h1>
             <div className="h-0.5 bg-ink" />
             <p lang="it" className="m-0 text-[22px] leading-tight font-extrabold break-words">
               {segments(item.descr).join(' · ')}

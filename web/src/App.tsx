@@ -1,6 +1,9 @@
+import { useEffect, useState } from 'react'
+import { getMeta, type Meta } from './api'
 import Header from './components/Header'
 import Pickup from './components/Pickup'
 import { I18nProvider, useI18n } from './i18n'
+import { formatDate } from './lib/items'
 import { useRoute } from './lib/router'
 import Catalogue from './pages/Catalogue'
 import Home from './pages/Home'
@@ -17,14 +20,23 @@ export default function App() {
 
 function Shell() {
   const route = useRoute()
-  const { t } = useI18n()
+  const { t, lang } = useI18n()
+  const [meta, setMeta] = useState<Meta | null>(null)
+  useEffect(() => {
+    getMeta().then(setMeta, () => setMeta(null))
+  }, [])
+  const fresh = meta?.last_checked_at
+    ? t.footer.updated(new Date(meta.last_checked_at).toLocaleDateString(lang), meta.new_items_last_check.toLocaleString(lang))
+    : meta
+      ? t.footer.asOf(formatDate(meta.last_item_date), meta.total.toLocaleString(lang))
+      : null
 
   return (
     <div className="mx-auto box-border max-w-[1200px] px-4 pb-16 sm:px-8">
       <Header route={route} />
       <main>
         {route.name === 'home' && <Home />}
-        {route.name === 'search' && <Search query={route.params.get('q') ?? ''} />}
+        {route.name === 'search' && <Search params={route.params} />}
         {route.name === 'catalogue' && <Catalogue params={route.params} />}
         {route.name === 'item' && <ItemPage id={route.id} />}
         {route.name === 'collect' && (
@@ -35,6 +47,7 @@ function Shell() {
         )}
       </main>
       <footer className="mt-16 flex flex-wrap justify-between gap-4 border-t-2 border-ink pt-5 text-sm text-muted">
+        {fresh && <span data-testid="freshness" className="basis-full font-mono text-[13px] font-semibold text-ink">{fresh}</span>}
         <span>{t.footer.source}</span>
         <span className="font-mono text-[13px]">{t.footer.honesty}</span>
       </footer>

@@ -94,6 +94,7 @@ const es: Strings = {
     noObject: 'No reconocemos ningún objeto en esa foto. Prueba con otra o escribe lo que perdiste.',
     tooLarge: 'El archivo es demasiado grande. Prueba con una grabación más corta o una foto más pequeña.',
     failed: 'Algo salió mal. Inténtalo de nuevo en un momento o escribe tu búsqueda.',
+    rateLimited: "Demasiadas búsquedas por voz/foto ahora mismo — escribe lo que perdiste.",
     badImage: 'No podemos leer este formato de imagen. Usa una foto JPEG o PNG.',
     youSaid: 'Has dicho',
     weSee: 'Vemos',

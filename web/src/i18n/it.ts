@@ -94,6 +94,7 @@ const it: Strings = {
     noObject: 'Non riconosco nessun oggetto in questa foto. Prova con un\'altra foto, oppure scrivi cosa hai perso.',
     tooLarge: 'Il file è troppo grande. Prova con una registrazione più breve o una foto più piccola.',
     failed: 'Qualcosa è andato storto. Riprova tra un attimo, oppure scrivi la ricerca.',
+    rateLimited: "Troppe ricerche vocali/foto in questo momento — scrivi qui cosa hai perso.",
     badImage: 'Non riesco a leggere questo formato. Usa una foto JPEG o PNG.',
     youSaid: 'Hai detto',
     weSee: 'Vediamo',

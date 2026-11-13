@@ -282,3 +282,48 @@ test('entry card with a null reperto never prints "null"', async ({ page }) => {
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('—')
   expect(await page.locator('body').innerText()).not.toContain('null')
 })
+
+const RATE_LIMITED = { error: 'rate_limited', message: 'too many' }
+const RATE_MSG = 'Too many voice/photo searches right now'
+
+test('photo: 429 explains the limit, focuses the text box and keeps typed text', async ({ page }) => {
+  await page.route('**/api/search/photo', (r) => r.fulfill(json(RATE_LIMITED, 429)))
+  await page.goto('/')
+  await setLang(page, 'en')
+  const box = page.getByRole('searchbox')
+  await box.fill('chiavi')
+  await page.getByTestId('photo-input').setInputFiles({ name: 'x.png', mimeType: 'image/png', buffer: PNG })
+  await expect(page.getByRole('status')).toContainText(RATE_MSG)
+  await expect(box).toBeFocused()
+  await expect(box).toHaveValue('chiavi')
+  await expect(page).not.toHaveURL(/mode=photo/)
+  await box.press('Enter')
+  await expect(page).toHaveURL(/#\/search\?q=chiavi/)
+  await expect(page.getByRole('heading', { level: 1 })).toContainText(/possible match/)
+})
+
+test('voice: 429 explains the limit, focuses the text box and keeps typed text', async ({ page }) => {
+  await fakeRecorder(page)
+  await page.route('**/api/search/voice', (r) => r.fulfill(json(RATE_LIMITED, 429)))
+  await page.goto('/')
+  await setLang(page, 'en')
+  const box = page.getByRole('searchbox')
+  await box.fill('chiavi')
+  await page.getByRole('button', { name: 'Speak' }).click()
+  await page.getByRole('button', { name: 'Stop' }).click()
+  await expect(page.getByRole('status')).toContainText(RATE_MSG)
+  await expect(box).toBeFocused()
+  await expect(box).toHaveValue('chiavi')
+  await box.press('Enter')
+  await expect(page).toHaveURL(/#\/search\?q=chiavi/)
+  await expect(page.getByRole('heading', { level: 1 })).toContainText(/possible match/)
+})
+
+test('photo: 502 puts the cursor back in the text box', async ({ page }) => {
+  await page.route('**/api/search/photo', (r) => r.fulfill({ status: 502, contentType: 'text/html', body: 'Bad gateway' }))
+  await page.goto('/')
+  await setLang(page, 'en')
+  await page.getByTestId('photo-input').setInputFiles({ name: 'x.png', mimeType: 'image/png', buffer: PNG })
+  await expect(page.getByRole('status')).toContainText('Something went wrong')
+  await expect(page.getByRole('searchbox')).toBeFocused()
+})

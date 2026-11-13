@@ -92,6 +92,7 @@ const en = {
     noObject: 'We couldn\'t recognise an object in that photo. Try another photo, or type what you lost.',
     tooLarge: 'That file is too large. Try a shorter recording or a smaller photo.',
     failed: 'Something went wrong. Try again in a moment, or type your search.',
+    rateLimited: "Too many voice/photo searches right now — type what you lost instead.",
     badImage: 'We cannot read this image format. Use a JPEG or PNG photo.',
     youSaid: 'You said',
     weSee: 'We see',

@@ -94,6 +94,7 @@ const de: Strings = {
     noObject: 'Wir erkennen auf dem Foto keinen Gegenstand. Versuchen Sie ein anderes Foto oder tippen Sie, was Sie verloren haben.',
     tooLarge: 'Die Datei ist zu groß. Versuchen Sie eine kürzere Aufnahme oder ein kleineres Foto.',
     failed: 'Etwas ist schiefgelaufen. Bitte gleich noch einmal versuchen oder die Suche eintippen.',
+    rateLimited: "Gerade zu viele Sprach-/Foto-Suchen — tippe stattdessen ein, was du verloren hast.",
     badImage: 'Dieses Bildformat können wir nicht lesen. Nutzen Sie ein JPEG- oder PNG-Foto.',
     youSaid: 'Sie sagten',
     weSee: 'Wir sehen',

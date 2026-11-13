@@ -27,8 +27,8 @@ Plan: `docs/plans/ROADMAP.md`.
 | 04 | Voice (ElevenLabs STT) | feat/back | DeepSeek (ds_code.py) | 02 | complete | see "blocks 04+05" |
 | 05 | Photo (ElevenLabs Agent, D-013) | feat/back | DeepSeek (ds_code.py) | 02 | complete | see "blocks 04+05" |
 | 06 | Daily update (Tesseract, D-012) | feat/back | DeepSeek + orchestrator | 00 | complete | see "block 06" |
-| 07 | UI: mic, photo upload, polish | feat/front | front-builder | 03 | in progress | ff33532; e2e 58/58 (stubbed voice/photo); 429 case + gallery picker left (NEXT-FRONT §2, §2b) |
-| 07b | UI: "Narrow it down" chips | feat/front | front-builder | 03 | in progress | — |
+| 07 | UI: mic, photo upload, polish | feat/front | front-builder | 03 | complete | ff33532, 5268552 (429), f994381 (gallery); merge 86d3a63 |
+| 07b | UI: "Narrow it down" chips | feat/front | front-builder | 03 | complete | d835264; merge 86d3a63; e2e 70/70 locally; not deployed yet |
 | 08 | Integration in production | main | orchestrator + qa-deploy | 04, 05, 07 | pending | — |
 | 09 | Pitch, video, submission | — | judge-pitch + owner | 08 | pending | — |
 

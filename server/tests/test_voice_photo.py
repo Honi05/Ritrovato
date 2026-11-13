@@ -138,3 +138,19 @@ def test_photo_upstream_error_returns_502(monkeypatch):
     r = client.post("/api/search/photo", files=PHOTO_FILE, data={"lang": "it"})
     assert r.status_code == 502
     assert r.json()["error"] == "upstream_failed"
+
+
+def test_paid_quota_returns_429(monkeypatch):
+    from app import main as m
+    monkeypatch.setattr(m, "PAID_PER_IP", 2)
+    m._hits.clear()
+    monkeypatch.setattr(m.voice, "transcribe", lambda *a, **k: "")
+    c = TestClient(m.app)
+    codes = [c.post("/api/search/voice", files={"audio": ("a.webm", b"x", "audio/webm")},
+                    data={"lang": "it"}, headers={"cf-connecting-ip": "9.9.9.9"}).status_code
+             for _ in range(3)]
+    assert codes == [200, 200, 429]
+    r = c.post("/api/search/voice", files={"audio": ("a.webm", b"x", "audio/webm")},
+               data={"lang": "it"}, headers={"cf-connecting-ip": "8.8.8.8"})
+    assert r.status_code == 200  # other clients unaffected
+    m._hits.clear()

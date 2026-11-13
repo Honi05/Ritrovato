@@ -7,7 +7,9 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Literal
 
-from fastapi import FastAPI, Form, HTTPException, Query, UploadFile
+from collections import defaultdict, deque
+
+from fastapi import Depends, FastAPI, Form, HTTPException, Query, Request, UploadFile
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
@@ -76,8 +78,32 @@ def search(req: SearchRequest):
     return interpret.search(req.query, req.lang)
 
 
+# Voice and photo cost money per call (ElevenLabs): cap per client and per day.
+PAID_PER_IP = int(os.environ.get("PAID_PER_IP", "20"))  # per 10 minutes
+PAID_PER_DAY = int(os.environ.get("PAID_PER_DAY", "500"))
+_hits: dict[str, deque] = defaultdict(deque)
+_day = {"date": "", "n": 0}
+_quota_lock = threading.Lock()
+
+
+def paid_quota(request: Request):
+    # The app listens on 127.0.0.1 only, so requests arrive via Cloudflare, which sets this header.
+    ip = request.headers.get("cf-connecting-ip") or request.client.host
+    now, today = time.time(), time.strftime("%Y-%m-%d")
+    with _quota_lock:
+        if _day["date"] != today:
+            _day.update(date=today, n=0)
+        q = _hits[ip]
+        while q and now - q[0] > 600:
+            q.popleft()
+        if len(q) >= PAID_PER_IP or _day["n"] >= PAID_PER_DAY:
+            raise HTTPException(429, "rate_limited: too many voice/photo searches, type your query instead")
+        q.append(now)
+        _day["n"] += 1
+
+
 @app.post("/api/search/voice")
-def search_voice(audio: UploadFile, lang: Lang = Form("it")):
+def search_voice(audio: UploadFile, lang: Lang = Form("it"), _=Depends(paid_quota)):
     data = audio.file.read(10 * 1024 * 1024 + 1)
     if len(data) > 10 * 1024 * 1024:
         raise HTTPException(413, "too_large: audio exceeds 10 MB")
@@ -85,7 +111,7 @@ def search_voice(audio: UploadFile, lang: Lang = Form("it")):
     try:
         text = voice.transcribe(data, audio.filename, audio.content_type)
     except Exception:
-        raise HTTPException(502, "upstream_failed: voice transcription failed") from None
+        raise HTTPException(502, "upstream_failed: voice service unavailable, type your query instead") from None
 
     if not text:
         return {"items": [], "total": 0, "interpreted": None, "transcript": ""}
@@ -94,7 +120,7 @@ def search_voice(audio: UploadFile, lang: Lang = Form("it")):
 
 
 @app.post("/api/search/photo")
-async def search_photo(image: UploadFile, lang: Lang = Form("it")):
+async def search_photo(image: UploadFile, lang: Lang = Form("it"), _=Depends(paid_quota)):
     if image.content_type not in {"image/jpeg", "image/png", "image/webp"}:
         raise HTTPException(400, "bad_request: image must be jpeg, png or webp")
 
@@ -105,7 +131,7 @@ async def search_photo(image: UploadFile, lang: Lang = Form("it")):
     try:
         text = await photo.describe(data, image.content_type)
     except Exception:
-        raise HTTPException(502, "upstream_failed: photo description failed") from None
+        raise HTTPException(502, "upstream_failed: photo service unavailable, type your query instead") from None
 
     if text is None or not text.strip():
         return {"items": [], "total": 0, "interpreted": None, "description": None}

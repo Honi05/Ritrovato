@@ -51,6 +51,9 @@ until the owner confirms.
   "not recorded"; show descriptions in the original Italian; never invent data.
 - Never show document, card or IMEI numbers (the API already strips them).
 - No secrets in the frontend — all keys live on the server.
+- Voice/photo can answer 429 `rate_limited` (20 per 10 min per client) or 502
+  `upstream_failed`: keep the user's input, show the API `message`, focus the text box.
+  The live API is at `https://ritrovato.quietunit.com/api/...`.
 
 ## 5. Handing work over
 

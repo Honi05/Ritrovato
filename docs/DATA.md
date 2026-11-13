@@ -1,7 +1,8 @@
 # Data for "Oggetti smarriti" (challenge 03)
 
-What we already have, prepared before the hackathon. The data files themselves are
-not in this repo yet (see "Open questions").
+What we already have, prepared before the hackathon. Files live in `data/oggetti/`:
+the two source PDFs, `raw/ocr_2025.txt` and `raw/ocr_2026.txt` (OCR output),
+`parse.py` and the built `oggetti.sqlite`.
 
 ## Source
 
@@ -26,7 +27,7 @@ not in this repo yet (see "Open questions").
    tolerance. Missing numbers are inferred as previous + 1 and flagged.
 3. **Classify** — regex rules on the description assign a category, tags (all
    categories mentioned) and, for phones/electronics/bags/watches/glasses, a brand.
-4. Result: SQLite file `oggetti.sqlite`. Rebuild: `python3 -I parse.py`.
+4. Result: SQLite file `oggetti.sqlite`. Rebuild: `python3 -I data/oggetti/parse.py`.
 
 ## Schema
 
@@ -77,6 +78,6 @@ source page and the pickup procedure.
 
 ## Open questions
 
-- Commit the data to this repo? `oggetti.sqlite` is 2.7 MB, OCR text ~3 MB, PDFs ~7 MB.
-  The SQLite contains the masked document numbers — decide before committing.
-- Add `parse.py` and the OCR tool here so anyone can rebuild.
+- The SQLite and OCR text contain the police-masked document numbers. If the repo
+  goes public, decide whether to strip `Nr: …` from the published copy.
+- Add the Swift OCR tool here so anyone can re-OCR fresh PDFs.

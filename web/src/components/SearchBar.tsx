@@ -179,7 +179,6 @@ export default function SearchBar({ initial = '', big = false }: { initial?: str
           ref={fileRef}
           type="file"
           accept="image/*"
-          capture="environment"
           data-testid="photo-input"
           tabIndex={-1}
           aria-hidden="true"

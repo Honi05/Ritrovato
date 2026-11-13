@@ -1,4 +1,7 @@
 """HTTP API. Contract: docs/ARCHITECTURE.md → "API contract"."""
+import os
+import threading
+import time
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Literal
@@ -8,7 +11,7 @@ from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from . import db, interpret, photo, voice
+from . import db, interpret, photo, update, voice
 
 Lang = Literal["it", "en", "es", "fr", "de"]
 WEB_DIST = Path(__file__).parent.parent.parent / "web" / "dist"
@@ -17,6 +20,13 @@ WEB_DIST = Path(__file__).parent.parent.parent / "web" / "dist"
 @asynccontextmanager
 async def lifespan(app):
     db.init()
+    if os.environ.get("UPDATE_DISABLED") != "1":
+        def updater():
+            time.sleep(60)
+            while True:
+                update.run()
+                time.sleep(24 * 3600)
+        threading.Thread(target=updater, daemon=True, name="daily-update").start()
     yield
 
 

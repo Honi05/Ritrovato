@@ -22,37 +22,47 @@ def pages(path):
             yield cur, (float(m[1]), float(m[2]), m[3].strip())
 
 
+def parse_page(lines, year, page, prev_reperto=0):
+    """Parse OCR lines of one page into rows; use prev_reperto for guessed numbers."""
+    lines = list(lines)
+    hdr = [y for x, y, t in lines if t.startswith("DATA ACQ")]
+    top = hdr[0] if hdr else 0.8  # nothing above the table header is data
+    body = [l for l in lines if l[1] < top - 0.005]
+    dates = sorted([l for l in body if DATE.match(l[2]) and l[0] > 0.6], key=lambda l: -l[1])
+    slots = [{"date": d[2], "y": d[1], "num": None, "desc": []} for d in dates]
+    for x, y, t in sorted(body, key=lambda l: (-l[1], l[0])):
+        if DATE.match(t) and x > 0.6:
+            continue
+        cand = [s for s in slots if s["y"] + TOL >= y]
+        if not cand:
+            continue
+        s = min(cand, key=lambda s: s["y"] + TOL - y)
+        if x < 0.2 and re.fullmatch(r"\d+", t):
+            s["num"] = int(t)
+        elif 0.2 <= x < 0.7:
+            s["desc"].append(t)
+    recs = []
+    prev = prev_reperto
+    for s in slots:
+        guessed = s["num"] is None
+        n = s["num"] if not guessed else prev + 1
+        prev = n
+        desc = re.sub(r"\s+", " ", " ".join(s["desc"])).strip(" -")
+        recs.append((year, n, s["date"], desc, int(guessed), page))
+    return recs, prev
+
+
 def parse(year):
-    recs, by_page = [], {}
+    recs = []
+    by_page = {}
     for pg, item in pages(D / f"raw/ocr_{year}.txt"):
         by_page.setdefault(pg, [])
         if item:
             by_page[pg].append(item)
     prev = 0
     for pg in sorted(by_page):
-        lines = by_page[pg]
-        hdr = [y for x, y, t in lines if t.startswith("DATA ACQ")]
-        top = hdr[0] if hdr else 0.8  # nothing above the table header is data
-        body = [l for l in lines if l[1] < top - 0.005]
-        dates = sorted([l for l in body if DATE.match(l[2]) and l[0] > 0.6], key=lambda l: -l[1])
-        slots = [{"date": d[2], "y": d[1], "num": None, "desc": []} for d in dates]
-        for x, y, t in sorted(body, key=lambda l: (-l[1], l[0])):
-            if DATE.match(t) and x > 0.6:
-                continue
-            cand = [s for s in slots if s["y"] + TOL >= y]
-            if not cand:
-                continue
-            s = min(cand, key=lambda s: s["y"] + TOL - y)
-            if x < 0.2 and re.fullmatch(r"\d+", t):
-                s["num"] = int(t)
-            elif 0.2 <= x < 0.7:
-                s["desc"].append(t)
-        for s in slots:
-            guessed = s["num"] is None
-            n = s["num"] if not guessed else prev + 1
-            prev = n
-            desc = re.sub(r"\s+", " ", " ".join(s["desc"])).strip(" -")
-            recs.append((year, n, s["date"], desc, int(guessed), pg))
+        page_recs, prev = parse_page(by_page[pg], year, pg, prev)
+        recs.extend(page_recs)
     return recs
 
 

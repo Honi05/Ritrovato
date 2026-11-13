@@ -3,3 +3,4 @@ uvicorn[standard]
 python-multipart
 httpx
 websockets
+pymupdf==1.26.5

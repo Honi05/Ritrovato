@@ -39,5 +39,5 @@ def test_search_fallback(monkeypatch):
 
 
 def test_errors_follow_contract():
-    r = client.post("/api/search/voice", files={"audio": ("a.webm", b"x")}, data={"lang": "it"})
-    assert r.status_code == 501 and r.json()["error"] == "not_implemented"
+    r = client.post("/api/search/photo", files={"image": ("a.gif", b"x", "image/gif")}, data={"lang": "it"})
+    assert r.status_code == 400 and r.json()["error"] == "bad_request"

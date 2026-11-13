@@ -4,7 +4,7 @@ Block 07 is live at https://ritrovato.quietunit.com. Voice and photo work end to
 production: "ho perso il mio telefono samsung" → phone, SAMSUNG, 263 results; a photo of
 a key → "Chiave", keys. 56 of 58 e2e tests pass against production. Great work.
 
-Three things left, in this order.
+Four things left, in this order.
 
 ## 0. Sync first (1 min)
 
@@ -59,6 +59,14 @@ Do:
   status: 429, contentType: 'application/json', body: JSON.stringify({ error:
   'rate_limited', message: 'too many' }) }))` → upload → the message is visible, the text
   box is focused, and a typed text search still returns results. Same for voice.
+
+## 2b. Photo: let the user pick from the gallery (2 min)
+
+Today "Photo" opens the camera straight away, so a user cannot pick a photo they already
+took. Remove `capture="environment"` from the file `<input>` in
+`web/src/components/SearchBar.tsx` (line ~177). Keep `accept="image/*"`: phones then offer
+"Camera" or "Photo library" themselves. Check it on a real phone (iOS and Android if you
+can). The existing photo e2e should stay green.
 
 ## 3. Block 07b — "narrow it down" chips (90 min)
 

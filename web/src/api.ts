@@ -29,7 +29,7 @@ export type SearchResponse = {
   total: number
   interpreted: Interpreted | null // null = keyword fallback, no LLM
   transcript?: string // voice only
-  description?: string // photo only
+  description?: string | null // photo only; null = nothing recognised
 }
 
 export type Meta = {
@@ -51,10 +51,31 @@ export type ItemsParams = {
   offset?: number
 }
 
+/** Failed request. `status` is 0 for network errors; the body may be {error,message}, {detail} or not JSON. */
+export class ApiError extends Error {
+  status: number
+  constructor(status: number, message: string) {
+    super(message)
+    this.status = status
+  }
+}
+
 async function json<T>(res: Response): Promise<T> {
-  const body = await res.json()
-  if (!res.ok) throw new Error(body.error ?? res.statusText)
-  return body
+  const text = await res.text().catch(() => '')
+  let body: unknown = null
+  try {
+    body = text ? JSON.parse(text) : null
+  } catch {
+    // non-JSON body (proxy error page, 502 from nginx...)
+  }
+  if (!res.ok) {
+    const b = (body ?? {}) as { error?: unknown; message?: unknown; detail?: unknown }
+    const detail = typeof b.detail === 'string' ? b.detail : Array.isArray(b.detail) ? 'bad_request' : ''
+    const msg = [b.message, b.error, detail, res.statusText].find((x) => typeof x === 'string' && x)
+    throw new ApiError(res.status, String(msg ?? `HTTP ${res.status}`))
+  }
+  if (body === null) throw new ApiError(res.status, 'invalid response')
+  return body as T
 }
 
 export const getMeta = () => fetch('/api/meta').then(json<Meta>)

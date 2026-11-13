@@ -1,32 +1,7 @@
-# React + TypeScript + Vite
+# Ritrovato — web
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
-```
-
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+React 19 + Vite + Tailwind 4. Hash routes, UI in it/en/es/fr/de (`src/i18n`).
+Run: start the API (`cd server && uvicorn app.main:app --port 8000`), then `npm ci && npm run dev` (proxies `/api` to :8000).
+Check: `npm run build` (tsc + vite) and `npm run lint`.
+Test: `npx playwright test` needs the API on :8000; voice and photo are stubbed with `page.route`.
+Mic needs https or localhost; photos are re-encoded to JPEG in the browser when HEIC or over 2000 px.

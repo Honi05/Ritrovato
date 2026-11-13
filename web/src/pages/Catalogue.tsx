@@ -1,4 +1,4 @@
-import { useEffect, useId, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { getItems, getMeta, type Item, type ItemsParams, type Meta } from '../api'
 import ItemTag from '../components/ItemTag'
 import { useI18n } from '../i18n'
@@ -21,23 +21,27 @@ export default function Catalogue({ params }: { params: URLSearchParams }) {
   const [total, setTotal] = useState<number | null>(null)
   const [error, setError] = useState(false)
   const [loading, setLoading] = useState(true)
+  const gen = useRef(0) // bumps per request; a response from an older request is dropped
 
   useEffect(() => {
     getMeta().then(setMeta, () => setMeta(null))
   }, [])
 
   const load = (offset: number) => {
+    const mine = ++gen.current
     setLoading(true)
     setError(false)
     const p: ItemsParams = { ...filters, limit: PAGE, offset }
     return getItems(p).then(
       (r) => {
         remember(r.items)
+        if (mine !== gen.current) return
         setItems((prev) => (offset === 0 ? r.items : [...prev, ...r.items]))
         setTotal(r.total)
         setLoading(false)
       },
       () => {
+        if (mine !== gen.current) return
         setError(true)
         setLoading(false)
       },

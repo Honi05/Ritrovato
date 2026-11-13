@@ -31,7 +31,13 @@ export function href(path: string, params?: Record<string, string | undefined>) 
 }
 
 export function navigate(to: string) {
-  window.location.hash = to.replace(/^#/, '')
+  const next = to.replace(/^#/, '')
+  if (window.location.hash.replace(/^#/, '') === next) {
+    // Same URL fires no hashchange; announce it so the page re-runs (re-submitted search).
+    window.dispatchEvent(new HashChangeEvent('hashchange'))
+  } else {
+    window.location.hash = next
+  }
 }
 
 export function useRoute(): Route {

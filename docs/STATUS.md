@@ -25,7 +25,7 @@ Plan: `docs/plans/ROADMAP.md`.
 | 03 | UI: search, results, card, 5 languages | feat/front | teammate | 00 | in progress | — |
 | 04 | Voice (ElevenLabs STT) | feat/back | DeepSeek (ds_code.py) | 02 | complete | see "blocks 04+05" |
 | 05 | Photo (ElevenLabs Agent, D-013) | feat/back | DeepSeek (ds_code.py) | 02 | complete | see "blocks 04+05" |
-| 06 | Daily update | feat/back | back-builder | 00 | pending | — |
+| 06 | Daily update (Tesseract, D-012) | feat/back | DeepSeek + orchestrator | 00 | complete | see "block 06" |
 | 07 | UI: mic, photo upload, polish | feat/front | front-builder | 03 | pending | — |
 | 08 | Integration in production | main | orchestrator + qa-deploy | 04, 05, 07 | pending | — |
 | 09 | Pitch, video, submission | — | judge-pitch + owner | 08 | pending | — |

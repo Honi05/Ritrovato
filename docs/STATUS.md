@@ -22,7 +22,7 @@ Plan: `docs/plans/ROADMAP.md`.
 | 00 | Skeleton and contract | main | orchestrator | — | complete | see `git log` ("block 00") |
 | 01 | First deploy | main | orchestrator | 00 | complete | https://ritrovato.quietunit.com |
 | 02 | Text search (LLM → filters) | feat/back | DeepSeek (ds_code.py) | 00 | complete | b890135 |
-| 03 | UI: search, results, card, 5 languages | feat/front | teammate | 00 | in progress | — |
+| 03 | UI: search, results, card, 5 languages | feat/front | teammate | 00 | complete | 94953a2, live; e2e 28/30 (stale count assert) |
 | 04 | Voice (ElevenLabs STT) | feat/back | DeepSeek (ds_code.py) | 02 | complete | see "blocks 04+05" |
 | 05 | Photo (ElevenLabs Agent, D-013) | feat/back | DeepSeek (ds_code.py) | 02 | complete | see "blocks 04+05" |
 | 06 | Daily update (Tesseract, D-012) | feat/back | DeepSeek + orchestrator | 00 | complete | see "block 06" |

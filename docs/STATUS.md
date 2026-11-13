@@ -21,8 +21,8 @@ Plan: `docs/plans/ROADMAP.md`.
 |---|---|---|---|---|---|---|
 | 00 | Skeleton and contract | main | orchestrator | — | complete | see `git log` ("block 00") |
 | 01 | First deploy | main | qa-deploy | 00 | pending | — |
-| 02 | Text search (LLM → filters) | feat/back | back-builder | 00 | pending | — |
-| 03 | UI: search, results, card, 5 languages | feat/front | front-builder | 00 | pending | — |
+| 02 | Text search (LLM → filters) | feat/back | DeepSeek (ds_code.py) | 00 | complete | b890135 |
+| 03 | UI: search, results, card, 5 languages | feat/front | teammate | 00 | in progress | — |
 | 04 | Voice (ElevenLabs STT) | feat/back | back-builder | 02 | pending | — |
 | 05 | Photo (vision) | feat/back | back-builder | 02 | pending | — |
 | 06 | Daily update | feat/back | back-builder | 00 | pending | — |
@@ -35,7 +35,8 @@ Statuses: `pending`, `in progress`, `review`, `complete`, `blocked`, `cut`.
 ## Waiting on the owner
 
 - Subdomain, port and tunnel rule on `rilya-server`; `.env.deploy` locally.
-- `ANTHROPIC_API_KEY` and `ELEVENLABS_API_KEY` in `.env` on the server.
+- `DEEPSEEK_API_KEY` and `ELEVENLABS_API_KEY` in `.env` on the server.
+- Photo query without vision (D-012): browser CLIP or cut.
 - Confirm or replace the working name "Ritrovato".
 
 ## Judge verdicts

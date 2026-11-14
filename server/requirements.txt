@@ -1,6 +1,6 @@
-fastapi
-uvicorn[standard]
-python-multipart
-httpx
-websockets
+fastapi==0.162.7
+uvicorn[standard]==0.54.0
+python-multipart==0.0.33
+httpx==0.28.1
+websockets==17.4
 pymupdf==1.26.5

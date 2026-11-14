@@ -11,6 +11,7 @@ CATEGORIES = ("wallet", "id_document", "payment_card", "bag", "phone", "other", 
 COLOURS = ("black", "white", "grey", "silver", "gold", "red", "orange", "yellow", "green", "blue",
            "purple", "pink", "brown", "beige", "multicolour")
 PUBLIC_STATUSES = ("available", "reserved")
+LIMITS = {"descr": (3, 500), "found_place": (2, 120)}
 EDITABLE = ("category", "brand", "colour", "descr", "found_place", "found_at")
 
 
@@ -54,6 +55,8 @@ def _clean(fields: dict) -> dict:
         if k not in fields:
             continue
         v = fields[k]
+        if v is None and k not in ("brand", "colour"):
+            raise HTTPException(400, f"bad_request: {k} cannot be empty")
         if k == "category" and v not in CATEGORIES:
             raise HTTPException(400, "bad_request: unknown category")
         if k == "colour":
@@ -64,6 +67,9 @@ def _clean(fields: dict) -> dict:
             v = " ".join(v.upper().split()) if isinstance(v, str) and v.strip() else None
         if k in ("descr", "found_place"):
             v = " ".join(str(v).split())
+            lo, hi = LIMITS[k]
+            if not lo <= len(v) <= hi:
+                raise HTTPException(400, f"bad_request: {k} must be {lo}-{hi} characters")
         if k == "found_at":
             v = str(v)
             try:

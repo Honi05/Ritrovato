@@ -137,3 +137,13 @@ def test_seed_demo_is_idempotent():
     assert operators.seed_demo("demo-pass-123") == 0
     c = TestClient(app)
     assert c.post("/api/operator/login", json={"username": "demo", "password": "demo-pass-123"}).status_code == 200
+
+
+def test_blank_and_null_text_fields_rejected(op):
+    it = new_item(op).json()
+    n = it["id"].split("-")[1]
+    for body in ({"descr": None}, {"found_place": "  "}, {"descr": "   "}, {"category": None}, {"found_at": None}):
+        assert op.patch(f"/api/operator/items/{n}", json=body).status_code == 400, body
+    lst = op.get("/api/operator/items").json()["items"][0]
+    assert lst["descr"] == it["descr"] and lst["found_place"] == it["found_place"]
+    assert new_item(op, descr="   ").status_code == 400

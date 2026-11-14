@@ -55,7 +55,7 @@ export default function Home() {
                 <span className="text-xl leading-tight font-extrabold">{segments(newest.descr)[0]}</span>
                 <span className="flex justify-between font-mono text-[13px]">
                   <span>{formatDate(newest.date)}</span>
-                  <span>{t.item.page(newest.source.page)}</span>
+                  {newest.source && <span>{t.item.page(newest.source.page)}</span>}
                 </span>
               </div>
             </div>
@@ -91,6 +91,9 @@ export default function Home() {
               </a>
             ))}
           </div>
+          <a href={href('catalogue', { source: 'office' })} className="self-start text-[15px] font-bold">
+            {t.office.recent} →
+          </a>
         </section>
       )}
 

@@ -147,6 +147,30 @@ const de: Strings = {
     electronics: 'Elektronik', clothing: 'Kleidung und Schirme', glasses: 'Brillen',
     sim: 'SIM-Karten', watch_jewelry: 'Uhren und Schmuck', money: 'Geld', vehicle: 'Fahrräder und Roller',
   },
+  office: {
+    stripTitle: 'Im Fundbüro abgegeben', stripLead: 'Vom Personal mit Foto erfasst. Du kannst die Abholung buchen.',
+    badge: 'Im Fundbüro erfasst', registryBadge: 'Aus dem PDF der Stadt', reserved: 'Abholung gebucht',
+    foundPlace: 'Gefunden in', colour: 'Farbe', date: 'Gefunden am', recent: 'Kürzlich im Fundbüro erfasst',
+    notRecordedOffice: 'nicht im PDF der Stadt erfasst — für Fundbüro-Gegenstände genutzt',
+    notFound: 'Dieser Gegenstand ist nicht mehr verfügbar.',
+  },
+  colours: { black: 'Schwarz', white: 'Weiß', grey: 'Grau', silver: 'Silber', gold: 'Gold', red: 'Rot',
+    orange: 'Orange', yellow: 'Gelb', green: 'Grün', blue: 'Blau', purple: 'Lila', pink: 'Rosa',
+    brown: 'Braun', beige: 'Beige', multicolour: 'Bunt' } as Record<string, string>,
+  booking: {
+    cta: 'Abholung buchen', day: 'Tag', time: 'Uhrzeit', noSlots: 'An diesem Tag ist nichts mehr frei.',
+    name: 'Dein Name', contact: 'E-Mail oder Telefon',
+    ack: 'Ich weiß, dass ich am Schalter den Gegenstand beschreiben und einen Ausweis zeigen muss.',
+    confirm: 'Buchung bestätigen', sending: 'Wird gebucht…', slotTaken: 'Diese Uhrzeit wurde gerade vergeben — wähle eine andere.',
+    itemTaken: 'Jemand hat diesen Gegenstand gerade gebucht.', tooMany: 'Zu viele Buchungen. Versuche es später.',
+    error: 'Buchung fehlgeschlagen. Versuche es noch einmal.', done: 'Abholung gebucht', code: 'Buchungscode', when: 'Wann',
+    bring: 'Bring einen Ausweis mit und, wenn möglich, einen Nachweis, dass der Gegenstand dir gehört.',
+    saveLink: 'Speichere diesen Link, um die Buchung zu sehen oder zu stornieren:', copy: 'Link kopieren', copied: 'Kopiert',
+    calendar: 'Zum Kalender hinzufügen', manageTitle: 'Deine Buchung',
+    status: { booked: 'Gebucht', collected: 'Abgeholt', no_show: 'Nicht erschienen', cancelled: 'Storniert' } as Record<string, string>,
+    cancel: 'Buchung stornieren', cancelAsk: 'Diese Buchung stornieren? Die Uhrzeit wird wieder frei.',
+    yesCancel: 'Ja, stornieren', keep: 'Behalten', notFound: 'Buchung nicht gefunden.',
+  },
 }
 
 export default de

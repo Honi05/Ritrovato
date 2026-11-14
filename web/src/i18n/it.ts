@@ -147,6 +147,31 @@ const it: Strings = {
     electronics: 'Elettronica', clothing: 'Abiti e ombrelli', glasses: 'Occhiali',
     sim: 'SIM', watch_jewelry: 'Orologi e gioielli', money: 'Denaro', vehicle: 'Bici e monopattini',
   },
+  office: {
+    stripTitle: "Trovati all'ufficio", stripLead: 'Registrati dal personale con una foto. Puoi prenotare il ritiro.',
+    badge: "Registrato all'ufficio", registryBadge: 'Dal PDF del Comune', reserved: 'Ritiro prenotato',
+    foundPlace: 'Trovato a', colour: 'Colore', date: 'Trovato il', recent: "Registrati di recente all'ufficio",
+    notRecordedOffice: "non registrato nel PDF del Comune — usato per gli oggetti dell'ufficio",
+    notFound: 'Questo oggetto non è più disponibile.',
+  },
+  colours: { black: 'Nero', white: 'Bianco', grey: 'Grigio', silver: 'Argento', gold: 'Oro', red: 'Rosso',
+    orange: 'Arancione', yellow: 'Giallo', green: 'Verde', blue: 'Blu', purple: 'Viola', pink: 'Rosa',
+    brown: 'Marrone', beige: 'Beige', multicolour: 'Multicolore' } as Record<string, string>,
+  booking: {
+    cta: 'Prenota il ritiro', day: 'Giorno', time: 'Orario', noSlots: 'Nessun orario libero in questo giorno.',
+    name: 'Il tuo nome', contact: 'Email o telefono',
+    ack: "Ho capito che allo sportello dovrò descrivere l'oggetto e mostrare un documento.",
+    confirm: 'Conferma prenotazione', sending: 'Prenotazione…',
+    slotTaken: 'Questo orario è appena stato preso — scegline un altro.',
+    itemTaken: 'Qualcuno ha appena prenotato questo oggetto.', tooMany: 'Troppe prenotazioni. Riprova più tardi.',
+    error: 'Prenotazione non riuscita. Riprova.', done: 'Ritiro prenotato', code: 'Codice prenotazione', when: 'Quando',
+    bring: "Porta un documento d'identità e, se puoi, una prova che l'oggetto è tuo.",
+    saveLink: 'Salva questo link per vedere o annullare la prenotazione:', copy: 'Copia link', copied: 'Copiato',
+    calendar: 'Aggiungi al calendario', manageTitle: 'La tua prenotazione',
+    status: { booked: 'Prenotato', collected: 'Ritirato', no_show: 'Non presentato', cancelled: 'Annullato' } as Record<string, string>,
+    cancel: 'Annulla prenotazione', cancelAsk: "Annullare la prenotazione? L'orario tornerà libero.",
+    yesCancel: 'Sì, annulla', keep: 'Mantieni', notFound: 'Prenotazione non trovata.',
+  },
 }
 
 export default it

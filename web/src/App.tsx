@@ -8,6 +8,8 @@ import { useRoute } from './lib/router'
 import Catalogue from './pages/Catalogue'
 import Home from './pages/Home'
 import ItemPage from './pages/ItemPage'
+import ManageBooking from './pages/ManageBooking'
+import OfficeItemPage from './pages/OfficeItemPage'
 import Search from './pages/Search'
 
 export default function App() {
@@ -38,7 +40,8 @@ function Shell() {
         {route.name === 'home' && <Home />}
         {route.name === 'search' && <Search params={route.params} />}
         {route.name === 'catalogue' && <Catalogue params={route.params} />}
-        {route.name === 'item' && <ItemPage id={route.id} />}
+        {route.name === 'item' && (route.id.startsWith('office-') ? <OfficeItemPage id={route.id} /> : <ItemPage id={route.id} />)}
+        {route.name === 'booking' && <ManageBooking token={route.token} />}
         {route.name === 'collect' && (
           <div className="flex max-w-3xl flex-col gap-6 pt-10">
             <h1 className="font-wide m-0 text-[clamp(36px,6vw,56px)] leading-none font-black">{t.pickup.title}</h1>

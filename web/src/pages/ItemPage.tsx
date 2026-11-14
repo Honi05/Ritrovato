@@ -54,14 +54,16 @@ export default function ItemPage({ id }: { id: string }) {
                 <dt className={dt}>{t.item.type}</dt>
                 <dd className="m-0 mt-1">{t.categories[item.category] ?? item.category}</dd>
               </div>
-              <div>
-                <dt className={dt}>{t.item.source}</dt>
-                <dd className="m-0 mt-1">
-                  <a href={item.source.url} target="_blank" rel="noreferrer">
-                    {t.item.page(item.source.page)}
-                  </a>
-                </dd>
-              </div>
+              {item.source && (
+                <div>
+                  <dt className={dt}>{t.item.source}</dt>
+                  <dd className="m-0 mt-1">
+                    <a href={item.source.url} target="_blank" rel="noreferrer">
+                      {t.item.page(item.source.page)}
+                    </a>
+                  </dd>
+                </div>
+              )}
             </dl>
           </div>
           <p className="m-0 flex items-start gap-3 border-2 border-dashed border-ink p-4 text-sm leading-normal">

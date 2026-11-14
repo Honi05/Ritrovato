@@ -1,8 +1,12 @@
 """Back-office API: /api/operator/* (spec §2). Every route except login needs a session."""
-from fastapi import APIRouter, Depends, HTTPException, Request, Response
+import asyncio
+from typing import Literal
+
+from fastapi import APIRouter, Depends, File, HTTPException, Query, Request, Response, UploadFile
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
-from . import auth, ratelimit
+from . import auth, interpret, office, photo, photos, ratelimit
 
 router = APIRouter(prefix="/api/operator")
 Operator = Depends(auth.current_operator)
@@ -36,3 +40,73 @@ def logout(request: Request, response: Response):
 @router.get("/me")
 def me(op: dict = Operator):
     return {k: op[k] for k in ("username", "display_name", "is_admin")}
+
+
+AI_TIMEOUT = 14.0
+
+
+@router.post("/items/draft")
+async def draft(image: UploadFile = File(...), op: dict = Operator):
+    data = await image.read(photos.MAX_BYTES + 1)
+    draft_id = photos.save_draft(data, image.content_type)
+    suggested = None
+    try:
+        text = await asyncio.wait_for(photo.describe(data, image.content_type), timeout=AI_TIMEOUT)
+        if text and text.strip():
+            f = await asyncio.to_thread(interpret.interpret, text, "it") or {}
+            suggested = {"category": f.get("category"), "brand": f.get("brand"),
+                         "colour": f.get("colour"), "descr": text.strip()}
+    except Exception:  # AI pre-fill is optional; the operator fills the form by hand
+        suggested = None
+    return {"draft_id": draft_id, "photo_url": f"/api/operator/drafts/{draft_id}.webp", "suggested": suggested}
+
+
+@router.get("/drafts/{name}")
+def draft_file(name: str, op: dict = Operator):
+    p = photos.draft_path(name.removesuffix(".webp"))
+    if p is None:
+        raise HTTPException(404, "not_found: no such draft")
+    return FileResponse(p, media_type="image/webp")
+
+
+class ItemIn(BaseModel):
+    draft_id: str | None = None
+    category: str
+    brand: str | None = Field(None, max_length=40)
+    colour: str | None = None
+    descr: str = Field(min_length=3, max_length=500)
+    found_place: str = Field(min_length=2, max_length=120)
+    found_at: str
+
+
+class ItemPatch(BaseModel):
+    draft_id: str | None = None
+    category: str | None = None
+    brand: str | None = Field(None, max_length=40)
+    colour: str | None = None
+    descr: str | None = Field(None, min_length=3, max_length=500)
+    found_place: str | None = Field(None, min_length=2, max_length=120)
+    found_at: str | None = None
+    status: Literal["returned", "discarded"] | None = None
+
+
+@router.post("/items")
+def create_item(req: ItemIn, op: dict = Operator):
+    return office.create(req.model_dump(), op["id"])
+
+
+@router.patch("/items/{item_id}")
+def patch_item(item_id: int, req: ItemPatch, op: dict = Operator):
+    return office.update(item_id, req.model_dump(exclude_unset=True))
+
+
+@router.get("/items")
+def list_items(
+    status: Literal["available", "reserved", "returned", "discarded"] | None = None,
+    category: str | None = None,
+    q: str = "",
+    limit: int = Query(50, ge=1, le=200),
+    offset: int = Query(0, ge=0),
+    op: dict = Operator,
+):
+    return office.list_items(status, category, q, limit, offset)

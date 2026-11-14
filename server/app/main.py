@@ -14,7 +14,7 @@ from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from . import db, interpret, office_db, operator_api, photo, update, voice
+from . import db, interpret, office, office_api, office_db, operator_api, photo, photos, update, voice
 
 Lang = Literal["it", "en", "es", "fr", "de"]
 WEB_DIST = Path(__file__).parent.parent.parent / "web" / "dist"
@@ -24,6 +24,16 @@ WEB_DIST = Path(__file__).parent.parent.parent / "web" / "dist"
 async def lifespan(app):
     db.init()
     office_db.connect().close()  # create office tables
+
+    def purger():
+        while True:
+            try:
+                photos.purge_drafts()
+            except Exception:
+                logging.exception("draft purge failed")
+            time.sleep(3600)
+
+    threading.Thread(target=purger, daemon=True, name="draft-purge").start()
     if os.environ.get("UPDATE_DISABLED") != "1":
         def updater():
             time.sleep(60)
@@ -39,6 +49,7 @@ async def lifespan(app):
 
 app = FastAPI(title="Oggetti smarriti Roma", lifespan=lifespan)
 app.include_router(operator_api.router)
+app.include_router(office_api.router)
 
 
 @app.exception_handler(HTTPException)
@@ -108,7 +119,10 @@ def text_quota(request: Request):
 
 @app.get("/api/items/{item_id}")
 def one_item(item_id: str):
-    found = db.item(item_id)
+    if item_id.startswith("office-"):
+        found = office.public_item(item_id)
+    else:
+        found = db.item(item_id)
     if found is None:
         raise HTTPException(404, "not_found: no such entry")
     return found

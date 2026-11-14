@@ -12,12 +12,6 @@ const base = (size = 22) => ({
   'aria-hidden': true,
 })
 
-export const TagIcon = ({ size, className }: P) => (
-  <svg {...base(size)} className={className}>
-    <path d="M3 9.5 9.5 3H21v18H9.5L3 14.5z" />
-    <circle cx="9" cy="12" r="1.6" />
-  </svg>
-)
 export const ArrowRight = ({ size, className }: P) => (
   <svg {...base(size)} className={className} strokeWidth={2.5}>
     <path d="M5 12h14M13 6l6 6-6 6" />

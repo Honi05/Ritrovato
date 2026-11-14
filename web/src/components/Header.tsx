@@ -1,7 +1,7 @@
 import { LANGS } from '../api'
 import { useI18n } from '../i18n'
 import { href, type Route } from '../lib/router'
-import { TagIcon } from './Icons'
+import Logo from './Logo'
 
 export default function Header({ route }: { route: Route }) {
   const { t, lang, setLang } = useI18n()
@@ -10,7 +10,7 @@ export default function Header({ route }: { route: Route }) {
   return (
     <header className="flex flex-wrap items-center justify-between gap-4 border-b-2 border-ink py-5">
       <a href={href('')} className="flex items-center gap-2.5 text-ink no-underline">
-        <TagIcon size={30} />
+        <Logo size={40} />
         <span className="font-widest text-[22px] font-black tracking-[0.04em]">RITROVATO</span>
       </a>
       <nav aria-label={t.nav.main} className="flex flex-wrap gap-6 text-[15px] font-semibold">

@@ -1,1 +1,24 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#e6d3a0" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 9.5 3H21v18H9.5L3 14.5z"/><circle cx="9" cy="12" r="1.6" fill="#fff"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="520 420 360 360">
+  <title>Ritrovato</title>
+  <clipPath id="c"><rect x="520" y="420" width="360" height="360" rx="72"/></clipPath>
+  <g clip-path="url(#c)">
+  <rect x="520" y="420" width="360" height="360" fill="#f7f7f3"/>
+  <path d="M366 612 L520 548 L880 440 L904 622 Z" fill="#111111"/>
+  <circle cx="620" cy="566" r="47" fill="#ffffff"/>
+  <circle cx="728" cy="556" r="47" fill="#ffffff"/>
+  <circle cx="646" cy="560" r="25" fill="#111111"/>
+  <circle cx="750" cy="546" r="25" fill="#111111"/>
+  <circle cx="656" cy="549" r="7.5" fill="#ffffff"/>
+  <circle cx="760" cy="535" r="7.5" fill="#ffffff"/>
+  <path d="M345 622 Q627 604 910 622 L884 828 Q882 846 864 846 L398 846 Q380 846 378 828 Z"
+        fill="#e6d3a0" stroke="#111111" stroke-width="18" stroke-linejoin="round"/>
+  <path d="M341 592 L388 452 Q394 436 410 432 L806 352 Q824 349 836 362 L894 414 Q904 426 889 432 L360 604 Q338 611 341 592 Z"
+        fill="#e6d3a0" stroke="#111111" stroke-width="18" stroke-linejoin="round"/>
+  <path d="M742 624 C770 640 774 684 760 714" fill="none" stroke="#111111" stroke-width="13.5" stroke-linecap="round"/>
+  <g transform="translate(742 764) rotate(20)">
+    <path d="M-36 -32 L-17 -50 H17 L36 -32 V46 Q36 52 30 52 H-30 Q-36 52 -36 46 Z" fill="#f7f7f3" stroke="#111111" stroke-width="10.8" stroke-linejoin="round"/>
+    <circle cx="0" cy="-33" r="7.5" fill="#e6d3a0"/>
+  </g>
+  <path d="M836 288 L842 350 M936 330 L894 376" fill="none" stroke="#ff5a1f" stroke-width="36" stroke-linecap="round"/>
+  </g>
+</svg>

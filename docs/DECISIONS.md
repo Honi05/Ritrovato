@@ -94,3 +94,10 @@ override each call, so prompt and today's date stay in code. Probe on 5 demo que
 1.3-1.9 s vs DeepSeek 0.8-1.4 s, same filters, agent better on "in October". On any agent
 failure or after 8 s, DeepSeek answers; without both keys, the keyword fallback. Partly
 replaces D-012.
+
+## D-015 · 2026-11-14 · Office back-office with pickup booking
+
+Staff-logged items live in a separate `office.sqlite` (registry seed and daily update
+untouched) and are returned in a separate `office` list in search responses, so registry
+paging, relaxation and tests do not change. Citizens book a slot; no online ownership
+claim, no emails. Spec: `docs/superpowers/specs/2026-11-14-operator-backoffice-design.md`.

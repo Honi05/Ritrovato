@@ -6,12 +6,16 @@ import { useEffect, useState } from 'react'
 //   #/catalogue?category=…   filtered browse (GET /api/items)
 //   #/item/<id>              entry card
 //   #/collect                how to collect an item
+//   #/booking/<token>        citizen manages a pickup booking
+//   #/operator[/login|new|items|bookings]  staff back-office
 export type Route =
   | { name: 'home' }
   | { name: 'search'; params: URLSearchParams }
   | { name: 'catalogue'; params: URLSearchParams }
   | { name: 'item'; id: string }
   | { name: 'collect' }
+  | { name: 'booking'; token: string }
+  | { name: 'operator'; page: 'today' | 'login' | 'new' | 'items' | 'bookings'; params: URLSearchParams }
 
 export function parse(hash: string): Route {
   const [path, query = ''] = hash.replace(/^#\/?/, '').split('?')
@@ -20,6 +24,12 @@ export function parse(hash: string): Route {
   if (path === 'catalogue') return { name: 'catalogue', params }
   if (path === 'collect') return { name: 'collect' }
   if (path.startsWith('item/')) return { name: 'item', id: decodeURIComponent(path.slice(5)) }
+  if (path.startsWith('booking/')) return { name: 'booking', token: decodeURIComponent(path.slice(8)) }
+  if (path === 'operator' || path.startsWith('operator/')) {
+    const sub = path.slice(9) || 'today'
+    const page = (['login', 'new', 'items', 'bookings'] as const).find((p) => p === sub) ?? 'today'
+    return { name: 'operator', page, params }
+  }
   return { name: 'home' }
 }
 

@@ -4,3 +4,7 @@ python-multipart==0.0.33
 httpx==0.28.1
 websockets==17.4
 pymupdf==1.26.5
+
+argon2-cffi==25.1.0
+Pillow==13.0.0
+tzdata==2026.6

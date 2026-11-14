@@ -1,5 +1,6 @@
 """Text -> Interpreted filters via an ElevenLabs agent, then DeepSeek, then mapped keyword filters."""
 import json
+import logging
 import os
 import re
 import time
@@ -9,7 +10,7 @@ from functools import lru_cache
 import httpx
 from websockets.sync.client import connect
 
-from . import db
+from . import db, office
 
 DEEPSEEK_URL = "https://api.deepseek.com/chat/completions"
 DEFAULT_MODEL = "deepseek-chat"
@@ -276,7 +277,10 @@ def _prompt(categories: list[str]) -> str:
         '"ignored": the registry does not record colour, place found, or looks; list '
         'ONLY the ones the user actually mentioned, as keys "colour", "place", "photo", '
         '"other_unrecorded" (e.g. "black phone at Termini" -> ["colour", "place"]; '
-        '"Samsung phone" -> []). Never include user words.'
+        '"Samsung phone" -> []). Never include user words in "ignored". '
+        f'Also "colour": the item colour as one of {", ".join(office.COLOURS)}, or null; and '
+        '"place": where it was lost, as the user wrote it (e.g. "Termini", "bus 64"), or null. '
+        "Colour and place stay listed in ignored as well."
     )
 
 
@@ -446,6 +450,13 @@ def interpret(text: str, lang: str) -> dict | None:
 
     ignored = _normalize_ignored(parsed.get("ignored"))
 
+    colour = parsed.get("colour")
+    colour = colour.strip().lower() if isinstance(colour, str) else None
+    if colour not in office.COLOURS:
+        colour = None
+    place = parsed.get("place")
+    place = " ".join(place.split())[:80] or None if isinstance(place, str) else None
+
     return {
         "category": category,
         "brand": brand,
@@ -453,6 +464,8 @@ def interpret(text: str, lang: str) -> dict | None:
         "date_from": date_from,
         "date_to": date_to,
         "ignored": ignored,
+        "colour": colour,
+        "place": place,
     }
 
 
@@ -496,6 +509,8 @@ def fallback_interpret(text: str, lang: str = "it") -> dict:
             "date_from": None,
             "date_to": None,
             "ignored": [],
+            "colour": None,
+            "place": None,
         }
 
     return {
@@ -505,6 +520,8 @@ def fallback_interpret(text: str, lang: str = "it") -> dict:
         "date_from": None,
         "date_to": None,
         "ignored": [],
+        "colour": None,
+        "place": None,
     }
 
 
@@ -538,6 +555,11 @@ def search(text: str, lang: str) -> dict:
     shown = filters  # contract: interpreted is null on keyword fallback
     if filters is None:
         filters = fallback_interpret(text, lang)
+    try:
+        office_items = office.search(filters)
+    except Exception:  # the office catalogue is optional; registry search must keep working
+        logging.exception("office search failed")
+        office_items = []
     result = _db_search(filters)
     relaxed = []  # contract: filters dropped because nothing matched
     while not result["total"] and len(filters.get("keywords") or []) > 1:
@@ -555,4 +577,4 @@ def search(text: str, lang: str) -> dict:
         if name not in relaxed:
             relaxed.append(name)
         result = _db_search(filters)
-    return {**result, "interpreted": shown and {**shown, "relaxed": relaxed}}
+    return {**result, "interpreted": shown and {**shown, "relaxed": relaxed}, "office": office_items}

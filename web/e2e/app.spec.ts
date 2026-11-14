@@ -59,8 +59,8 @@ for (const [lang, want] of Object.entries(LANGS)) {
     await expect(understood.getByText(want.chip, { exact: true })).toBeVisible()
     await expect(understood.getByText('01/10/2026 – 31/10/2026')).toBeVisible()
     await expect(understood.getByText(want.colour, { exact: true })).toBeVisible()
-    await expect(page.locator('a[href^="#/item/"]')).toHaveCount(14)
-    await expect(page.locator('a[href^="#/item/"]').first()).toContainText('6544')
+    await expect(page.locator('a[href^="#/item/"]:not([data-testid="office-card"])')).toHaveCount(14)
+    await expect(page.locator('a[href^="#/item/"]:not([data-testid="office-card"])').first()).toContainText('6544')
     expect(errors).toEqual([])
   })
 }
@@ -69,7 +69,7 @@ test('result → entry card with pickup info → back', async ({ page }) => {
   await page.goto('/')
   await setLang(page, 'en')
   await search(page, DEMO)
-  await page.locator('a[href^="#/item/"]').first().click()
+  await page.locator('a[href^="#/item/"]:not([data-testid="office-card"])').first().click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('6544')
   await expect(page.getByText('TELEFONO CELLULARE CON SIM · SAMSUNG · LYCA MOBILE')).toBeVisible()
@@ -98,7 +98,7 @@ test('catalogue filters by category and brand, and pages', async ({ page }) => {
   await expect(page).toHaveURL(/category=phone/)
   await expect(page).toHaveURL(/brand=SAMSUNG/)
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(/possible matches/)
-  const tags = page.locator('a[href^="#/item/"]')
+  const tags = page.locator('a[href^="#/item/"]:not([data-testid="office-card"])')
   await expect(tags).toHaveCount(20)
   await expect(tags.first()).toContainText('SAMSUNG')
   await page.getByRole('button', { name: /Show more/ }).click()
@@ -124,9 +124,9 @@ test('language choice survives a reload', async ({ page }) => {
 
 test('no IMEI or document numbers reach the page', async ({ page }) => {
   await page.goto('/#/catalogue?category=id_document')
-  await expect(page.locator('a[href^="#/item/"]')).toHaveCount(20)
+  await expect(page.locator('a[href^="#/item/"]:not([data-testid="office-card"])')).toHaveCount(20)
   await page.goto('/#/catalogue?category=phone')
-  await expect(page.locator('a[href^="#/item/"]')).toHaveCount(20)
+  await expect(page.locator('a[href^="#/item/"]:not([data-testid="office-card"])')).toHaveCount(20)
   const text = await page.locator('body').innerText()
   expect(text).not.toMatch(/IMEI:\s*\d/)
   expect(text).not.toMatch(/Nr:\s*\S/)

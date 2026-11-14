@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { searchText, type SearchResponse } from '../api'
 import ItemTag from '../components/ItemTag'
 import SearchBar from '../components/SearchBar'
+import OfficeStrip from '../components/OfficeStrip'
 import Refine, { type Refined } from '../components/Refine'
 import Understood from '../components/Understood'
 import { useI18n } from '../i18n'
@@ -98,7 +99,7 @@ function Results({ state, query }: { state: State; query: string }) {
 
   return (
     <>
-      {base && <Understood interpreted={base.interpreted} />}
+      {base && <Understood interpreted={base.interpreted} hasOffice={!!base.office?.length} />}
       {base?.interpreted && (
         <Refine
           key={`${base.total}|${JSON.stringify(base.interpreted)}`}
@@ -106,6 +107,7 @@ function Results({ state, query }: { state: State; query: string }) {
           onChange={(r) => setNarrow(r && base ? { from: base, r } : null)}
         />
       )}
+      <OfficeStrip items={base?.office} />
 
       <section aria-live="polite" aria-busy={state.status === 'loading'} className="flex flex-col gap-3.5 pt-3">
         {state.status === 'loading' && <p className="m-0 font-mono text-sm">{t.search.loading}</p>}

@@ -1,6 +1,8 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { getItems, getMeta, type Item, type ItemsParams, type Meta } from '../api'
 import ItemTag from '../components/ItemTag'
+import OfficeCard from '../components/OfficeCard'
+import OfficeStrip from '../components/OfficeStrip'
 import { useI18n } from '../i18n'
 import { remember } from '../lib/items'
 import { href, navigate } from '../lib/router'
@@ -17,11 +19,13 @@ export default function Catalogue({ params }: { params: URLSearchParams }) {
   const { t, lang } = useI18n()
   const filters = Object.fromEntries(FIELDS.map((k) => [k, params.get(k) ?? ''])) as Filters
   if (!BRANDED.includes(filters.category)) filters.brand = ''
-  const key = FIELDS.map((k) => filters[k]).join('|')
+  const office = params.get('source') === 'office'
+  const key = [...FIELDS.map((k) => filters[k]), office].join('|')
 
   const [meta, setMeta] = useState<Meta | null>(null)
   const [items, setItems] = useState<Item[]>([])
   const [total, setTotal] = useState<number | null>(null)
+  const [near, setNear] = useState<Item[]>([])
   const [error, setError] = useState(false)
   const [loading, setLoading] = useState(true)
   const gen = useRef(0) // bumps per request; a response from an older request is dropped
@@ -34,13 +38,14 @@ export default function Catalogue({ params }: { params: URLSearchParams }) {
     const mine = ++gen.current
     setLoading(true)
     setError(false)
-    const p: ItemsParams = { ...filters, limit: PAGE, offset }
+    const p: ItemsParams = { ...filters, limit: PAGE, offset, ...(office ? { source: 'office' as const } : {}) }
     return getItems(p).then(
       (r) => {
         remember(r.items)
         if (mine !== gen.current) return
         setItems((prev) => (offset === 0 ? r.items : [...prev, ...r.items]))
         setTotal(r.total)
+        if (offset === 0) setNear(r.office ?? [])
         setLoading(false)
       },
       () => {
@@ -58,12 +63,12 @@ export default function Catalogue({ params }: { params: URLSearchParams }) {
 
   return (
     <div className="flex flex-wrap items-start gap-8 pt-8">
-      <FilterPanel key={key} initial={filters} meta={meta} />
+      <FilterPanel key={key} initial={filters} meta={meta} office={office} />
 
       <section aria-live="polite" aria-busy={loading} className="flex min-w-0 flex-[999_1_560px] flex-col gap-3.5">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <h1 className="font-wide m-0 text-[30px] font-black">
-            {total === null ? t.nav.catalogue : t.search.matches(total)}
+            {total === null ? (office ? t.office.recent : t.nav.catalogue) : t.search.matches(total)}
           </h1>
           <span className="font-mono text-[13px] uppercase">{t.search.newest}</span>
         </div>
@@ -71,9 +76,14 @@ export default function Catalogue({ params }: { params: URLSearchParams }) {
         {!loading && !error && items.length === 0 && (
           <p className="m-0 border-2 border-dashed border-ink p-5">{t.search.none}</p>
         )}
-        {items.map((it) => (
-          <ItemTag key={it.id} item={it} />
-        ))}
+        {!office && <OfficeStrip items={near} />}
+        {office ? (
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-3">
+            {items.map((it) => <OfficeCard key={it.id} item={it} />)}
+          </div>
+        ) : (
+          items.map((it) => <ItemTag key={it.id} item={it} />)
+        )}
         {loading && <p className="m-0 font-mono text-sm">{t.search.loading}</p>}
         {!loading && total !== null && items.length < total && (
           <button
@@ -90,7 +100,7 @@ export default function Catalogue({ params }: { params: URLSearchParams }) {
   )
 }
 
-function FilterPanel({ initial, meta }: { initial: Filters; meta: Meta | null }) {
+function FilterPanel({ initial, meta, office }: { initial: Filters; meta: Meta | null; office: boolean }) {
   const { t } = useI18n()
   const [f, setF] = useState(initial)
   // Open beside the results on wide screens; collapsed above them on phones.
@@ -117,7 +127,7 @@ function FilterPanel({ initial, meta }: { initial: Filters; meta: Meta | null })
       aria-label={t.filters.title}
       onSubmit={(e) => {
         e.preventDefault()
-        navigate(href('catalogue', { ...f, q: f.q.trim(), brand: branded ? f.brand : '' }))
+        navigate(href('catalogue', { ...f, q: f.q.trim(), brand: branded ? f.brand : '', source: office ? 'office' : undefined }))
       }}
       className="flex flex-col gap-5 px-5 pb-5"
     >

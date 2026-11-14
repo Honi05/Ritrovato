@@ -11,6 +11,7 @@ source .env.deploy
 rsync -az --delete \
   --exclude .git --exclude '.env*' --exclude node_modules --exclude .venv \
   --exclude data --exclude docs --exclude .claude \
+  --exclude server/seed/office.sqlite --exclude server/seed/photos \
   ./ "$DEPLOY_HOST:$DEPLOY_DIR/app/"
 ssh "$DEPLOY_HOST" "cd $DEPLOY_DIR/app && cp -n ../.env .env 2>/dev/null; sudo docker compose up -d --build"
 

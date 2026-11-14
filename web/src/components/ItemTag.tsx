@@ -29,7 +29,8 @@ export default function ItemTag({ item, highlight = false }: { item: Item; highl
       </span>
       <span className="flex flex-col items-end gap-1 font-mono text-sm">
         <span>{formatDate(item.date)}</span>
-        <span className="text-xs">{t.item.page(item.source.page)}</span>
+        {item.source && <span className="text-xs">{t.item.page(item.source.page)}</span>}
+        <span className="font-mono text-[11px] uppercase text-muted">{t.office.registryBadge}</span>
       </span>
     </a>
   )

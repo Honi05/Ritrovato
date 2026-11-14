@@ -3,7 +3,7 @@ import { useI18n } from '../i18n'
 import { formatDate } from '../lib/items'
 
 /** Chips for what the search understood, plus attributes the register cannot match. */
-export default function Understood({ interpreted }: { interpreted: Interpreted | null }) {
+export default function Understood({ interpreted, hasOffice = false }: { interpreted: Interpreted | null; hasOffice?: boolean }) {
   const { t } = useI18n()
   const chip = 'bg-ink px-3.5 py-2 text-sm font-bold text-card'
 
@@ -12,7 +12,7 @@ export default function Understood({ interpreted }: { interpreted: Interpreted |
       <p className="m-0 font-mono text-xs font-semibold tracking-[0.06em] uppercase">{t.search.keywordFallback}</p>
     )
   }
-  const { category, brand, date_from, date_to, ignored } = interpreted
+  const { category, brand, date_from, date_to, ignored, colour, place } = interpreted
   const dates = date_from || date_to ? `${formatDate(date_from) || '…'} – ${formatDate(date_to) || '…'}` : null
 
   return (
@@ -20,10 +20,12 @@ export default function Understood({ interpreted }: { interpreted: Interpreted |
       <span className="font-mono text-xs font-semibold tracking-[0.06em] uppercase">{t.search.understood}</span>
       {category && <span className={chip}>{t.categories[category] ?? category}</span>}
       {brand && <span className={chip}>{brand}</span>}
+      {colour && <span className={chip}>{t.colours[colour] ?? colour}</span>}
+      {place && <span className={chip}>{place}</span>}
       {dates && <span className={`${chip} font-mono`}>{dates}</span>}
       {ignored.map((k) => (
         <span key={k} className="border-2 border-dashed border-ink px-3 py-1.5 text-sm">
-          <b>{t.ignored[k as keyof typeof t.ignored] ?? k}</b> {t.search.notRecorded}
+          <b>{t.ignored[k as keyof typeof t.ignored] ?? k}</b> {hasOffice && (k === 'colour' || k === 'place') ? t.office.notRecordedOffice : t.search.notRecorded}
         </span>
       ))}
     </section>

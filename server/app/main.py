@@ -14,7 +14,7 @@ from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from . import db, interpret, photo, update, voice
+from . import db, interpret, office, office_api, office_db, operator_api, photo, photos, update, voice
 
 Lang = Literal["it", "en", "es", "fr", "de"]
 WEB_DIST = Path(__file__).parent.parent.parent / "web" / "dist"
@@ -23,6 +23,17 @@ WEB_DIST = Path(__file__).parent.parent.parent / "web" / "dist"
 @asynccontextmanager
 async def lifespan(app):
     db.init()
+    office_db.connect().close()  # create office tables
+
+    def purger():
+        while True:
+            try:
+                photos.purge_drafts()
+            except Exception:
+                logging.exception("draft purge failed")
+            time.sleep(3600)
+
+    threading.Thread(target=purger, daemon=True, name="draft-purge").start()
     if os.environ.get("UPDATE_DISABLED") != "1":
         def updater():
             time.sleep(60)
@@ -37,6 +48,8 @@ async def lifespan(app):
 
 
 app = FastAPI(title="Oggetti smarriti Roma", lifespan=lifespan)
+app.include_router(operator_api.router)
+app.include_router(office_api.router)
 
 
 @app.exception_handler(HTTPException)
@@ -64,8 +77,18 @@ def items(
     date_to: str | None = None,
     limit: int = Query(20, ge=1, le=100),
     offset: int = Query(0, ge=0),
+    source: Literal["office"] | None = None,
 ):
-    return {**db.search(q.split(), category, brand, date_from, date_to, limit, offset), "interpreted": None}
+    if source == "office":
+        return {**office.browse(q, category, brand, date_from, date_to, limit, offset), "interpreted": None, "office": []}
+    reg = db.search(q.split(), category, brand, date_from, date_to, limit, offset)
+    near = []
+    if offset == 0:
+        try:
+            near = office.browse(q, category, brand, date_from, date_to, 6, 0)["items"]
+        except Exception:  # registry results must survive an office DB failure
+            logging.exception("office search failed")
+    return {**reg, "interpreted": None, "office": near}
 
 
 # Voice, photo and (since D-014) text interpretation cost money per call: cap per client and per day.
@@ -106,7 +129,10 @@ def text_quota(request: Request):
 
 @app.get("/api/items/{item_id}")
 def one_item(item_id: str):
-    found = db.item(item_id)
+    if item_id.startswith("office-"):
+        found = office.public_item(item_id)
+    else:
+        found = db.item(item_id)
     if found is None:
         raise HTTPException(404, "not_found: no such entry")
     return found
@@ -134,7 +160,7 @@ def search_voice(audio: UploadFile, lang: Lang = Form("it"), _=Depends(paid_quot
         raise HTTPException(502, "upstream_failed: voice service unavailable, type your query instead") from None
 
     if not text:
-        return {"items": [], "total": 0, "interpreted": None, "transcript": ""}
+        return {"items": [], "total": 0, "interpreted": None, "office": [], "transcript": ""}
 
     return {**interpret.search(text, lang), "transcript": text}
 
@@ -154,7 +180,7 @@ async def search_photo(image: UploadFile, lang: Lang = Form("it"), _=Depends(pai
         raise HTTPException(502, "upstream_failed: photo service unavailable, type your query instead") from None
 
     if text is None or not text.strip():
-        return {"items": [], "total": 0, "interpreted": None, "description": None}
+        return {"items": [], "total": 0, "interpreted": None, "office": [], "description": None}
 
     return {**interpret.search(text, lang), "description": text}
 

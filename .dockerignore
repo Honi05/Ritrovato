@@ -7,3 +7,6 @@ docs
 **/dist
 **/.venv
 **/__pycache__
+
+server/seed/office.sqlite
+server/seed/photos

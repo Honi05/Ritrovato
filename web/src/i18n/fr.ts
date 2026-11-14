@@ -147,6 +147,31 @@ const fr: Strings = {
     electronics: 'Électronique', clothing: 'Vêtements et parapluies', glasses: 'Lunettes',
     sim: 'Cartes SIM', watch_jewelry: 'Montres et bijoux', money: 'Argent', vehicle: 'Vélos et trottinettes',
   },
+  office: {
+    stripTitle: 'Trouvés au bureau', stripLead: 'Enregistrés par le personnel avec une photo. Vous pouvez réserver le retrait.',
+    badge: 'Enregistré au bureau', registryBadge: 'Du PDF de la Ville', reserved: 'Retrait réservé',
+    foundPlace: 'Trouvé à', colour: 'Couleur', date: 'Trouvé le', recent: 'Enregistrés récemment au bureau',
+    notRecordedOffice: "absent du PDF de la Ville — utilisé pour les objets du bureau",
+    notFound: "Cet objet n'est plus disponible.",
+  },
+  colours: { black: 'Noir', white: 'Blanc', grey: 'Gris', silver: 'Argent', gold: 'Or', red: 'Rouge',
+    orange: 'Orange', yellow: 'Jaune', green: 'Vert', blue: 'Bleu', purple: 'Violet', pink: 'Rose',
+    brown: 'Marron', beige: 'Beige', multicolour: 'Multicolore' } as Record<string, string>,
+  booking: {
+    cta: 'Réserver le retrait', day: 'Jour', time: 'Heure', noSlots: 'Aucun créneau libre ce jour-là.',
+    name: 'Votre nom', contact: 'E-mail ou téléphone',
+    ack: "Je comprends que je devrai décrire l'objet et montrer une pièce d'identité au guichet.",
+    confirm: 'Confirmer la réservation', sending: 'Réservation…', slotTaken: 'Ce créneau vient d’être pris — choisissez-en un autre.',
+    itemTaken: "Quelqu'un vient de réserver cet objet.", tooMany: 'Trop de réservations. Réessayez plus tard.',
+    error: 'La réservation a échoué. Réessayez.', done: 'Retrait réservé', code: 'Code de réservation', when: 'Quand',
+    retry: 'Réessayer',
+    bring: "Apportez une pièce d'identité et, si possible, une preuve que l'objet vous appartient.",
+    saveLink: 'Gardez ce lien pour voir ou annuler votre réservation :', copy: 'Copier le lien', copied: 'Copié',
+    calendar: 'Ajouter au calendrier', manageTitle: 'Votre réservation',
+    status: { booked: 'Réservé', collected: 'Retiré', no_show: 'Absent', cancelled: 'Annulé' } as Record<string, string>,
+    cancel: 'Annuler la réservation', cancelAsk: 'Annuler cette réservation ? Le créneau sera libéré.',
+    yesCancel: 'Oui, annuler', keep: 'Garder', notFound: 'Réservation introuvable.',
+  },
 }
 
 export default fr

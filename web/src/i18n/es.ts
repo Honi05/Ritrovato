@@ -147,6 +147,31 @@ const es: Strings = {
     electronics: 'Electrónica', clothing: 'Ropa y paraguas', glasses: 'Gafas',
     sim: 'Tarjetas SIM', watch_jewelry: 'Relojes y joyas', money: 'Dinero', vehicle: 'Bicis y patinetes',
   },
+  office: {
+    stripTitle: 'Encontrados en la oficina', stripLead: 'Registrados por el personal con una foto. Puedes reservar la recogida.',
+    badge: 'Registrado en la oficina', registryBadge: 'Del PDF del Ayuntamiento', reserved: 'Recogida reservada',
+    foundPlace: 'Encontrado en', colour: 'Color', date: 'Encontrado el', recent: 'Registrados recientemente en la oficina',
+    notRecordedOffice: 'no consta en el PDF del Ayuntamiento — se usa para los objetos de la oficina',
+    notFound: 'Este objeto ya no está disponible.',
+  },
+  colours: { black: 'Negro', white: 'Blanco', grey: 'Gris', silver: 'Plateado', gold: 'Dorado', red: 'Rojo',
+    orange: 'Naranja', yellow: 'Amarillo', green: 'Verde', blue: 'Azul', purple: 'Morado', pink: 'Rosa',
+    brown: 'Marrón', beige: 'Beige', multicolour: 'Multicolor' } as Record<string, string>,
+  booking: {
+    cta: 'Reservar la recogida', day: 'Día', time: 'Hora', noSlots: 'No hay horas libres este día.',
+    name: 'Tu nombre', contact: 'Email o teléfono',
+    ack: 'Entiendo que en la ventanilla tendré que describir el objeto y mostrar un documento.',
+    confirm: 'Confirmar reserva', sending: 'Reservando…', slotTaken: 'Esa hora acaba de ocuparse — elige otra.',
+    itemTaken: 'Alguien acaba de reservar este objeto.', tooMany: 'Demasiadas reservas. Inténtalo más tarde.',
+    error: 'La reserva ha fallado. Inténtalo de nuevo.', done: 'Recogida reservada', code: 'Código de reserva', when: 'Cuándo',
+    retry: 'Reintentar',
+    bring: 'Trae un documento de identidad y, si puedes, una prueba de que el objeto es tuyo.',
+    saveLink: 'Guarda este enlace para ver o cancelar tu reserva:', copy: 'Copiar enlace', copied: 'Copiado',
+    calendar: 'Añadir al calendario', manageTitle: 'Tu reserva',
+    status: { booked: 'Reservada', collected: 'Recogido', no_show: 'No presentado', cancelled: 'Cancelada' } as Record<string, string>,
+    cancel: 'Cancelar reserva', cancelAsk: '¿Cancelar esta reserva? La hora quedará libre.',
+    yesCancel: 'Sí, cancelar', keep: 'Mantener', notFound: 'Reserva no encontrada.',
+  },
 }
 
 export default es

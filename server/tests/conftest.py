@@ -15,3 +15,14 @@ def fresh_caches():
     main._hits.clear()
     main._text_hits.clear()
     yield
+
+
+@pytest.fixture(autouse=True)
+def office_tmp(tmp_path, monkeypatch):
+    # Office data never touches the repo: temp DB and photo dir per test.
+    from app import office_db, photos, ratelimit
+    monkeypatch.setattr(office_db, "PATH", tmp_path / "office.sqlite")
+    monkeypatch.setattr(photos, "DIR", tmp_path / "photos")
+    for limiter in ratelimit.ALL:
+        limiter.clear()
+    yield

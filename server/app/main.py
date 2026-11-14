@@ -14,7 +14,7 @@ from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from . import db, interpret, photo, update, voice
+from . import db, interpret, office_db, operator_api, photo, update, voice
 
 Lang = Literal["it", "en", "es", "fr", "de"]
 WEB_DIST = Path(__file__).parent.parent.parent / "web" / "dist"
@@ -23,6 +23,7 @@ WEB_DIST = Path(__file__).parent.parent.parent / "web" / "dist"
 @asynccontextmanager
 async def lifespan(app):
     db.init()
+    office_db.connect().close()  # create office tables
     if os.environ.get("UPDATE_DISABLED") != "1":
         def updater():
             time.sleep(60)
@@ -37,6 +38,7 @@ async def lifespan(app):
 
 
 app = FastAPI(title="Oggetti smarriti Roma", lifespan=lifespan)
+app.include_router(operator_api.router)
 
 
 @app.exception_handler(HTTPException)

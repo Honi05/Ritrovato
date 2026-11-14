@@ -9,7 +9,8 @@ const PASSWORD = process.env.OPERATOR_PASSWORD ?? 'demo-pass-123'
 const PHOTO = path.join(import.meta.dirname, 'fixtures', 'wallet.jpg')
 
 test('operator logs an item, citizen books it, desk marks it collected', async ({ page, context }, info) => {
-  const tag = `E2E-${info.project.name}-${Date.now()}` // unique text to find this run's item
+  const letters = (n: number) => Array.from({ length: n }, () => String.fromCharCode(97 + Math.floor(Math.random() * 26))).join('')
+  const tag = `zz${info.project.name}${letters(10)}` // letters only: public descriptions drop digit runs (D-011)
 
   // AI pre-fill is mocked: the real draft is stored (re-posted via the API, because route.fetch()
   // corrupts multipart bodies), only the suggestions are replaced.

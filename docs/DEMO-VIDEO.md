@@ -13,7 +13,7 @@ Short, simple, readable on mute. The AI-generated shots only set the scene aroun
 | Sec | Shot | Title on screen | Source |
 |---|---|---|---|
 | 0–5 | A hand pats an empty jacket pocket on a Roman street | "Lost something in Rome?" | **Clip 1, rendered on Modal** |
-| 5–10 | The official PDF, fast scroll through scanned pages | "The city's answer: 498 scanned pages. Italian only." | Screen recording (real PDF) |
+| 5–10 | The official PDF, fast scroll through scanned pages | "The city's answer: 500+ scanned pages. Italian only." | Screen recording (real PDF) |
 | 10–14 | Logo card | "Ritrovato" | Title card |
 | 14–28 | Site in English. Type "black Samsung phone, October". Chips appear (phone · Samsung · Oct 2026), then 14 matching entries | "Describe it in your language" | Screen recording |
 | 28–38 | Three quick cuts, ~3 s each: microphone (Spanish), photo of keys, narrow-down chips | "Say it. Photograph it." | Screen recording |

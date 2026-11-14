@@ -156,7 +156,7 @@ def fix_sequence(recs, prev):
     for rec in recs:
         n = rec[1]
         if prev and abs(n - (prev + 1)) > 5:
-            rec = (rec[0], prev + 1, *rec[2:])
+            rec = (rec[0], prev + 1, *rec[2:4], 1, *rec[5:])  # 1 = num_guessed
         prev = rec[1]
         out.append(rec)
     return out, prev

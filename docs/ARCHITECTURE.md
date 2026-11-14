@@ -49,7 +49,7 @@ web/src/i18n/           it, en, es, fr, de strings
 ## API contract
 
 All responses are JSON. Errors: `{"error": "<code>", "message": "<text>"}` with codes
-`bad_request` (400), `too_large` (413), `rate_limited` (429), `not_implemented` (501),
+`bad_request` (400), `not_found` (404), `too_large` (413), `rate_limited` (429), `not_implemented` (501),
 `upstream_failed` (502). Voice and photo are capped (20 per 10 min per client, 500 per day):
 on 429 or 502 from them the UI keeps the user's input and offers the text search instead.
 Text search is capped too (60 per 10 min per client, env `TEXT_PER_IP`); its
@@ -70,6 +70,7 @@ interpretation is cached per (lowercased text, lang).
   "category": "phone",              // see docs/DATA.md for the 15 categories
   "tags": ["phone"],
   "brand": "APPLE",                 // or null
+  "number_guessed": false,          // true: OCR missed the registry number, the parser guessed it
   "source": {"page": 495, "url": "https://www.comune.roma.it/..."}
 }
 
@@ -112,6 +113,10 @@ interpretation is cached per (lowercased text, lang).
 }
 ```
 `last_checked_at` is `null` until the daily update has run once.
+
+### `GET /api/items/{id}`
+
+One `Item` by its id `<year>-<reperto>-<page>`; 404 `not_found` otherwise.
 
 ### `GET /api/items`
 Plain catalogue browse, no LLM. Query: `q` (space-separated keywords, all must occur),

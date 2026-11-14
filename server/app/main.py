@@ -104,6 +104,14 @@ def text_quota(request: Request):
     _quota(request, _text_hits, TEXT_PER_IP, None, "rate_limited: too many searches, wait a minute")
 
 
+@app.get("/api/items/{item_id}")
+def one_item(item_id: str):
+    found = db.item(item_id)
+    if found is None:
+        raise HTTPException(404, "not_found: no such entry")
+    return found
+
+
 class SearchRequest(BaseModel):
     query: str = Field(min_length=1, max_length=500)
     lang: Lang = "it"

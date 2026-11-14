@@ -52,3 +52,16 @@ def test_public_descr_hides_document_numbers():
     assert leaks == []
     assert db.public_descr("TELEFONO CELLULARE SENZA SIM - APPLE IPHONE") == \
         "TELEFONO CELLULARE SENZA SIM - APPLE IPHONE"
+
+
+def test_one_item():
+    from fastapi.testclient import TestClient
+    from app.main import app
+    client = TestClient(app)
+    known = client.get("/api/items/2025-1-1")
+    assert known.status_code == 200 and known.json()["id"] == "2025-1-1"
+    assert known.json()["number_guessed"] is False
+    assert client.get("/api/items/2025-2-1").json()["number_guessed"] is True
+    for bad in ("2025-999999-1", "nope"):
+        r = client.get(f"/api/items/{bad}")
+        assert r.status_code == 404 and r.json()["error"] == "not_found"

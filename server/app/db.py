@@ -47,6 +47,7 @@ def _item(r):
         "category": r["category"],
         "tags": r["tags"].split(",") if r["tags"] else [],
         "brand": r["brand"] or None,
+        "number_guessed": bool(r["num_guessed"]),
         "source": {"page": r["page"], "url": SOURCE_URL},
     }
 
@@ -77,6 +78,18 @@ def search(keywords=(), category=None, brand=None, date_from=None, date_to=None,
             [*args, limit, offset],
         ).fetchall()
     return {"items": [_item(r) for r in rows], "total": total}
+
+
+def item(item_id: str):
+    """One entry by its id `<year>-<reperto>-<page>`, or None."""
+    try:
+        year, reperto, page = (int(p) for p in item_id.split("-"))
+    except ValueError:
+        return None
+    with connect() as con:
+        r = con.execute(f"SELECT *, {ISO} AS iso FROM oggetti WHERE year=? AND reperto=? AND page=?",
+                        (year, reperto, page)).fetchone()
+    return _item(r) if r else None
 
 
 def meta():

@@ -12,6 +12,7 @@ export type Item = {
   category: string
   tags: string[]
   brand: string | null
+  number_guessed?: boolean // OCR missed the registry number, the parser guessed it
   source: { page: number; url: string }
 }
 

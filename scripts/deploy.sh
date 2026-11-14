@@ -15,7 +15,7 @@ rsync -az --delete \
 ssh "$DEPLOY_HOST" "cd $DEPLOY_DIR/app && cp -n ../.env .env 2>/dev/null; sudo docker compose up -d --build"
 
 for _ in $(seq 1 30); do
-  curl -fsS "$PUBLIC_URL/api/health" && { echo; echo "DEPLOYED $(git rev-parse --short HEAD)"; exit 0; }
+  curl -fsS "$PUBLIC_URL/api/meta" | grep -q '"total":[1-9]' && { echo; echo "DEPLOYED $(git rev-parse --short HEAD)"; exit 0; }
   sleep 2
 done
 echo "DEPLOY FAILED"; ssh "$DEPLOY_HOST" "cd $DEPLOY_DIR/app && sudo docker compose logs --tail 50"; exit 1

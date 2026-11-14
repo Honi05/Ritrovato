@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import { ApiError, opLogout, opMe, type Operator } from '../api'
+import Logo from '../components/Logo'
 import { href, navigate } from '../lib/router'
 import Bookings from './Bookings'
 import Intake from './Intake'
@@ -38,11 +39,11 @@ export default function OperatorApp({ page, params }: { page: Page; params: URLS
   if (page === 'login' || me === 'out') {
     return <Login expired={expired} onIn={(op) => { setExpired(false); setMe(op); navigate(href('operator')) }} />
   }
-  if (me === null) return <p className="p-6 font-mono">…</p>
+  if (me === null) return <p className="p-6 font-mono animate-pulse">…</p>
 
   const link = (p: Page, label: string) => (
     <a href={href(p === 'today' ? 'operator' : `operator/${p}`)} aria-current={page === p ? 'page' : undefined}
-      className={`py-2 font-semibold no-underline ${page === p ? 'underline decoration-[3px] underline-offset-[6px]' : ''}`}>
+      className={`border-2 px-3 py-1.5 font-semibold no-underline ${page === p ? 'border-ink bg-ink text-card hover:text-card' : 'border-transparent hover:border-ink'}`}>
       {label}
     </a>
   )
@@ -50,21 +51,26 @@ export default function OperatorApp({ page, params }: { page: Page; params: URLS
     <Guard.Provider value={guard}>
       <div className="mx-auto box-border max-w-[1200px] px-4 pb-16 sm:px-8">
         <header className="flex flex-wrap items-center justify-between gap-4 border-b-2 border-ink py-4">
-          <span className="font-widest text-lg font-black tracking-[0.04em]">RITROVATO · {t.title}</span>
-          <nav aria-label={t.title} className="flex flex-wrap gap-5 text-[15px]">
+          <a href={href('operator')} className="flex items-center gap-2.5 text-ink no-underline">
+            <Logo size={36} />
+            <span className="font-widest text-lg font-black tracking-[0.04em]">RITROVATO</span>
+            <span className="bg-signal px-1.5 py-0.5 font-mono text-[11px] font-semibold tracking-[0.08em] uppercase">{t.title}</span>
+          </a>
+          <nav aria-label={t.title} className="flex flex-wrap gap-1 text-[15px]">
             {link('today', t.nav.today)}
             {link('new', t.nav.new)}
             {link('items', t.nav.items)}
             {link('bookings', t.nav.bookings)}
           </nav>
-          <span className="flex items-center gap-3 text-sm">
+          <span className="flex items-center gap-3 text-sm font-semibold">
+            <span aria-hidden="true" className="grid size-9 place-items-center rounded-full border-2 border-ink bg-manila font-mono font-bold uppercase">{me.display_name.slice(0, 1)}</span>
             {me.display_name}
-            <button type="button" onClick={() => opLogout().finally(() => setMe('out'))} className="min-h-10 border-2 border-ink bg-card px-3 font-semibold">
+            <button type="button" onClick={() => opLogout().finally(() => setMe('out'))} className="min-h-10 cursor-pointer border-2 border-ink bg-card px-3 font-semibold hover:bg-paper">
               {t.logout}
             </button>
           </span>
         </header>
-        <main className="pt-6">
+        <main className="pt-8">
           {page === 'today' && <Today />}
           {page === 'new' && <Intake />}
           {page === 'items' && <Inventory params={params} />}

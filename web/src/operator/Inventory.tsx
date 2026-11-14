@@ -4,6 +4,7 @@ import { useI18n } from '../i18n'
 import { CATEGORIES } from '../lib/colours'
 import { formatDate } from '../lib/items'
 import ItemForm from './ItemForm'
+import StatusBadge from './StatusBadge'
 import { useGuard } from './OperatorApp'
 import { useOpT } from './strings'
 
@@ -38,11 +39,15 @@ export default function Inventory({ params }: { params: URLSearchParams }) {
   }
   const act = (it: OperatorItem, status: 'returned' | 'discarded') =>
     opPatchItem(officeNumber(it.id), { status }).then(replace, guard).finally(() => setAsking(null))
-  const field = 'min-h-11 border-2 border-ink bg-card px-3'
+  const field = 'min-h-11 border-2 border-ink bg-paper px-3'
+  const btn = 'min-h-10 cursor-pointer border-2 border-ink bg-card px-3 text-sm font-semibold hover:bg-paper'
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="font-wide m-0 text-4xl font-black">{t.inventory.title}</h1>
-      <form className="flex flex-wrap gap-2" onSubmit={(e) => { e.preventDefault(); load() }}>
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <h1 className="font-wide m-0 text-4xl font-black">{t.inventory.title}</h1>
+        {data && <span className="font-mono text-sm font-semibold uppercase">{t.inventory.count(data.total)}</span>}
+      </div>
+      <form className="flex flex-wrap gap-2 border-2 border-ink bg-card p-3" onSubmit={(e) => { e.preventDefault(); load() }}>
         <select aria-label="status" value={status} onChange={(e) => setStatus(e.target.value)} className={field}>
           <option value="">{t.inventory.all}</option>
           {STATUSES.map((s) => <option key={s} value={s}>{t.status[s]}</option>)}
@@ -52,32 +57,37 @@ export default function Inventory({ params }: { params: URLSearchParams }) {
           {CATEGORIES.map((c) => <option key={c} value={c}>{pub.categories[c] ?? c}</option>)}
         </select>
         <input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder={t.inventory.search} className={`${field} min-w-0 flex-1`} />
-        <button type="submit" className="min-h-11 border-2 border-ink bg-card px-4 font-semibold">{t.inventory.search}</button>
+        <button type="submit" className="min-h-11 cursor-pointer border-2 border-ink bg-ink px-4 font-semibold text-card">{t.inventory.search}</button>
       </form>
       {data && data.items.length === 0 && <p className="m-0 border-2 border-dashed border-ink p-4">{t.inventory.empty}</p>}
       <ul className="m-0 grid list-none grid-cols-[repeat(auto-fill,minmax(min(260px,100%),1fr))] gap-3 p-0">
         {data?.items.map((it) => (
-          <li key={it.id} data-testid="inventory-item" className="flex flex-col border-2 border-ink bg-card">
-            {it.photo_url && <img src={it.photo_url} alt="" className="aspect-[4/3] w-full border-b-2 border-ink object-cover" />}
-            <div className="flex flex-col gap-1 p-3">
-              <span className="font-mono text-xs uppercase">{it.id} · {t.status[it.status]}</span>
-              <b>{it.descr}</b>
+          <li key={it.id} data-testid="inventory-item" className={`flex flex-col border-2 border-ink bg-card transition-shadow hover:shadow-[6px_6px_0_#111] ${it.status === 'discarded' || it.status === 'returned' ? 'opacity-70' : ''}`}>
+            {it.photo_url
+              ? <img src={it.photo_url} alt="" className="aspect-[4/3] w-full border-b-2 border-ink object-cover" />
+              : <div aria-hidden="true" className="grid aspect-[4/3] w-full place-items-center border-b-2 border-ink bg-manila font-mono text-sm font-semibold uppercase">{pub.categories[it.category] ?? it.category}</div>}
+            <div className="flex flex-1 flex-col gap-1.5 p-3">
+              <span className="flex items-center justify-between gap-2">
+                <span className="font-mono text-xs font-semibold">{it.id}</span>
+                <StatusBadge kind={it.status} label={t.status[it.status]} />
+              </span>
+              <b className="leading-snug">{it.descr}</b>
               <span className="text-sm text-muted">{it.found_place} · {formatDate(it.date)}</span>
-              <div className="mt-2 flex flex-wrap gap-2">
-                <button type="button" onClick={() => { setSaveError(false); setEditing(it) }} className="min-h-10 border-2 border-ink px-3 text-sm font-semibold">{t.inventory.edit}</button>
+              <div className="mt-auto flex flex-wrap gap-2 pt-2">
+                <button type="button" onClick={() => { setSaveError(false); setEditing(it) }} className={btn}>{t.inventory.edit}</button>
                 {(it.status === 'available' || it.status === 'reserved') && (
                   <>
                     {asking?.id === it.id ? (
                       <>
-                        <button type="button" onClick={() => act(it, asking.status)} className="min-h-10 border-2 border-ink bg-signal px-3 text-sm font-semibold">
+                        <button type="button" onClick={() => act(it, asking.status)} className={`${btn} bg-signal hover:bg-signal`}>
                           {t.act.confirm}: {asking.status === 'returned' ? t.inventory.markReturned : t.inventory.discard}
                         </button>
-                        <button type="button" onClick={() => setAsking(null)} className="min-h-10 border-2 border-ink px-3 text-sm font-semibold">{t.act.back}</button>
+                        <button type="button" onClick={() => setAsking(null)} className={btn}>{t.act.back}</button>
                       </>
                     ) : (
                       <>
-                        <button type="button" onClick={() => setAsking({ id: it.id, status: 'returned' })} className="min-h-10 border-2 border-ink px-3 text-sm font-semibold">{t.inventory.markReturned}</button>
-                        <button type="button" onClick={() => setAsking({ id: it.id, status: 'discarded' })} className="min-h-10 border-2 border-ink px-3 text-sm font-semibold">{t.inventory.discard}</button>
+                        <button type="button" onClick={() => setAsking({ id: it.id, status: 'returned' })} className={btn}>{t.inventory.markReturned}</button>
+                        <button type="button" onClick={() => setAsking({ id: it.id, status: 'discarded' })} className={btn}>{t.inventory.discard}</button>
                       </>
                     )}
                   </>
@@ -88,12 +98,18 @@ export default function Inventory({ params }: { params: URLSearchParams }) {
         ))}
       </ul>
       {data && data.total > data.items.length && (
-        <button type="button" onClick={() => load(data.items.length)} className="min-h-11 self-start border-2 border-ink bg-card px-4 font-semibold">{t.inventory.more}</button>
+        <button type="button" onClick={() => load(data.items.length)} className="min-h-11 cursor-pointer self-center border-2 border-ink bg-card px-6 font-semibold hover:bg-paper">{t.inventory.more}</button>
       )}
       {editing && (
         <div role="dialog" aria-modal="true" aria-label={t.inventory.edit} className="fixed inset-0 z-10 flex justify-end bg-black/40">
           <div className="h-full w-full max-w-xl overflow-y-auto border-l-2 border-ink bg-paper p-5">
-            <button type="button" onClick={() => { setEditing(null); setSaveError(false) }} className="mb-4 min-h-10 border-2 border-ink bg-card px-3 font-semibold">{t.inventory.close}</button>
+            <div className="mb-5 flex items-center justify-between gap-3 border-b-2 border-ink pb-3">
+              <span className="flex flex-col">
+                <span className="font-mono text-xs font-semibold">{editing.id}</span>
+                <b className="text-xl">{t.inventory.edit}</b>
+              </span>
+              <button type="button" onClick={() => { setEditing(null); setSaveError(false) }} className="min-h-10 cursor-pointer border-2 border-ink bg-card px-3 font-semibold hover:bg-paper">{t.inventory.close}</button>
+            </div>
             {saveError && <p role="alert" className="mb-4 mt-0 border-2 border-ink bg-manila p-3">{t.form.error}</p>}
             <ItemForm
               initial={{ category: editing.category, brand: editing.brand, colour: editing.colour, descr: editing.descr, found_place: editing.found_place ?? '', found_at: editing.date }}

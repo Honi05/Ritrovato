@@ -5,6 +5,7 @@ import Pickup from './components/Pickup'
 import { I18nProvider, useI18n } from './i18n'
 import { formatDate } from './lib/items'
 import { useRoute } from './lib/router'
+import OperatorApp from './operator/OperatorApp'
 import Catalogue from './pages/Catalogue'
 import Home from './pages/Home'
 import ItemPage from './pages/ItemPage'
@@ -15,9 +16,15 @@ import Search from './pages/Search'
 export default function App() {
   return (
     <I18nProvider>
-      <Shell />
+      <Root />
     </I18nProvider>
   )
+}
+
+function Root() {
+  const route = useRoute()
+  if (route.name === 'operator') return <OperatorApp page={route.page} params={route.params} />
+  return <Shell />
 }
 
 function Shell() {

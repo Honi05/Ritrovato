@@ -74,7 +74,7 @@ export default function BookingPanel({ item, onBooked }: { item: Item; onBooked:
         <legend className="mb-2 font-mono text-xs font-semibold uppercase">{t.booking.day}</legend>
         <div className="flex gap-2 overflow-x-auto pb-1">
           {days.map((d) => (
-            <button key={d} type="button" data-day={d} aria-pressed={d === day} onClick={() => { setDay(d); setSlot(null); setSlots(null) }}
+            <button key={d} type="button" data-day={d} aria-pressed={d === day} onClick={() => { if (d === day) return; setDay(d); setSlot(null); setSlots(null) }}
               className={`min-h-11 flex-none border-2 border-ink px-3 font-semibold ${d === day ? 'bg-ink text-card' : 'bg-card'}`}>
               {label(d)}
             </button>

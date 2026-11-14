@@ -345,7 +345,7 @@ test('refine: Intesa chip narrows wallets, tapping again restores them', async (
   await chip.click()
   await expect(chip).toHaveAttribute('aria-pressed', 'true')
   await expect.poll(async () => Number(((await h1.textContent()) ?? '').replace(/\D/g, ''))).toBeLessThan(200)
-  const cards = page.locator('a[href^="#/item/"]')
+  const cards = page.locator('a[href^="#/item/"]:not([data-testid="office-card"])') // registry cards only: office matches (office-strip) are not brand-filtered
   await expect(cards.first()).toBeVisible()
   for (const text of await cards.allInnerTexts()) expect(text.toUpperCase()).toContain('INTESA')
   await chip.click()

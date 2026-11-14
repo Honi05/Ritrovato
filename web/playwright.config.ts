@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test'
 
 // End-to-end tests against the real API. Start the backend first:
+//   cd server && .venv/Scripts/python.exe -m app.operators seed-demo --password demo-pass-123   (operator.spec.ts)
 //   cd server && uvicorn app.main:app --port 8000
 const PORT = process.env.WEB_PORT ?? '5173' // set WEB_PORT when another dev server already owns 5173
 export default defineConfig({

@@ -9,3 +9,5 @@ data/
 .DS_Store
 .claude/worktrees/
 .ds_last.txt
+server/seed/office.sqlite
+server/seed/photos/

@@ -43,6 +43,13 @@ official source, plus how to collect it (office, fees, documents — with the so
 - Descriptions are shown in the original Italian (optionally with a translation);
   nothing is invented.
 
+## Office back-office (post-hackathon, D-015)
+
+Staff log found items with a photo; the photo agent pre-fills category, brand, colour and
+description. These items carry colour, place and photo, appear in every search as
+"Found at the office", and can be booked for a 15-minute pickup slot. Spec:
+`docs/superpowers/specs/2026-11-14-operator-backoffice-design.md`.
+
 ## Demo script (3 minutes, no slides)
 
 The most important document in the project. Anything not in this script is out of MVP.
@@ -79,7 +86,7 @@ The orchestrator (timekeeper) ticks items as they are done.
 
 ## Out of MVP — not doing
 
-- Sign-up and accounts; claiming an item online.
+- Citizen accounts; online ownership claims (pickup booking for office-logged items exists since D-015, ownership is checked at the desk).
 - Conversational voice agent; phone calls of any kind.
 - Matching by colour, place or photo of the found item — the registry has no such data.
 

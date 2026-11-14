@@ -31,6 +31,12 @@ in production. Config: copy `.env.deploy.example` to `.env.deploy`.
 `DEEPSEEK_API_KEY`, `ELEVENLABS_API_KEY`, `ELEVENLABS_PHOTO_AGENT_ID`, `PORT`.
 Template without values: `.env.example`. Docker on the server needs `sudo`.
 
+Optional office back-office settings (D-015): `OFFICE_DB_PATH` (default next to `DB_PATH`),
+`PHOTOS_DIR` (default `<office db dir>/photos`), `OFFICE_HOURS_JSON` (pickup hours override,
+e.g. `{"0":[["08:30","13:00"]]}`, keys are weekday 0=Mon).
+
+First operator: `docker compose exec app python -m app.operators create-admin <username>`
+
 ## Before the hackathon (owner checklist)
 
 - [ ] Subdomain and tunnel rule set up; "hello world" opens over HTTPS.

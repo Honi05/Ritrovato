@@ -77,8 +77,13 @@ def items(
     date_to: str | None = None,
     limit: int = Query(20, ge=1, le=100),
     offset: int = Query(0, ge=0),
+    source: Literal["office"] | None = None,
 ):
-    return {**db.search(q.split(), category, brand, date_from, date_to, limit, offset), "interpreted": None}
+    if source == "office":
+        return {**office.browse(q, category, brand, date_from, date_to, limit, offset), "interpreted": None, "office": []}
+    reg = db.search(q.split(), category, brand, date_from, date_to, limit, offset)
+    near = office.browse(q, category, brand, date_from, date_to, 6, 0)["items"] if offset == 0 else []
+    return {**reg, "interpreted": None, "office": near}
 
 
 # Voice, photo and (since D-014) text interpretation cost money per call: cap per client and per day.
@@ -150,7 +155,7 @@ def search_voice(audio: UploadFile, lang: Lang = Form("it"), _=Depends(paid_quot
         raise HTTPException(502, "upstream_failed: voice service unavailable, type your query instead") from None
 
     if not text:
-        return {"items": [], "total": 0, "interpreted": None, "transcript": ""}
+        return {"items": [], "total": 0, "interpreted": None, "office": [], "transcript": ""}
 
     return {**interpret.search(text, lang), "transcript": text}
 
@@ -170,7 +175,7 @@ async def search_photo(image: UploadFile, lang: Lang = Form("it"), _=Depends(pai
         raise HTTPException(502, "upstream_failed: photo service unavailable, type your query instead") from None
 
     if text is None or not text.strip():
-        return {"items": [], "total": 0, "interpreted": None, "description": None}
+        return {"items": [], "total": 0, "interpreted": None, "office": [], "description": None}
 
     return {**interpret.search(text, lang), "description": text}
 

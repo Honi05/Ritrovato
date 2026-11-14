@@ -146,3 +146,72 @@ def list_items(status=None, category=None, q="", limit=50, offset=0) -> dict:
         rows = con.execute(f"SELECT * FROM office_items WHERE {cond} ORDER BY created_at DESC, id DESC "
                            "LIMIT ? OFFSET ?", [*args, limit, offset]).fetchall()
     return {"items": [operator_item(r) for r in rows], "total": total}
+
+
+def _candidates(category, brand, date_from, date_to, statuses=PUBLIC_STATUSES):
+    where = [f"status IN ({','.join('?' * len(statuses))})"]
+    args: list = list(statuses)
+    if category:
+        where.append("category = ?")
+        args.append(category)
+    if brand:
+        where.append("brand = ? COLLATE NOCASE")
+        args.append(brand)
+    if date_from:
+        where.append("found_at >= ?")
+        args.append(date_from)
+    if date_to:
+        where.append("found_at <= ?")
+        args.append(date_to)
+    with office_db.connect() as con:
+        return con.execute(f"SELECT * FROM office_items WHERE {' AND '.join(where)}", args).fetchall()
+
+
+def _score(r, keywords, colour, place) -> int | None:
+    """None = excluded (keywords given but none matches)."""
+    hay = f"{r['descr']} {r['brand'] or ''} {r['found_place']}".lower()
+    hits = sum(1 for k in keywords if k.lower() in hay)
+    if keywords and not hits:
+        return None
+    score = hits
+    if colour and r["colour"] == colour:
+        score += 2
+    if place and any(w.lower() in r["found_place"].lower() for w in place.split() if len(w) >= 3):
+        score += 1
+    return score
+
+
+def _match(f: dict) -> list:
+    scored = []
+    for r in _candidates(f.get("category"), f.get("brand"), f.get("date_from"), f.get("date_to")):
+        s = _score(r, f.get("keywords") or [], f.get("colour"), f.get("place"))
+        if s is not None:
+            scored.append((r["status"] == "reserved", -s, r["found_at"], r["id"], r))
+    # available before reserved, then score desc, then newest found, then newest id
+    scored.sort(key=lambda t: (t[0], t[1], _neg(t[2]), -t[3]))
+    return [t[4] for t in scored]
+
+
+def _neg(iso: str) -> str:
+    # sort ISO dates descending inside an ascending sort key
+    return "".join(chr(0x7F - ord(c)) for c in iso)
+
+
+def search(filters: dict, limit: int = 6) -> list[dict]:
+    """Office matches for an Interpreted filter set; relaxes keywords → brand → dates, never category."""
+    f = dict(filters)
+    for drop in ((), ("keywords",), ("brand",), ("date_from", "date_to")):
+        for k in drop:
+            f[k] = [] if k == "keywords" else None
+        rows = _match(f)
+        if rows:
+            return [to_item(r) for r in rows[:limit]]
+    return []
+
+
+def browse(q="", category=None, brand=None, date_from=None, date_to=None, limit=20, offset=0) -> dict:
+    """Catalogue filters over office items; every q word must occur (like the registry)."""
+    rows = [r for r in _candidates(category, brand, date_from, date_to)
+            if all(k.lower() in f"{r['descr']} {r['brand'] or ''} {r['found_place']}".lower() for k in q.split())]
+    rows.sort(key=lambda r: (r["status"] == "reserved", _neg(r["found_at"]), -r["id"]))
+    return {"items": [to_item(r) for r in rows[offset:offset + limit]], "total": len(rows)}

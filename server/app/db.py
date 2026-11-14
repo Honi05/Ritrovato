@@ -49,6 +49,11 @@ def _item(r):
         "brand": r["brand"] or None,
         "number_guessed": bool(r["num_guessed"]),
         "source": {"page": r["page"], "url": SOURCE_URL},
+        "origin": "registry",
+        "colour": None,
+        "found_place": None,
+        "photo_url": None,
+        "status": None,
     }
 
 

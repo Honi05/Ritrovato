@@ -440,6 +440,9 @@ def interpret(text: str, lang: str) -> dict | None:
     date_to = _iso_date(parsed.get("date_to"))
     if date_from and date_to and date_from > date_to:
         date_from, date_to = date_to, date_from
+    today = datetime.today().strftime("%Y-%m-%d")
+    if date_to and date_to > today and (not date_from or date_from <= today):
+        date_to = today  # the +14 days rule must not reach into the future
 
     ignored = _normalize_ignored(parsed.get("ignored"))
 

@@ -1,5 +1,5 @@
 const en = {
-  nav: { catalogue: 'Catalogue', collect: 'How to collect', language: 'Language', main: 'Main' },
+  nav: { catalogue: 'Catalogue', collect: 'How to collect', staff: 'Staff login', language: 'Language', main: 'Main' },
   home: {
     kicker: 'Register of found objects · Polizia Roma Capitale',
     title: 'Lost something in Rome?',

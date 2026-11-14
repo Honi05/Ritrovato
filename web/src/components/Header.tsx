@@ -13,7 +13,7 @@ export default function Header({ route }: { route: Route }) {
         <Logo size={40} />
         <span className="font-widest text-[22px] font-black tracking-[0.04em]">RITROVATO</span>
       </a>
-      <nav aria-label={t.nav.main} className="flex flex-wrap gap-6 text-[15px] font-semibold">
+      <nav aria-label={t.nav.main} className="flex flex-wrap items-center gap-6 text-[15px] font-semibold">
         <a
           href={href('catalogue')}
           aria-current={route.name === 'catalogue' ? 'page' : undefined}
@@ -27,6 +27,9 @@ export default function Header({ route }: { route: Route }) {
           className={`${navLink} ${route.name === 'collect' ? 'underline' : ''}`}
         >
           {t.nav.collect}
+        </a>
+        <a href={href('operator/login')} className="border-2 border-ink px-3 py-1.5 no-underline hover:bg-ink hover:text-paper">
+          {t.nav.staff}
         </a>
       </nav>
       <div role="group" aria-label={t.nav.language} className="flex border-2 border-ink font-mono text-[13px] font-semibold">

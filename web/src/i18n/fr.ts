@@ -1,7 +1,7 @@
 import type { Strings } from './en'
 
 const fr: Strings = {
-  nav: { catalogue: 'Catalogue', collect: 'Comment le récupérer', language: 'Langue', main: 'Principal' },
+  nav: { catalogue: 'Catalogue', collect: 'Comment le récupérer', staff: 'Accès personnel', language: 'Langue', main: 'Principal' },
   home: {
     kicker: 'Registre des objets trouvés · Polizia Roma Capitale',
     title: 'Vous avez perdu quelque chose à Rome ?',

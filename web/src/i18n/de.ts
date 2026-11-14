@@ -1,7 +1,7 @@
 import type { Strings } from './en'
 
 const de: Strings = {
-  nav: { catalogue: 'Katalog', collect: 'Abholung', language: 'Sprache', main: 'Hauptmenü' },
+  nav: { catalogue: 'Katalog', collect: 'Abholung', staff: 'Personal-Login', language: 'Sprache', main: 'Hauptmenü' },
   home: {
     kicker: 'Fundsachenregister · Polizia Roma Capitale',
     title: 'Etwas in Rom verloren?',

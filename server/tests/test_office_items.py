@@ -139,6 +139,16 @@ def test_seed_demo_is_idempotent():
     assert c.post("/api/operator/login", json={"username": "demo", "password": "demo-pass-123"}).status_code == 200
 
 
+def test_demo_items_get_real_photos_and_refresh_replaces_them():
+    from app import office, operators
+    operators.seed_demo("demo-pass-123")
+    before = {it["id"]: it["photo_url"] for it in office.list_items(limit=50)["items"]}
+    assert all(before.values())
+    assert operators.refresh_demo_photos() == len(operators.DEMO_ITEMS)
+    after = {it["id"]: it["photo_url"] for it in office.list_items(limit=50)["items"]}
+    assert all(after[k] != before[k] for k in before)
+
+
 def test_blank_and_null_text_fields_rejected(op):
     it = new_item(op).json()
     n = it["id"].split("-")[1]

@@ -2,12 +2,14 @@
 
     python -m app.operators create-admin <username>      # prompts for the password
     python -m app.operators seed-demo --password <pw>    # operator "demo" + sample office items
+    python -m app.operators refresh-demo-photos          # swap old placeholders for seed/demo_photos/
 """
 import argparse
 import getpass
 import io
 import sys
 from datetime import date, timedelta
+from pathlib import Path
 
 from PIL import Image, ImageDraw
 
@@ -24,8 +26,10 @@ DEMO_ITEMS = [
     ("glasses", "RAY-BAN", "black", "Occhiali da sole Ray-Ban in custodia", "Fontana di Trevi", 4),
     ("clothing", None, "red", "Sciarpa di lana rossa", "Musei Vaticani, ingresso", 5),
     ("electronics", "APPLE", "silver", "Auricolari AirPods con custodia", "Tram 8, Trastevere", 6),
-    ("watch_jewelry", None, "pink", "Braccialetto rosa con ciondolo a cuore", "Villa Borghese", 7),
+    ("watch_jewelry", None, "pink", "Braccialetto di perline rosa e nere", "Villa Borghese", 7),
 ]
+# Real, openly licensed photos per demo category; credits in seed/demo_photos/CREDITS.md.
+DEMO_PHOTOS = Path(__file__).resolve().parent.parent / "seed" / "demo_photos"
 
 
 def _placeholder(colour: str, label: str) -> bytes:
@@ -38,6 +42,11 @@ def _placeholder(colour: str, label: str) -> bytes:
     return buf.getvalue()
 
 
+def _demo_photo(category: str, colour: str) -> bytes:
+    f = DEMO_PHOTOS / f"{category}.jpg"
+    return f.read_bytes() if f.is_file() else _placeholder(colour, category)
+
+
 def seed_demo(password: str) -> int:
     try:
         auth.create_operator("demo", password, "Demo operator")
@@ -48,11 +57,25 @@ def seed_demo(password: str) -> int:
             return 0
         op_id = con.execute("SELECT id FROM operators WHERE username = 'demo'").fetchone()[0]
     for category, brand, colour, descr, place, days_ago in DEMO_ITEMS:
-        draft_id = photos.save_draft(_placeholder(colour, category), "image/jpeg")
+        draft_id = photos.save_draft(_demo_photo(category, colour), "image/jpeg")
         office.create({"draft_id": draft_id, "category": category, "brand": brand, "colour": colour,
                        "descr": descr, "found_place": place,
                        "found_at": (date.today() - timedelta(days=days_ago)).isoformat()}, op_id)
     return len(DEMO_ITEMS)
+
+
+def refresh_demo_photos() -> int:
+    """Give already-seeded demo items (matched by category and place) the real photo and current text."""
+    n = 0
+    for category, _brand, colour, descr, place, _days in DEMO_ITEMS:
+        with office_db.connect() as con:
+            ids = [r[0] for r in con.execute(
+                "SELECT id FROM office_items WHERE category = ? AND found_place = ?", (category, place))]
+        for item_id in ids:
+            draft_id = photos.save_draft(_demo_photo(category, colour), "image/jpeg")
+            office.update(item_id, {"draft_id": draft_id, "descr": descr})
+            n += 1
+    return n
 
 
 def main(argv=None):
@@ -63,6 +86,7 @@ def main(argv=None):
     a.add_argument("--display-name")
     s = sub.add_parser("seed-demo")
     s.add_argument("--password", required=True)
+    sub.add_parser("refresh-demo-photos")
     args = p.parse_args(argv)
     if args.cmd == "create-admin":
         pw = getpass.getpass("Password: ")
@@ -73,6 +97,8 @@ def main(argv=None):
         except ValueError as e:
             sys.exit(str(e))
         print(f"created admin {args.username}")
+    elif args.cmd == "refresh-demo-photos":
+        print(f"refreshed photos of {refresh_demo_photos()} demo items")
     else:
         print(f"seeded {seed_demo(args.password)} office items; operator 'demo' ready")
 

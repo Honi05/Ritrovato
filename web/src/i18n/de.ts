@@ -164,6 +164,7 @@ const de: Strings = {
     confirm: 'Buchung bestätigen', sending: 'Wird gebucht…', slotTaken: 'Diese Uhrzeit wurde gerade vergeben — wähle eine andere.',
     itemTaken: 'Jemand hat diesen Gegenstand gerade gebucht.', tooMany: 'Zu viele Buchungen. Versuche es später.',
     error: 'Buchung fehlgeschlagen. Versuche es noch einmal.', done: 'Abholung gebucht', code: 'Buchungscode', when: 'Wann',
+    retry: 'Erneut versuchen',
     bring: 'Bring einen Ausweis mit und, wenn möglich, einen Nachweis, dass der Gegenstand dir gehört.',
     saveLink: 'Speichere diesen Link, um die Buchung zu sehen oder zu stornieren:', copy: 'Link kopieren', copied: 'Kopiert',
     calendar: 'Zum Kalender hinzufügen', manageTitle: 'Deine Buchung',

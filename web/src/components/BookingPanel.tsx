@@ -6,14 +6,15 @@ import { href } from '../lib/router'
 
 const WEEKDAYS_OPEN = new Set([1, 2, 3, 4, 5]) // Mon–Fri; the server is the authority
 
+const ROME_DATE = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Rome', year: 'numeric', month: '2-digit', day: '2-digit' })
+
+// Days are computed in Europe/Rome so every visitor sees the same bookable days as the server.
 function nextDays(n: number) {
   const out: string[] = []
-  const d = new Date()
+  const [y, m, d] = ROME_DATE.format(new Date()).split('-').map(Number)
   for (let i = 1; out.length < n && i <= 14; i++) {
-    const x = new Date(d.getFullYear(), d.getMonth(), d.getDate() + i)
-    if (WEEKDAYS_OPEN.has(x.getDay())) {
-      out.push(`${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, '0')}-${String(x.getDate()).padStart(2, '0')}`)
-    }
+    const x = new Date(Date.UTC(y, m - 1, d + i)) // calendar arithmetic only: UTC avoids local DST/zone shifts
+    if (WEEKDAYS_OPEN.has(x.getUTCDay())) out.push(x.toISOString().slice(0, 10))
   }
   return out
 }

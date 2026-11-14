@@ -164,6 +164,7 @@ const es: Strings = {
     confirm: 'Confirmar reserva', sending: 'Reservando…', slotTaken: 'Esa hora acaba de ocuparse — elige otra.',
     itemTaken: 'Alguien acaba de reservar este objeto.', tooMany: 'Demasiadas reservas. Inténtalo más tarde.',
     error: 'La reserva ha fallado. Inténtalo de nuevo.', done: 'Recogida reservada', code: 'Código de reserva', when: 'Cuándo',
+    retry: 'Reintentar',
     bring: 'Trae un documento de identidad y, si puedes, una prueba de que el objeto es tuyo.',
     saveLink: 'Guarda este enlace para ver o cancelar tu reserva:', copy: 'Copiar enlace', copied: 'Copiado',
     calendar: 'Añadir al calendario', manageTitle: 'Tu reserva',

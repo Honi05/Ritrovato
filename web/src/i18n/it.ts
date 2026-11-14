@@ -165,6 +165,7 @@ const it: Strings = {
     slotTaken: 'Questo orario è appena stato preso — scegline un altro.',
     itemTaken: 'Qualcuno ha appena prenotato questo oggetto.', tooMany: 'Troppe prenotazioni. Riprova più tardi.',
     error: 'Prenotazione non riuscita. Riprova.', done: 'Ritiro prenotato', code: 'Codice prenotazione', when: 'Quando',
+    retry: 'Riprova',
     bring: "Porta un documento d'identità e, se puoi, una prova che l'oggetto è tuo.",
     saveLink: 'Salva questo link per vedere o annullare la prenotazione:', copy: 'Copia link', copied: 'Copiato',
     calendar: 'Aggiungi al calendario', manageTitle: 'La tua prenotazione',

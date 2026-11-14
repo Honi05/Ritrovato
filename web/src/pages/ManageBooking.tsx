@@ -1,18 +1,34 @@
 import { useEffect, useState } from 'react'
-import { cancelBooking, getBooking, type Booking } from '../api'
+import { ApiError, cancelBooking, getBooking, type Booking } from '../api'
 import { useI18n } from '../i18n'
 import { formatDate } from '../lib/items'
 
 export default function ManageBooking({ token }: { token: string }) {
   const { t, lang } = useI18n()
-  const [b, setB] = useState<Booking | null | 'missing'>(null)
+  const [b, setB] = useState<Booking | null | 'missing' | 'failed'>(null)
+  const [attempt, setAttempt] = useState(0)
   const [asking, setAsking] = useState(false)
   const [error, setError] = useState(false)
   useEffect(() => {
-    getBooking(token).then(setB, () => setB('missing'))
-  }, [token])
+    let live = true
+    getBooking(token).then(
+      (r) => live && setB(r),
+      (e) => live && setB(e instanceof ApiError && e.status === 404 ? 'missing' : 'failed'),
+    )
+    return () => {
+      live = false
+    }
+  }, [token, attempt])
 
   if (b === null) return <p className="pt-8 font-mono">…</p>
+  if (b === 'failed') {
+    return (
+      <div className="flex flex-col items-start gap-3 pt-8">
+        <p role="alert" className="m-0">{t.booking.error}</p>
+        <button type="button" onClick={() => { setB(null); setAttempt((n) => n + 1) }} className="min-h-11 border-2 border-ink bg-card px-4 font-bold">{t.booking.retry}</button>
+      </div>
+    )
+  }
   if (b === 'missing') return <h1 className="font-wide pt-8 text-3xl font-black">{t.booking.notFound}</h1>
 
   const when = new Date(b.slot_start).toLocaleString(lang, { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })

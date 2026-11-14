@@ -164,6 +164,7 @@ const fr: Strings = {
     confirm: 'Confirmer la réservation', sending: 'Réservation…', slotTaken: 'Ce créneau vient d’être pris — choisissez-en un autre.',
     itemTaken: "Quelqu'un vient de réserver cet objet.", tooMany: 'Trop de réservations. Réessayez plus tard.',
     error: 'La réservation a échoué. Réessayez.', done: 'Retrait réservé', code: 'Code de réservation', when: 'Quand',
+    retry: 'Réessayer',
     bring: "Apportez une pièce d'identité et, si possible, une preuve que l'objet vous appartient.",
     saveLink: 'Gardez ce lien pour voir ou annuler votre réservation :', copy: 'Copier le lien', copied: 'Copié',
     calendar: 'Ajouter au calendrier', manageTitle: 'Votre réservation',

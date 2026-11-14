@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { officeNumber, opListItems, opPatchItem, type OperatorItem } from '../api'
+import { ApiError, officeNumber, opListItems, opPatchItem, type OperatorItem } from '../api'
 import { useI18n } from '../i18n'
 import { CATEGORIES } from '../lib/colours'
 import { formatDate } from '../lib/items'
@@ -20,6 +20,8 @@ export default function Inventory({ params }: { params: URLSearchParams }) {
   const [data, setData] = useState<{ items: OperatorItem[]; total: number } | null>(null)
   const [editing, setEditing] = useState<OperatorItem | null>(null)
   const [busy, setBusy] = useState(false)
+  const [asking, setAsking] = useState<{ id: string; status: 'returned' | 'discarded' } | null>(null)
+  const [saveError, setSaveError] = useState(false)
 
   const load = (offset = 0) =>
     opListItems({ status, category, q, limit: PAGE, offset }).then(
@@ -32,7 +34,10 @@ export default function Inventory({ params }: { params: URLSearchParams }) {
   const replace = (it: OperatorItem) => {
     setData((d) => d && { ...d, items: d.items.map((x) => (x.id === it.id ? it : x)) })
     setEditing(null)
+    setSaveError(false)
   }
+  const act = (it: OperatorItem, status: 'returned' | 'discarded') =>
+    opPatchItem(officeNumber(it.id), { status }).then(replace, guard).finally(() => setAsking(null))
   const field = 'min-h-11 border-2 border-ink bg-card px-3'
   return (
     <div className="flex flex-col gap-4">
@@ -59,11 +64,22 @@ export default function Inventory({ params }: { params: URLSearchParams }) {
               <b>{it.descr}</b>
               <span className="text-sm text-muted">{it.found_place} · {formatDate(it.date)}</span>
               <div className="mt-2 flex flex-wrap gap-2">
-                <button type="button" onClick={() => setEditing(it)} className="min-h-10 border-2 border-ink px-3 text-sm font-semibold">{t.inventory.edit}</button>
+                <button type="button" onClick={() => { setSaveError(false); setEditing(it) }} className="min-h-10 border-2 border-ink px-3 text-sm font-semibold">{t.inventory.edit}</button>
                 {(it.status === 'available' || it.status === 'reserved') && (
                   <>
-                    <button type="button" onClick={() => opPatchItem(officeNumber(it.id), { status: 'returned' }).then(replace, guard)} className="min-h-10 border-2 border-ink px-3 text-sm font-semibold">{t.inventory.markReturned}</button>
-                    <button type="button" onClick={() => opPatchItem(officeNumber(it.id), { status: 'discarded' }).then(replace, guard)} className="min-h-10 border-2 border-ink px-3 text-sm font-semibold">{t.inventory.discard}</button>
+                    {asking?.id === it.id ? (
+                      <>
+                        <button type="button" onClick={() => act(it, asking.status)} className="min-h-10 border-2 border-ink bg-signal px-3 text-sm font-semibold">
+                          {t.act.confirm}: {asking.status === 'returned' ? t.inventory.markReturned : t.inventory.discard}
+                        </button>
+                        <button type="button" onClick={() => setAsking(null)} className="min-h-10 border-2 border-ink px-3 text-sm font-semibold">{t.act.back}</button>
+                      </>
+                    ) : (
+                      <>
+                        <button type="button" onClick={() => setAsking({ id: it.id, status: 'returned' })} className="min-h-10 border-2 border-ink px-3 text-sm font-semibold">{t.inventory.markReturned}</button>
+                        <button type="button" onClick={() => setAsking({ id: it.id, status: 'discarded' })} className="min-h-10 border-2 border-ink px-3 text-sm font-semibold">{t.inventory.discard}</button>
+                      </>
+                    )}
                   </>
                 )}
               </div>
@@ -77,7 +93,8 @@ export default function Inventory({ params }: { params: URLSearchParams }) {
       {editing && (
         <div role="dialog" aria-modal="true" aria-label={t.inventory.edit} className="fixed inset-0 z-10 flex justify-end bg-black/40">
           <div className="h-full w-full max-w-xl overflow-y-auto border-l-2 border-ink bg-paper p-5">
-            <button type="button" onClick={() => setEditing(null)} className="mb-4 min-h-10 border-2 border-ink bg-card px-3 font-semibold">{t.inventory.close}</button>
+            <button type="button" onClick={() => { setEditing(null); setSaveError(false) }} className="mb-4 min-h-10 border-2 border-ink bg-card px-3 font-semibold">{t.inventory.close}</button>
+            {saveError && <p role="alert" className="mb-4 mt-0 border-2 border-ink bg-manila p-3">{t.form.error}</p>}
             <ItemForm
               initial={{ category: editing.category, brand: editing.brand, colour: editing.colour, descr: editing.descr, found_place: editing.found_place ?? '', found_at: editing.date }}
               photoUrl={editing.photo_url}
@@ -85,7 +102,10 @@ export default function Inventory({ params }: { params: URLSearchParams }) {
               submitLabel={t.form.save}
               onSubmit={(v) => {
                 setBusy(true)
-                opPatchItem(officeNumber(editing.id), { ...v, brand: v.brand?.trim() || null }).then(replace, guard).finally(() => setBusy(false))
+                setSaveError(false)
+                opPatchItem(officeNumber(editing.id), { ...v, brand: v.brand?.trim() || null })
+                  .then(replace, (e) => { guard(e); if (!(e instanceof ApiError && e.status === 401)) setSaveError(true) })
+                  .finally(() => setBusy(false))
               }}
             />
           </div>

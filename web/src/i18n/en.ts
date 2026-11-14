@@ -177,6 +177,7 @@ const en = {
     itemTaken: 'Someone booked this item a moment ago.',
     tooMany: 'Too many bookings. Try again later.',
     error: 'Booking failed. Try again.',
+    retry: 'Retry',
     done: 'Pickup booked',
     code: 'Booking code',
     when: 'When',

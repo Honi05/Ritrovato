@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { opDraft, type Draft, type ItemFields } from '../api'
 import { useI18n } from '../i18n'
 import { CATEGORIES, COLOURS } from '../lib/colours'
@@ -49,11 +49,17 @@ export default function ItemForm({ initial, photoUrl, busy, submitLabel, onSubmi
     setSuggested((s) => { const n = new Set(s); n.delete(k as keyof ItemFields); return n })
   }
 
+  const blobUrl = useRef<string | null>(null)
+  useEffect(() => () => { if (blobUrl.current) URL.revokeObjectURL(blobUrl.current) }, [])
+
   async function pick(file: File | undefined) {
     if (!file) return
+    const prev = { photo, draft_id: v.draft_id, blob: blobUrl.current }
     setReading(true)
     setAiFailed(false)
-    setPhoto(URL.createObjectURL(file))
+    const url = URL.createObjectURL(file)
+    blobUrl.current = url
+    setPhoto(url)
     try {
       const d: Draft = await opDraft(file)
       setV((x) => {
@@ -69,10 +75,15 @@ export default function ItemForm({ initial, photoUrl, busy, submitLabel, onSubmi
         return next
       })
       if (!d.suggested) setAiFailed(true)
+      if (prev.blob) URL.revokeObjectURL(prev.blob)
     } catch (e) {
       guard(e)
       setAiFailed(true)
-      setPhoto(photoUrl)
+      // keep photo and draft_id consistent: restore both
+      URL.revokeObjectURL(url)
+      blobUrl.current = prev.blob
+      setPhoto(prev.photo)
+      setV((x) => ({ ...x, draft_id: prev.draft_id }))
     } finally {
       setReading(false)
     }

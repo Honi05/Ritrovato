@@ -1,12 +1,13 @@
 """Back-office API: /api/operator/* (spec §2). Every route except login needs a session."""
 import asyncio
+from datetime import date as Date
 from typing import Literal
 
 from fastapi import APIRouter, Depends, File, HTTPException, Query, Request, Response, UploadFile
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
-from . import auth, interpret, office, photo, photos, ratelimit
+from . import auth, booking, interpret, office, photo, photos, ratelimit
 
 router = APIRouter(prefix="/api/operator")
 Operator = Depends(auth.current_operator)
@@ -110,3 +111,21 @@ def list_items(
     op: dict = Operator,
 ):
     return office.list_items(status, category, q, limit, offset)
+
+
+@router.get("/bookings")
+def day_bookings(date: str, op: dict = Operator):  # query name is part of the contract
+    try:
+        d = Date.fromisoformat(date)
+    except ValueError:
+        raise HTTPException(400, "bad_request: date must be yyyy-mm-dd") from None
+    return booking.day(d)
+
+
+class BookingPatch(BaseModel):
+    status: Literal["collected", "no_show", "cancelled"]
+
+
+@router.patch("/bookings/{booking_id}")
+def patch_booking(booking_id: int, req: BookingPatch, op: dict = Operator):
+    return booking.set_status(booking_id, req.status)

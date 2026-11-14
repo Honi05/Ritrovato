@@ -22,6 +22,7 @@ export type Interpreted = {
   date_from: string | null
   date_to: string | null
   ignored: string[] // attributes the registry does not record (colour, place...)
+  relaxed?: string[] // filters dropped because nothing matched: keywords, brand, dates
 }
 
 export type SearchResponse = {

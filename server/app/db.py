@@ -26,15 +26,15 @@ def connect():
     return con
 
 
-# shortcut: regex + token filter catches labelled numbers and most OCR-garbled ones, not all;
-# upgrade to cleaning at ingest time (block 06) and review leftovers before going public.
-_NUMBERS = re.compile(r"\s*-?\s*\b(?:Nr|IMEI)\s*:.*?(?=\s+-\s+|$)")
+# shortcut: regex + token filter catches labelled numbers (also OCR-garbled labels) and any
+# token with 3+ digits; upgrade to cleaning at ingest time and review leftovers before going public.
+_NUMBERS = re.compile(r"\s*-?\s*\b(?:Nr|N|Nº|N°|NUM|EV|IMEI)\s*[:.].*?(?=\s+-\s+|$)")
 
 
 def public_descr(descr):
     """Registry text without partial document/card/IMEI numbers (D-011)."""
     words = _NUMBERS.sub("", descr).split()
-    return " ".join(w for w in words if "*" not in w and not re.search(r"\d{4}", w)).strip(" -")
+    return " ".join(w for w in words if "*" not in w and len(re.findall(r"\d", w)) < 3).strip(" -")
 
 
 def _item(r):

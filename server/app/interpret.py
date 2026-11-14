@@ -4,6 +4,7 @@ import os
 import re
 import time
 from datetime import datetime
+from functools import lru_cache
 
 import httpx
 from websockets.sync.client import connect
@@ -12,9 +13,10 @@ from . import db
 
 DEEPSEEK_URL = "https://api.deepseek.com/chat/completions"
 DEFAULT_MODEL = "deepseek-chat"
-TIMEOUT = 15.0
+TIMEOUT = 6.0  # DeepSeek
 INTERPRET_AGENT_ID = "agent_9601m7b9whwse8g8nfzkdks3y4j5"
-AGENT_TIMEOUT = 8.0  # then DeepSeek still has time before the client gives up
+AGENT_TIMEOUT = 5.0  # worst case 3 s signed URL + 5 s agent + 6 s DeepSeek = 14 s
+SIGNED_URL_TIMEOUT = 3.0
 
 _IGNORED_KEYS = {"colour", "place", "photo", "other_unrecorded"}
 
@@ -320,10 +322,10 @@ def _request_filter_agent(text: str, lang: str) -> dict | None:
             "https://api.elevenlabs.io/v1/convai/conversation/get-signed-url",
             params={"agent_id": agent_id},
             headers={"xi-api-key": key},
-            timeout=TIMEOUT,
+            timeout=SIGNED_URL_TIMEOUT,
         )
         signed.raise_for_status()
-        with connect(signed.json()["signed_url"], open_timeout=TIMEOUT, max_size=None) as ws:
+        with connect(signed.json()["signed_url"], open_timeout=SIGNED_URL_TIMEOUT, max_size=None) as ws:
             ws.send(json.dumps({
                 "type": "conversation_initiation_client_data",
                 "conversation_config_override": {"agent": {"prompt": {"prompt": _prompt(_category_ids())}}},
@@ -508,20 +510,46 @@ def _db_search(f: dict) -> dict:
                      f.get("date_from"), f.get("date_to"))
 
 
+class _Miss(Exception):
+    pass
+
+
+@lru_cache(maxsize=512)
+def _cached(text: str, lang: str) -> dict:
+    filters = interpret(text, lang)
+    if filters is None:
+        raise _Miss  # failed calls are not cached, so the next request retries
+    return filters
+
+
+def _interpret_cached(text: str, lang: str) -> dict | None:
+    try:
+        return _cached(text.strip().lower(), lang)
+    except _Miss:
+        return None
+
+
 def search(text: str, lang: str) -> dict:
     """Shared pipeline (D-007): text, voice transcript and photo description all end here."""
-    filters = interpret(text, lang)
+    filters = _interpret_cached(text, lang)
     shown = filters  # contract: interpreted is null on keyword fallback
     if filters is None:
         filters = fallback_interpret(text, lang)
     result = _db_search(filters)
+    relaxed = []  # contract: filters dropped because nothing matched
     while not result["total"] and len(filters.get("keywords") or []) > 1:
         # drop the least specific keyword first (the model lists most specific first)
         filters = {**filters, "keywords": filters["keywords"][:-1]}
+        relaxed[:] = ["keywords"]
         result = _db_search(filters)
-    for drop in (("keywords",), ("brand",), ("date_from", "date_to")):  # relax in this order
+    for name, drop in (("keywords", ("keywords",)), ("brand", ("brand",)),
+                       ("dates", ("date_from", "date_to"))):  # relax in this order
         if result["total"]:
             break
+        if not any(filters.get(k) for k in drop):
+            continue
         filters = {**filters, **{k: ([] if k == "keywords" else None) for k in drop}}
+        if name not in relaxed:
+            relaxed.append(name)
         result = _db_search(filters)
-    return {**result, "interpreted": shown}
+    return {**result, "interpreted": shown and {**shown, "relaxed": relaxed}}

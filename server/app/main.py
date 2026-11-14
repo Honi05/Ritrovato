@@ -68,38 +68,50 @@ def items(
     return {**db.search(q.split(), category, brand, date_from, date_to, limit, offset), "interpreted": None}
 
 
-class SearchRequest(BaseModel):
-    query: str = Field(min_length=1, max_length=500)
-    lang: Lang = "it"
-
-
-@app.post("/api/search")
-def search(req: SearchRequest):
-    return interpret.search(req.query, req.lang)
-
-
-# Voice and photo cost money per call (ElevenLabs): cap per client and per day.
+# Voice, photo and (since D-014) text interpretation cost money per call: cap per client and per day.
 PAID_PER_IP = int(os.environ.get("PAID_PER_IP", "20"))  # per 10 minutes
 PAID_PER_DAY = int(os.environ.get("PAID_PER_DAY", "500"))
+TEXT_PER_IP = int(os.environ.get("TEXT_PER_IP", "60"))  # per 10 minutes
 _hits: dict[str, deque] = defaultdict(deque)
+_text_hits: dict[str, deque] = defaultdict(deque)
 _day = {"date": "", "n": 0}
 _quota_lock = threading.Lock()
 
 
-def paid_quota(request: Request):
+def _quota(request: Request, hits: dict, per_ip: int, per_day: int | None, message: str):
     # The app listens on 127.0.0.1 only, so requests arrive via Cloudflare, which sets this header.
     ip = request.headers.get("cf-connecting-ip") or request.client.host
     now, today = time.time(), time.strftime("%Y-%m-%d")
     with _quota_lock:
         if _day["date"] != today:
             _day.update(date=today, n=0)
-        q = _hits[ip]
+        q = hits[ip]
         while q and now - q[0] > 600:
             q.popleft()
-        if len(q) >= PAID_PER_IP or _day["n"] >= PAID_PER_DAY:
-            raise HTTPException(429, "rate_limited: too many voice/photo searches, type your query instead")
+        if len(q) >= per_ip or (per_day is not None and _day["n"] >= per_day):
+            raise HTTPException(429, message)
         q.append(now)
-        _day["n"] += 1
+        if per_day is not None:
+            _day["n"] += 1
+
+
+def paid_quota(request: Request):
+    _quota(request, _hits, PAID_PER_IP, PAID_PER_DAY,
+           "rate_limited: too many voice/photo searches, type your query instead")
+
+
+def text_quota(request: Request):
+    _quota(request, _text_hits, TEXT_PER_IP, None, "rate_limited: too many searches, wait a minute")
+
+
+class SearchRequest(BaseModel):
+    query: str = Field(min_length=1, max_length=500)
+    lang: Lang = "it"
+
+
+@app.post("/api/search")
+def search(req: SearchRequest, _=Depends(text_quota)):
+    return interpret.search(req.query, req.lang)
 
 
 @app.post("/api/search/voice")

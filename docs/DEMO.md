@@ -20,7 +20,7 @@ of questions. Italian or English.
 
 - [ ] All tabs open, logged in, page zoom large.
 - [ ] Sound checked (the agent's voice is audible in the room).
-- [ ] `DEMO_MODE` on / off — <which one>.
+- [ ] `UPDATE_DISABLED=1` on / off — <which one>.
 - [ ] Backup video open in the next tab.
 - [ ] Laptop charging, notifications off.
 

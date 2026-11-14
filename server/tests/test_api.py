@@ -41,3 +41,14 @@ def test_search_fallback(monkeypatch):
 def test_errors_follow_contract():
     r = client.post("/api/search/photo", files={"image": ("a.gif", b"x", "image/gif")}, data={"lang": "it"})
     assert r.status_code == 400 and r.json()["error"] == "bad_request"
+
+
+def test_public_descr_hides_document_numbers():
+    import re
+    from app import db
+    with db.connect() as con:
+        leaks = [d for (d,) in con.execute("select descr from oggetti")
+                 if re.search(r"\d{3}", db.public_descr(d))]
+    assert leaks == []
+    assert db.public_descr("TELEFONO CELLULARE SENZA SIM - APPLE IPHONE") == \
+        "TELEFONO CELLULARE SENZA SIM - APPLE IPHONE"

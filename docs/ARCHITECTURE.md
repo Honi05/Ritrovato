@@ -52,6 +52,8 @@ All responses are JSON. Errors: `{"error": "<code>", "message": "<text>"}` with 
 `bad_request` (400), `too_large` (413), `rate_limited` (429), `not_implemented` (501),
 `upstream_failed` (502). Voice and photo are capped (20 per 10 min per client, 500 per day):
 on 429 or 502 from them the UI keeps the user's input and offers the text search instead.
+Text search is capped too (60 per 10 min per client, env `TEXT_PER_IP`); its
+interpretation is cached per (lowercased text, lang).
 
 `lang` is one of `it`, `en`, `es`, `fr`, `de` (default `it`).
 
@@ -78,8 +80,10 @@ on 429 or 502 from them the UI keeps the user's input and offers the text search
   "keywords": ["TELEFONO"],         // Italian, as worded in the registry
   "date_from": "2026-10-01",        // or null
   "date_to": "2026-10-31",          // or null
-  "ignored": ["colour"]             // mentioned by the user but not recorded in the registry;
+  "ignored": ["colour"],            // mentioned by the user but not recorded in the registry;
                                     // fixed keys only: colour, place, photo, other_unrecorded
+  "relaxed": []                     // filters dropped because nothing matched;
+                                    // fixed keys: keywords, brand, dates
 }
 
 // SearchResponse
@@ -88,7 +92,7 @@ on 429 or 502 from them the UI keeps the user's input and offers the text search
   "total": 24,                      // matches before limit
   "interpreted": Interpreted,       // null = keyword fallback or plain catalogue filter
   "transcript": "...",              // voice only: what was heard
-  "description": "..."              // photo only: what the model saw, in `lang`
+  "description": "..."              // photo only: what the model saw, always in Italian
 }
 ```
 
@@ -153,7 +157,7 @@ SQLite, one table `oggetti` — schema and limits in `docs/DATA.md`.
 A background task in the same container, once every 24 h (and once at start-up):
 
 1. Fetch the source page, find the current-year PDF link.
-2. Unchanged since last time (URL + size/hash stored in table `meta`) → only write
+2. Unchanged since last time (same PDF file name as stored in table `meta`) → only write
    `last_checked_at`.
 3. Changed → download, take the pages from the last known page onward, extract the
    entries, insert the ones not yet in `oggetti`, write `last_checked_at` and
@@ -172,6 +176,6 @@ data it has. Details and the choice of OCR: block 06, `docs/DECISIONS.md` D-007.
 
 ## Demo mode
 
-`DEMO_MODE=1`: the daily update does not run at start-up (no surprise during the pitch).
+`UPDATE_DISABLED=1`: the daily update does not run at start-up (no surprise during the pitch).
 The demo uses the real catalogue; no stand-in data is needed. If the LLM or ElevenLabs
 are down, text search falls back to keywords and the backup video covers voice and photo.

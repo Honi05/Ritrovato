@@ -156,3 +156,50 @@ def test_agent_first_then_deepseek(monkeypatch):
                         lambda t, l: calls.append("agent") or None)
     assert interpret_module.interpret("x", "it")["category"] == "wallet"
     assert calls == ["agent", "deepseek"]
+
+
+def _phone_samsung(date_from, date_to):
+    return {"category": "phone", "brand": "SAMSUNG", "keywords": [], "date_from": date_from,
+            "date_to": date_to, "ignored": []}
+
+
+def test_search_reports_relaxed_filters(monkeypatch):
+    monkeypatch.setattr(interpret_module, "interpret",
+                        lambda text, lang: {**_phone_samsung("2031-01-01", "2031-01-31"), "brand": None})
+    body = TestClient(app).post("/api/search", json={"query": "phone 2031", "lang": "en"}).json()
+    assert body["total"] > 0
+    assert body["interpreted"]["relaxed"] == ["dates"]
+
+
+def test_search_reports_nothing_relaxed(monkeypatch):
+    monkeypatch.setattr(interpret_module, "interpret", lambda text, lang: _phone_samsung(None, None))
+    body = TestClient(app).post("/api/search", json={"query": "samsung", "lang": "en"}).json()
+    assert body["total"] > 0
+    assert body["interpreted"]["relaxed"] == []
+
+
+def test_search_caches_interpretation(monkeypatch):
+    calls = []
+    monkeypatch.setattr(interpret_module, "interpret",
+                        lambda text, lang: calls.append(text) or _phone_samsung(None, None))
+    client = TestClient(app)
+    for q in ("Samsung", " samsung "):
+        client.post("/api/search", json={"query": q, "lang": "en"})
+    assert len(calls) == 1
+
+
+def test_search_does_not_cache_failures(monkeypatch):
+    calls = []
+    monkeypatch.setattr(interpret_module, "interpret", lambda text, lang: calls.append(text))
+    client = TestClient(app)
+    for _ in range(2):
+        client.post("/api/search", json={"query": "samsung", "lang": "en"})
+    assert len(calls) == 2
+
+
+def test_text_search_rate_limited(monkeypatch):
+    monkeypatch.setattr(main_module, "TEXT_PER_IP", 2)
+    client = TestClient(app)
+    codes = [client.post("/api/search", json={"query": "chiavi", "lang": "it"}).status_code
+             for _ in range(3)]
+    assert codes == [200, 200, 429]

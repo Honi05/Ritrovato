@@ -28,7 +28,7 @@ export default function Header({ route }: { route: Route }) {
         >
           {t.nav.collect}
         </a>
-        <a href={href('operator/login')} className="border-2 border-ink px-3 py-1.5 no-underline hover:bg-ink hover:text-paper">
+        <a href={href('operator/login')} className="border-2 border-ink bg-signal px-4 py-1.5 font-extrabold text-ink no-underline shadow-[4px_4px_0_#111] hover:bg-[#ff7a47] hover:text-ink">
           {t.nav.staff}
         </a>
       </nav>

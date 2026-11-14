@@ -1,6 +1,4 @@
-<img src="docs/brand/logo-icon-512.png" alt="Ritrovato logo: a lost-and-found box with eyes peeking out" width="120">
-
-# Ritrovato
+# <img src="docs/brand/logo-icon-512.png" alt="" width="52" align="middle"> Ritrovato
 
 **Lost something in Rome? Describe it, say it or photograph it, in your language.**
 

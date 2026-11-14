@@ -14,7 +14,7 @@ export default function Intake() {
   return (
     <div className="flex flex-col gap-4">
       <h1 className="font-wide m-0 text-4xl font-black">{t.nav.new}</h1>
-      {toast && <p role="status" data-testid="toast" className="m-0 self-start bg-ink px-4 py-2 font-bold text-card">{toast}</p>}
+      {toast && <p role="status" data-testid="toast" className="m-0 self-start border-2 border-ink bg-ink px-4 py-2 font-mono font-semibold text-card shadow-[6px_6px_0_#ff5a1f]">✓ {toast}</p>}
       {error && <p role="alert" className="m-0 border-l-[6px] border-signal bg-card px-3 py-2">{t.form.error}</p>}
       <ItemForm key={round} initial={emptyForm()} photoUrl={null} busy={busy} submitLabel={t.form.save}
         onSubmit={async (v) => {

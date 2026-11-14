@@ -18,13 +18,24 @@ export default function Bookings({ params }: { params: URLSearchParams }) {
   useEffect(() => {
     opDayBookings(date).then((l) => setLoaded({ date, list: l }), guard)
   }, [date, guard])
+  const go = (d: string) => navigate(href('operator/bookings', { date: d }))
+  const shift = (n: number) => { const [y, m, d] = date.split('-').map(Number); go(isoDay(new Date(y, m - 1, d + n))) }
+  const nav = 'grid min-h-11 min-w-11 cursor-pointer place-items-center border-2 border-ink bg-card px-3 font-semibold hover:bg-paper'
   return (
-    <div className="flex flex-col gap-4">
-      <h1 className="font-wide m-0 text-4xl font-black">{t.bookings.title}</h1>
-      <label className="flex items-center gap-3 font-semibold">
-        {t.bookings.date}
-        <input type="date" value={date} onChange={(e) => navigate(href('operator/bookings', { date: e.target.value }))} className="min-h-11 border-2 border-ink bg-card px-3" />
-      </label>
+    <div className="flex flex-col gap-5">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <h1 className="font-wide m-0 text-4xl font-black">{t.bookings.title}</h1>
+        {list && <span className="font-mono text-sm font-semibold uppercase">{t.bookings.count(list.length)}</span>}
+      </div>
+      <div className="flex flex-wrap items-center gap-2">
+        <button type="button" aria-label={t.bookings.prev} onClick={() => shift(-1)} className={nav}>←</button>
+        <label className="flex items-center gap-2 font-semibold">
+          <span className="sr-only">{t.bookings.date}</span>
+          <input type="date" value={date} onChange={(e) => e.target.value && go(e.target.value)} className="min-h-11 border-2 border-ink bg-card px-3 font-mono" />
+        </label>
+        <button type="button" aria-label={t.bookings.next} onClick={() => shift(1)} className={nav}>→</button>
+        {date !== todayIso && <button type="button" onClick={() => go(todayIso)} className={nav}>{t.bookings.today}</button>}
+      </div>
       {list && list.length === 0 && <p className="m-0 border-2 border-dashed border-ink p-4">{t.bookings.empty}</p>}
       <ul className="m-0 flex list-none flex-col gap-2 p-0">
         {list?.map((b) => <BookingRow key={b.id} b={b} onChange={(nb) => setList((l) => l?.map((x) => (x.id === nb.id ? nb : x)) ?? null)} />)}

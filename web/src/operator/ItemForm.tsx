@@ -90,24 +90,28 @@ export default function ItemForm({ initial, photoUrl, busy, submitLabel, onSubmi
   }
 
   const tag = (k: keyof ItemFields) => suggested.has(k) && <span className="ml-2 bg-manila px-1.5 font-mono text-[11px] uppercase">{t.form.suggested}</span>
-  const field = 'min-h-11 w-full border-2 border-ink bg-card px-3 text-base'
+  const field = 'min-h-11 w-full border-2 border-ink bg-card px-3 text-base font-normal'
   const label = 'flex flex-col gap-1 font-semibold'
   return (
     <form
       data-testid="item-form"
       onSubmit={(e) => { e.preventDefault(); rememberPlace(v.found_place.trim()); onSubmit(v) }}
-      className="flex max-w-2xl flex-col gap-4"
+      className="@container max-w-4xl"
     >
+     <div className="grid gap-6 @2xl:grid-cols-[minmax(0,300px)_1fr]">
       <div className="flex flex-col gap-2">
         <span className="font-semibold">{t.form.photo}</span>
-        {photo && <img src={photo} alt="" className="max-h-72 self-start border-2 border-ink object-contain" />}
-        <label className="min-h-11 cursor-pointer self-start border-2 border-ink bg-card px-4 py-2 font-semibold">
-          {photo ? t.form.replacePhoto : t.form.takePhoto}
+        <label className={`relative flex cursor-pointer flex-col items-center justify-center gap-2 border-2 border-ink bg-card text-center font-semibold hover:bg-paper ${photo ? 'p-2' : 'aspect-[4/3] border-dashed p-6'}`}>
+          {photo
+            ? <img src={photo} alt="" className="max-h-72 w-full object-contain" />
+            : <span aria-hidden="true" className="grid size-14 place-items-center rounded-full border-2 border-ink bg-signal text-2xl">＋</span>}
+          <span className={photo ? 'pt-1 text-sm' : ''}>{photo ? t.form.replacePhoto : t.form.takePhoto}</span>
           <input type="file" accept="image/jpeg,image/png,image/webp" capture="environment" className="sr-only" data-testid="photo-input"
             onChange={(e) => pick(e.target.files?.[0])} />
+          {reading && <span aria-hidden="true" className="absolute inset-0 animate-pulse bg-manila/40" />}
         </label>
         {reading && <p className="m-0 animate-pulse font-mono text-sm" data-testid="reading">{t.form.reading}</p>}
-        {aiFailed && <p className="m-0 text-sm">{t.form.aiFailed}</p>}
+        {aiFailed && <p className="m-0 border-l-[6px] border-signal bg-card px-3 py-2 text-sm">{t.form.aiFailed}</p>}
       </div>
       <fieldset disabled={reading} className="m-0 flex min-w-0 flex-col gap-4 border-0 p-0">
         <label className={label}><span>{t.form.category}{tag('category')}</span>
@@ -135,10 +139,11 @@ export default function ItemForm({ initial, photoUrl, busy, submitLabel, onSubmi
         <label className={label}>{t.form.date}
           <input required type="date" max={today()} value={v.found_at} onChange={(e) => set('found_at', e.target.value)} className={field} />
         </label>
-        <button type="submit" disabled={busy || reading} className="min-h-12 self-start border-2 border-ink bg-signal px-6 text-lg font-bold">
+        <button type="submit" disabled={busy || reading} className="min-h-12 cursor-pointer self-start border-2 border-ink bg-signal px-8 text-lg font-bold shadow-[6px_6px_0_#111] transition-transform hover:-translate-y-0.5 disabled:cursor-wait disabled:opacity-60 disabled:shadow-none">
           {busy ? t.form.saving : submitLabel}
         </button>
       </fieldset>
+     </div>
     </form>
   )
 }

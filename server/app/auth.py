@@ -6,7 +6,7 @@ from datetime import datetime, timedelta, timezone
 
 from argon2 import PasswordHasher
 from argon2.exceptions import InvalidHashError, VerificationError
-from fastapi import HTTPException, Request
+from fastapi import HTTPException, Request, Response
 
 from . import office_db
 
@@ -75,7 +75,7 @@ def public(row) -> dict:
     return {"username": row["username"], "display_name": row["display_name"], "is_admin": bool(row["is_admin"])}
 
 
-def current_operator(request: Request) -> dict:
+def current_operator(request: Request, response: Response) -> dict:
     """Dependency for every /api/operator/* route except login; slides the expiry."""
     token = request.cookies.get(COOKIE)
     if token:
@@ -86,6 +86,8 @@ def current_operator(request: Request) -> dict:
                 "WHERE s.token_hash = ? AND s.expires_at > ?", (h, office_db.now())).fetchone()
             if row:
                 con.execute("UPDATE sessions SET expires_at = ? WHERE token_hash = ?", (_expiry(), h))
+                response.set_cookie(COOKIE, token, max_age=int(TTL.total_seconds()), httponly=True,
+                                    samesite="lax", secure=is_https(request), path="/")
                 return {"id": row["id"], **public(row)}
     raise HTTPException(401, "unauthorized: log in first")
 

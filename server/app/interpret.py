@@ -1,5 +1,6 @@
 """Text -> Interpreted filters via an ElevenLabs agent, then DeepSeek, then mapped keyword filters."""
 import json
+import logging
 import os
 import re
 import time
@@ -551,7 +552,11 @@ def search(text: str, lang: str) -> dict:
     shown = filters  # contract: interpreted is null on keyword fallback
     if filters is None:
         filters = fallback_interpret(text, lang)
-    office_items = office.search(filters)
+    try:
+        office_items = office.search(filters)
+    except Exception:  # the office catalogue is optional; registry search must keep working
+        logging.exception("office search failed")
+        office_items = []
     result = _db_search(filters)
     relaxed = []  # contract: filters dropped because nothing matched
     while not result["total"] and len(filters.get("keywords") or []) > 1:

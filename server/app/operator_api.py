@@ -49,10 +49,11 @@ AI_TIMEOUT = 14.0
 @router.post("/items/draft")
 async def draft(image: UploadFile = File(...), op: dict = Operator):
     data = await image.read(photos.MAX_BYTES + 1)
-    draft_id = photos.save_draft(data, image.content_type)
+    draft_id = await asyncio.to_thread(photos.save_draft, data, image.content_type)
     suggested = None
     try:
-        text = await asyncio.wait_for(photo.describe(data, image.content_type), timeout=AI_TIMEOUT)
+        webp = photos.draft_path(draft_id).read_bytes()  # re-encoded: no GPS, smaller than the upload
+        text = await asyncio.wait_for(photo.describe(webp, "image/webp"), timeout=AI_TIMEOUT)
         if text and text.strip():
             f = await asyncio.to_thread(interpret.interpret, text, "it") or {}
             suggested = {"category": f.get("category"), "brand": f.get("brand"),

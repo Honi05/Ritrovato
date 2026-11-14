@@ -46,6 +46,9 @@ def book(public_item_id: str, name: str, contact: str, slot_start: str) -> dict:
     if not office_hours.is_bookable(slot_start):
         raise HTTPException(400, "bad_request: not a bookable time")
     contact = normalise_contact(contact)
+    name = " ".join(name.split())
+    if not name or not contact:
+        raise HTTPException(400, "bad_request: name and contact are required")
     token = secrets.token_urlsafe(32)
     with office_db.connect() as con:
         active = con.execute("SELECT count(*) FROM bookings WHERE contact = ? AND status = 'booked'",
@@ -61,7 +64,7 @@ def book(public_item_id: str, name: str, contact: str, slot_start: str) -> dict:
                 con.execute(
                     "INSERT INTO bookings (item_id, code, manage_token_hash, name, contact, slot_start, status, "
                     "created_at) VALUES (?,?,?,?,?,?, 'booked', ?)",
-                    (item_id, code, _h(token), " ".join(name.split()), contact, slot_start, office_db.now()))
+                    (item_id, code, _h(token), name, contact, slot_start, office_db.now()))
                 break
             except sqlite3.IntegrityError as e:
                 msg = str(e)
@@ -70,8 +73,12 @@ def book(public_item_id: str, name: str, contact: str, slot_start: str) -> dict:
                 if "slot_start" in msg:
                     raise HTTPException(409, "conflict: slot_taken") from None
                 raise HTTPException(409, "conflict: item_taken") from None
-        con.execute("UPDATE office_items SET status = 'reserved', updated_at = ? WHERE id = ?",
-                    (office_db.now(), item_id))
+        else:
+            raise HTTPException(503, "upstream_failed: could not allocate a booking code, try again")
+        cur = con.execute("UPDATE office_items SET status = 'reserved', updated_at = ? "
+                          "WHERE id = ? AND status = 'available'", (office_db.now(), item_id))
+        if cur.rowcount == 0:  # lost a race with another booking or an operator change; the with-block rolls back
+            raise HTTPException(409, "conflict: item_taken")
     return {"code": code, "manage_token": token, "slot_start": slot_start, "item_id": public_item_id}
 
 

@@ -5,12 +5,14 @@ from datetime import date
 from fastapi import HTTPException
 
 from . import office_db, photos
+from .db import public_descr
 
 CATEGORIES = ("wallet", "id_document", "payment_card", "bag", "phone", "other", "keys", "document_other",
               "electronics", "clothing", "glasses", "sim", "watch_jewelry", "money", "vehicle")
 COLOURS = ("black", "white", "grey", "silver", "gold", "red", "orange", "yellow", "green", "blue",
            "purple", "pink", "brown", "beige", "multicolour")
 PUBLIC_STATUSES = ("available", "reserved")
+NO_PUBLIC_PHOTO = ("id_document", "payment_card", "sim")  # sensitive categories: photo is operator-only
 LIMITS = {"descr": (3, 500), "found_place": (2, 120)}
 EDITABLE = ("category", "brand", "colour", "descr", "found_place", "found_at")
 
@@ -32,7 +34,7 @@ def to_item(r) -> dict:
         "year": int(r["found_at"][:4]),
         "reperto": None,
         "date": r["found_at"],
-        "descr": r["descr"],
+        "descr": public_descr(r["descr"]),  # D-011: no document/card numbers in public text
         "category": r["category"],
         "tags": [r["category"]],
         "brand": r["brand"],
@@ -40,13 +42,14 @@ def to_item(r) -> dict:
         "source": None,
         "colour": r["colour"],
         "found_place": r["found_place"],
-        "photo_url": photos.url(r["photo_path"]),
+        "photo_url": None if r["category"] in NO_PUBLIC_PHOTO else photos.url(r["photo_path"]),
         "status": r["status"] if r["status"] in PUBLIC_STATUSES else None,
     }
 
 
 def operator_item(r) -> dict:
-    return {**to_item(r), "status": r["status"], "created_at": r["created_at"], "updated_at": r["updated_at"]}
+    return {**to_item(r), "descr": r["descr"], "photo_url": photos.url(r["photo_path"]), "status": r["status"],
+            "created_at": r["created_at"], "updated_at": r["updated_at"]}
 
 
 def _clean(fields: dict) -> dict:
@@ -167,9 +170,18 @@ def _candidates(category, brand, date_from, date_to, statuses=PUBLIC_STATUSES):
         return con.execute(f"SELECT * FROM office_items WHERE {' AND '.join(where)}", args).fetchall()
 
 
+def _usable(keywords) -> list[str]:
+    return [k for k in keywords if not re.search(r"\d{4}", k)]  # never match on document numbers (D-011)
+
+
+def _hay(r) -> str:
+    return f"{public_descr(r['descr'])} {r['brand'] or ''} {r['found_place']}".lower()
+
+
 def _score(r, keywords, colour, place) -> int | None:
     """None = excluded (keywords given but none matches)."""
-    hay = f"{r['descr']} {r['brand'] or ''} {r['found_place']}".lower()
+    keywords = _usable(keywords)
+    hay = _hay(r)
     hits = sum(1 for k in keywords if k.lower() in hay)
     if keywords and not hits:
         return None
@@ -211,7 +223,8 @@ def search(filters: dict, limit: int = 6) -> list[dict]:
 
 def browse(q="", category=None, brand=None, date_from=None, date_to=None, limit=20, offset=0) -> dict:
     """Catalogue filters over office items; every q word must occur (like the registry)."""
+    kws = _usable(q.split())
     rows = [r for r in _candidates(category, brand, date_from, date_to)
-            if all(k.lower() in f"{r['descr']} {r['brand'] or ''} {r['found_place']}".lower() for k in q.split())]
+            if all(k.lower() in _hay(r) for k in kws)]
     rows.sort(key=lambda r: (r["status"] == "reserved", _neg(r["found_at"]), -r["id"]))
     return {"items": [to_item(r) for r in rows[offset:offset + limit]], "total": len(rows)}

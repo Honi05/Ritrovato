@@ -82,7 +82,12 @@ def items(
     if source == "office":
         return {**office.browse(q, category, brand, date_from, date_to, limit, offset), "interpreted": None, "office": []}
     reg = db.search(q.split(), category, brand, date_from, date_to, limit, offset)
-    near = office.browse(q, category, brand, date_from, date_to, 6, 0)["items"] if offset == 0 else []
+    near = []
+    if offset == 0:
+        try:
+            near = office.browse(q, category, brand, date_from, date_to, 6, 0)["items"]
+        except Exception:  # registry results must survive an office DB failure
+            logging.exception("office search failed")
     return {**reg, "interpreted": None, "office": near}
 
 

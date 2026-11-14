@@ -4,6 +4,7 @@ import os
 import re
 import time
 import uuid
+import warnings
 from pathlib import Path
 
 from fastapi import HTTPException
@@ -15,6 +16,7 @@ DIR = Path(os.environ.get("PHOTOS_DIR", office_db.PATH.parent / "photos"))
 MAX_BYTES = 8 * 1024 * 1024
 TYPES = {"image/jpeg", "image/png", "image/webp"}
 LONGEST = 1200
+Image.MAX_IMAGE_PIXELS = 40_000_000  # ~40 MP: decompression-bomb guard
 NAME_RE = re.compile(r"^[0-9a-f]{32}\.webp$")
 _ID_RE = re.compile(r"^[0-9a-f]{32}$")
 
@@ -31,10 +33,13 @@ def save_draft(data: bytes, content_type: str | None) -> str:
     if len(data) > MAX_BYTES:
         raise HTTPException(413, "too_large: image exceeds 8 MB")
     try:
-        img = Image.open(io.BytesIO(data))
-        img.load()
-        img = ImageOps.exif_transpose(img).convert("RGB")
-    except (UnidentifiedImageError, OSError, Image.DecompressionBombError, ValueError):
+        with warnings.catch_warnings():
+            warnings.simplefilter("error", Image.DecompressionBombWarning)  # between 1x and 2x the limit
+            img = Image.open(io.BytesIO(data))
+            img.load()
+            img = ImageOps.exif_transpose(img).convert("RGB")
+    except (UnidentifiedImageError, OSError, Image.DecompressionBombError, Image.DecompressionBombWarning,
+            ValueError):
         raise HTTPException(400, "bad_request: not a readable image") from None
     img.thumbnail((LONGEST, LONGEST))
     draft_id = uuid.uuid4().hex
